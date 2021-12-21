@@ -8,12 +8,18 @@ import {
 } from '@material-ui/core';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import * as userActions from '../../store/actions/user';
+import { useDispatch, useSelector } from 'react-redux';
 
 const Login = () => {
+  const dispatch = useDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
   const [isError, setIsError] = useState(false);
+
+  const loginError = useSelector((state) => state.user.isError);
 
   const validateEmail = (email) => {
     return String(email)
@@ -23,13 +29,13 @@ const Login = () => {
       );
   };
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     if (password === '' || !validateEmail(email) || password.length < 6) {
       setIsError(true);
       return;
     }
     if (password !== '' && validateEmail(email)) {
-      console.log('Dalje');
+      const login = await dispatch(userActions.login(email, password));
     }
   };
 
@@ -71,7 +77,16 @@ const Login = () => {
             }
           />
         </Grid>
-
+        {loginError ? (
+          <div
+            style={{
+              color: 'red',
+              marginTop: '10px',
+            }}
+          >
+            Couldn't find your account
+          </div>
+        ) : null}
         <Grid
           container
           spacing={3}
