@@ -4,14 +4,14 @@ import {
   Link,
   TextField,
   Typography,
-} from "@material-ui/core";
-import Button from "@mui/material/Button";
-import { useNavigate } from "react-router-dom";
+  Button,
+} from '@material-ui/core';
+import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
   const navigate = useNavigate();
   return (
-    <Container maxWidth="sm" style={{ marginTop: "82px" }}>
+    <Container maxWidth="sm" style={{ marginTop: '82px' }}>
       <Grid
         container
         spacing={2}
@@ -21,16 +21,16 @@ const Register = () => {
         textAlign="left"
         fullWidth="true"
       >
-        <Grid item style={{ width: "100%" }}>
+        <Grid item style={{ width: '100%' }}>
           <Typography align="left">uTeam - Register</Typography>
         </Grid>
-        <Grid item style={{ width: "100%" }}>
+        <Grid item style={{ width: '100%' }}>
           <TextField label="Name" variant="outlined" fullWidth="true" />
         </Grid>
-        <Grid item style={{ width: "100%" }}>
+        <Grid item style={{ width: '100%' }}>
           <TextField label="Email" variant="outlined" fullWidth="true" />
         </Grid>
-        <Grid item style={{ width: "100%" }}>
+        <Grid item style={{ width: '100%' }}>
           <TextField
             label="Password"
             type="password"
@@ -38,7 +38,7 @@ const Register = () => {
             fullWidth="true"
           />
         </Grid>
-        <Grid item style={{ width: "100%" }}>
+        <Grid item style={{ width: '100%' }}>
           <TextField label="Upload file" variant="outlined" fullWidth="true" />
         </Grid>
         <Grid
@@ -46,14 +46,14 @@ const Register = () => {
           spacing={3}
           justifyContent="space-between"
           alignItems="center"
-          style={{ width: "100%" }}
+          style={{ width: '100%' }}
         >
           <Grid item>
             <Link
               variant="link"
               underline="hover"
               color="black"
-              onClick={() => navigate("/login")}
+              onClick={() => navigate('/')}
             >
               Already have an account?
             </Link>
