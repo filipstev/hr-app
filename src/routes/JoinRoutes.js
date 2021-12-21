@@ -1,7 +1,7 @@
-import React from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Login from '../Components/LoginUser/LoginUser';
-import Register from '../Components/RegisterUser/RegisterUser';
+import React from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Login from "../Components/LoginUser/LoginUser";
+import Register from "../Components/Register/Register";
 
 const JoinRoutes = () => {
   return (
