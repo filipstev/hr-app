@@ -1,7 +1,12 @@
 import React from 'react';
+import Header from '../Header/Header';
 
 const Pending = () => {
-  return <h2>Pending for approval</h2>;
+  return (
+    <>
+      <Header />
+    </>
+  );
 };
 
 export default Pending;

@@ -40,78 +40,82 @@ const Login = () => {
   };
 
   return (
-    <Container maxWidth="sm" style={{ marginTop: '82px' }}>
-      <Grid
-        container
-        spacing={2}
-        direction="column"
-        justifyContent="center"
-        alignItems="center"
-        textAlign="left"
-        fullWidth="true"
-      >
-        <Grid item style={{ width: '100%' }}>
-          <Typography align="left">uTeam - Login</Typography>
-        </Grid>
-
-        <Grid item style={{ width: '100%' }}>
-          <TextField
-            label="Email"
-            variant="outlined"
-            fullWidth="true"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            error={isError && !validateEmail(email) ? true : false}
-          />
-        </Grid>
-        <Grid item style={{ width: '100%' }}>
-          <TextField
-            label="Password"
-            type="password"
-            variant="outlined"
-            fullWidth="true"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            error={
-              isError && (password === '' || password.length < 6) ? true : false
-            }
-          />
-        </Grid>
-        {loginError ? (
-          <div
-            style={{
-              color: 'red',
-              marginTop: '10px',
-            }}
-          >
-            Couldn't find your account
-          </div>
-        ) : null}
+    <>
+      <Container maxWidth="sm" style={{ marginTop: '82px' }}>
         <Grid
           container
-          spacing={3}
-          justifyContent="space-between"
+          spacing={2}
+          direction="column"
+          justifyContent="center"
           alignItems="center"
-          style={{ width: '100%' }}
+          textAlign="left"
+          fullWidth="true"
         >
-          <Grid item>
-            <Link
-              variant="link"
-              underline="hover"
-              color="black"
-              onClick={() => navigate('/register')}
-            >
-              Already have an account?
-            </Link>
+          <Grid item style={{ width: '100%' }}>
+            <Typography align="left">uTeam - Login</Typography>
           </Grid>
-          <Grid item>
-            <Button variant="outlined" onClick={onSubmit}>
-              Login
-            </Button>
+
+          <Grid item style={{ width: '100%' }}>
+            <TextField
+              label="Email"
+              variant="outlined"
+              fullWidth="true"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              error={isError && !validateEmail(email) ? true : false}
+            />
+          </Grid>
+          <Grid item style={{ width: '100%' }}>
+            <TextField
+              label="Password"
+              type="password"
+              variant="outlined"
+              fullWidth="true"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              error={
+                isError && (password === '' || password.length < 6)
+                  ? true
+                  : false
+              }
+            />
+          </Grid>
+          {loginError ? (
+            <div
+              style={{
+                color: 'red',
+                marginTop: '10px',
+              }}
+            >
+              Couldn't find your account
+            </div>
+          ) : null}
+          <Grid
+            container
+            spacing={3}
+            justifyContent="space-between"
+            alignItems="center"
+            style={{ width: '100%' }}
+          >
+            <Grid item>
+              <Link
+                variant="link"
+                underline="hover"
+                color="black"
+                onClick={() => navigate('/register')}
+              >
+                Already have an account?
+              </Link>
+            </Grid>
+            <Grid item>
+              <Button variant="outlined" onClick={onSubmit}>
+                Login
+              </Button>
+            </Grid>
           </Grid>
         </Grid>
-      </Grid>
-    </Container>
+      </Container>
+    </>
   );
 };
 
