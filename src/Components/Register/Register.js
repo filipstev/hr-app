@@ -7,9 +7,11 @@ import {
   TextField,
   Typography,
   Button,
+  InputLabel,
 } from "@material-ui/core";
 
 import useInput from "../../hooks/use-input";
+import ResponsiveDrawer from "../Menu/Menu";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -39,10 +41,12 @@ const Register = () => {
   const {
     value: passwordInputValue,
     reset: resetPasswordInput,
+    isValid: eneteredPasswordIsValid,
+    hasError: passwordInputHasError,
     valueChangeHandler: passwordChangedHandler,
     inputBlurHandler: passwordBlurHandler,
-  } = useInput(() => true);
-
+  } = useInput((value) => value.length > 5);
+  console.log(eneteredPasswordIsValid);
   return (
     <Container
       maxWidth="sm"
@@ -55,6 +59,7 @@ const Register = () => {
         resetPasswordInput();
       }}
     >
+      <ResponsiveDrawer />
       <Grid
         container
         spacing={2}
@@ -77,6 +82,12 @@ const Register = () => {
             onInput={nameChangedHandler}
             onBlur={nameBlurHandler}
           />
+
+          {nameInputHasError && (
+            <Typography variant="body1" color="error">
+              You call that a name ?
+            </Typography>
+          )}
         </Grid>
 
         <Grid item style={{ width: "100%" }}>
@@ -89,6 +100,11 @@ const Register = () => {
             onInput={emailChangedHandler}
             onBlur={emailBlurHandler}
           />
+          {emailInputHasError && (
+            <Typography variant="body1" color="error">
+              Funny error message here
+            </Typography>
+          )}
         </Grid>
 
         <Grid item style={{ width: "100%" }}>
@@ -101,6 +117,12 @@ const Register = () => {
             onInput={passwordChangedHandler}
             onBlur={passwordBlurHandler}
           />
+
+          {passwordInputHasError && (
+            <Typography variant="body1" color="error">
+              Password is too bland, please add more spice to it
+            </Typography>
+          )}
         </Grid>
 
         <Grid item style={{ width: "100%" }}>
@@ -110,7 +132,37 @@ const Register = () => {
             variant="outlined"
             fullWidth="true"
             accept="image/*"
+            id="fileUpload"
           />
+
+          {/* <InputLabel
+            style={{
+              display: "flex",
+              border: "1px solid black",
+              width: "200px",
+              height: "100px",
+              justifyContent: "right",
+              alignItems: "center",
+            }}
+            forHtml="uploadImage"
+          >
+            <TextField
+              style={{ display: "none" }}
+              type="file"
+              id="uploadImage"
+              label="Upload file"
+              variant="outlined"
+              fullWidth="true"
+              accept="image/*"
+            />
+
+            <button
+              stypel={{}}
+              onClick={() => document.getElementById("uploadImage").click()}
+            >
+              Choose File
+            </button>
+          </InputLabel> */}
         </Grid>
 
         <Grid
