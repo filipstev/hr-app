@@ -35,7 +35,8 @@ const Login = () => {
       return;
     }
     if (password !== '' && validateEmail(email)) {
-      const login = await dispatch(userActions.login(email, password));
+      // const login = await dispatch(userActions.login(email, password));
+      dispatch(userActions.signIn(email, password));
     }
   };
 

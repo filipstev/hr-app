@@ -8,7 +8,8 @@ const JoinRoutes = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Pending />} />
+        <Route path="/" element={<CompanyInfo />} />
+        <Route path="/company" element={<CompanyInfo />} />
       </Routes>
     </BrowserRouter>
   );

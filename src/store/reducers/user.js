@@ -1,5 +1,4 @@
-import * as actionTypes from '../actionTypes/user';
-
+import { LOGIN_ERROR, SET_USER } from '../actions/user';
 const initialState = {
   user: {},
   isLoggedIn: false,
@@ -8,14 +7,14 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case actionTypes.LOGIN_USER:
+    case SET_USER:
       return {
         ...state,
         user: action.payload,
         isLoggedIn: true,
         isError: false,
       };
-    case actionTypes.LOGIN_ERROR:
+    case LOGIN_ERROR:
       return {
         ...state,
         isError: true,
