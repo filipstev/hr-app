@@ -10,14 +10,14 @@ import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import Header from '../Header/Header';
 import { useSelector } from 'react-redux';
+import axiosInstance from '../../helpers/axiosInstance';
 
 const CompanyInfo = () => {
   const token = useSelector((state) => state.user.user.jwt);
+  console.log(token);
   const testFn = () => {
-    axios
-      .get('https://internship-hr-app.herokuapp.com/api/profiles?populate=*', {
-        headers: { Authorization: 'Bearer ' + token },
-      })
+    axiosInstance
+      .get('https://internship-hr-app.herokuapp.com/api/profiles?populate=*')
       .then((data) => {
         console.log(data);
       })
