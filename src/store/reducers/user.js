@@ -8,6 +8,8 @@ const initialState = {
 export default (state = initialState, action) => {
   switch (action.type) {
     case SET_USER:
+      console.log(action.payload);
+
       return {
         ...state,
         user: action.payload,
@@ -19,6 +21,7 @@ export default (state = initialState, action) => {
         ...state,
         isError: true,
       };
+
     default:
       return state;
   }

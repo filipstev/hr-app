@@ -6,10 +6,26 @@ import {
   Typography,
   Button,
 } from '@material-ui/core';
-import React, { useState } from 'react';
+import axios from 'axios';
+import React, { useState, useEffect } from 'react';
 import Header from '../Header/Header';
+import { useSelector } from 'react-redux';
 
 const CompanyInfo = () => {
+  const token = useSelector((state) => state.user.user.jwt);
+  const testFn = () => {
+    axios
+      .get('https://internship-hr-app.herokuapp.com/api/profiles?populate=*', {
+        headers: { Authorization: 'Bearer ' + token },
+      })
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <>
       <Header />
@@ -41,7 +57,12 @@ const CompanyInfo = () => {
               fullWidth="true"
             />
           </Grid>
-          <Button variant="outlined" color="black" style={{ margin: '0 8px' }}>
+          <Button
+            variant="outlined"
+            color="black"
+            style={{ margin: '0 8px' }}
+            onClick={testFn}
+          >
             SAVE
           </Button>
         </Grid>

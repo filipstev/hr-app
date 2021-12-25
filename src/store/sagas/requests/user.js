@@ -1,18 +1,9 @@
-import axios from 'axios';
-
-const headers = {
-  'Content-Type': 'application/json',
-  //prettier-ignore
-  'Accept': 'application/json',
-};
+import axiosInstance from '../../../helpers/axiosInstance';
 
 export function requestGetUser(email, password) {
-  return axios.post(
-    process.env.REACT_APP_BASE_URL + '/auth/local',
-    {
-      identifier: email,
-      password: password,
-    },
-    { headers: headers }
-  );
+  console.log(email, password);
+  return axiosInstance.post('/auth/local', {
+    identifier: email,
+    password: password,
+  });
 }
