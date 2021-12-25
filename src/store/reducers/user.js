@@ -1,4 +1,4 @@
-import { LOGIN_ERROR, SET_USER } from '../actions/user';
+import { INVALID_TOKEN, LOGIN_ERROR, SET_USER } from '../actions/user';
 const initialState = {
   user: {},
   isLoggedIn: false,
@@ -18,6 +18,13 @@ export default (state = initialState, action) => {
       return {
         ...state,
         isError: true,
+      };
+    case INVALID_TOKEN:
+      return {
+        ...state,
+        isError: true,
+        isLoggedIn: false,
+        user: {},
       };
 
     default:
