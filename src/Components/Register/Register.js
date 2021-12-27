@@ -59,7 +59,6 @@ const Register = () => {
         resetPasswordInput();
       }}
     >
-      <ResponsiveDrawer />
       <Grid
         container
         spacing={2}
