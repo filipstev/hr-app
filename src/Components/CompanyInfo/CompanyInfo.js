@@ -26,7 +26,6 @@ const CompanyInfo = () => {
 
   return (
     <>
-      <Header />
       <Container maxWidth="sm" style={{ marginTop: '82px' }}>
         <Grid
           container

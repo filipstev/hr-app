@@ -26,7 +26,6 @@ const Questions = () => {
 
   return (
     <>
-      <Header />
       <div style={{ width: '70%', margin: 'auto' }}>
         <div
           style={{
@@ -61,6 +60,7 @@ const Questions = () => {
             <span>Add new question</span>
           </div>
         </div>
+        {/* <SingleQuestion /> */}
         {questions.length > 0
           ? questions.map((question) => {
               return <SingleQuestion />;

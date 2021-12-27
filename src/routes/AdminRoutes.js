@@ -6,20 +6,21 @@ import MainMenu from '../Components/Menu/Menu';
 import Pending from '../Components/Pending/Pending';
 import AddQuestion from '../Components/Questions/AddQuestion/AddQuestion';
 import Questions from '../Components/Questions/Questions';
+import Header from '../Components/Header/Header';
 
 const JoinRoutes = () => {
-
   return (
     <>
-    <MainMenu />
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<CompanyInfo />} />
-        <Route path="/questions" element={<Questions />} />
-        <Route path="/company" element={<CompanyInfo />} />
-        <Route path="/new-question" element={<AddQuestion />} />
-      </Routes>
-    </BrowserRouter>
+      <BrowserRouter>
+        <Header />
+        {/* <MainMenu /> */}
+        <Routes>
+          <Route path="/" element={<CompanyInfo />} />
+          <Route path="/questions" element={<Questions />} />
+          <Route path="/company" element={<CompanyInfo />} />
+          <Route path="/new-question" element={<AddQuestion />} />
+        </Routes>
+      </BrowserRouter>
     </>
   );
 };
