@@ -93,13 +93,13 @@ function ResponsiveDrawer(props) {
           onClick={handleDrawerToggle}
           sx={{ mr: 2, display: { sm: "none" } }}
         >
-          <MenuIcon />
+          <p style={{ fontSize: "1rem" }}>Menu</p>
         </IconButton>
       </AppBar>
       <Box
         component="nav"
         sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
-        aria-label="mailbox folders"
+        aria-label="menu"
       >
         <Drawer
           container={container}
