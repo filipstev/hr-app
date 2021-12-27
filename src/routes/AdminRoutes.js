@@ -7,7 +7,7 @@ import Pending from '../Components/Pending/Pending';
 import AddQuestion from '../Components/Questions/AddQuestion/AddQuestion';
 import Questions from '../Components/Questions/Questions';
 import Header from '../Components/Header/Header';
-// Fix Header and MainMenu positions
+// Fix Header and MainMenu
 const JoinRoutes = () => {
   return (
     <>
