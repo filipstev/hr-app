@@ -19,7 +19,7 @@ import { useNavigate } from "react-router-dom";
 
 const drawerWidth = 240;
 
-function ResponsiveDrawer(props) {
+function MainMenu(props) {
   const navigate = useNavigate();
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -138,11 +138,11 @@ function ResponsiveDrawer(props) {
   );
 }
 
-ResponsiveDrawer.propTypes = {
+MainMenu.propTypes = {
   /**
    * Injected by the documentation to work in an iframe.
    * You won't need it on your project.
    */
   window: PropTypes.func,
 };
-export default ResponsiveDrawer;
+export default MainMenu;
