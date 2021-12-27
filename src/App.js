@@ -20,6 +20,7 @@ function App() {
   };
 
   useEffect(() => {
+    console.log(localStorage.getItem('user'));
     let decoded;
     const user = JSON.parse(localStorage.getItem('user'));
     if (user) {
@@ -28,6 +29,7 @@ function App() {
         console.log('valid!');
         dispatch(userActions.setUser(user));
       } else {
+        // dispatch(userActions.tokenInvalid());
         console.log('Not valid!');
       }
     } else {

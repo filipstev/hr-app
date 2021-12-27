@@ -6,11 +6,6 @@ const headers = {
 };
 const baseURL = process.env.REACT_APP_BASE_URL;
 
-if (localStorage.user) {
-  const parsedUser = JSON.parse(localStorage.user);
-  headers.Authorization = `Bearer ${parsedUser.jwt}`;
-}
-
 const axiosInstance = axios.create({
   baseURL: baseURL,
   headers: headers,
@@ -29,7 +24,7 @@ axiosInstance.interceptors.response.use(
     }
 
     if (err.response.status === 403) {
-      localStorage.removeItem('user');
+      console.log(err.response.status);
     } else {
       return new Promise((resolve, reject) => {
         reject(err);
@@ -39,25 +34,16 @@ axiosInstance.interceptors.response.use(
 );
 
 axiosInstance.interceptors.request.use(
-  (response) =>
-    new Promise((resolve, reject) => {
-      resolve(response);
-    }),
-  (err) => {
-    if (!err.response) {
-      return new Promise((resolve, reject) => {
-        reject(err);
-      });
+  (config) => {
+    const user = localStorage.getItem('user');
+    if (user) {
+      const parsedUser = JSON.parse(localStorage.getItem('user'));
+      config.headers.Authorization = `Bearer ${parsedUser.jwt}`;
     }
 
-    if (err.response.status === 403) {
-      localStorage.removeItem('token');
-    } else {
-      return new Promise((resolve, reject) => {
-        reject(err);
-      });
-    }
-  }
+    return config;
+  },
+  (error) => Promise.reject(error)
 );
 
 export default axiosInstance;

@@ -13,11 +13,9 @@ import { useSelector } from 'react-redux';
 import axiosInstance from '../../helpers/axiosInstance';
 
 const CompanyInfo = () => {
-  const token = useSelector((state) => state.user.user.jwt);
-  console.log(token);
   const testFn = () => {
     axiosInstance
-      .get('https://internship-hr-app.herokuapp.com/api/profiles?populate=*')
+      .get('/profiles')
       .then((data) => {
         console.log(data);
       })
