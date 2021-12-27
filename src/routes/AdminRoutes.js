@@ -7,13 +7,13 @@ import Pending from '../Components/Pending/Pending';
 import AddQuestion from '../Components/Questions/AddQuestion/AddQuestion';
 import Questions from '../Components/Questions/Questions';
 import Header from '../Components/Header/Header';
-
+// Fix Header and MainMenu positions
 const JoinRoutes = () => {
   return (
     <>
       <BrowserRouter>
         <Header />
-        {/* <MainMenu /> */}
+        <MainMenu />
         <Routes>
           <Route path="/" element={<CompanyInfo />} />
           <Route path="/questions" element={<Questions />} />
