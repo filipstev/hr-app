@@ -10,14 +10,18 @@ import {
 } from "@material-ui/core";
 
 import useInput from "../../hooks/use-input";
+import * as registerUser from '../../store/actions/register';
+import { useDispatch } from "react-redux";
 
 const Register = () => {
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
+  
+  
   const nameRegEx = /^[a-zA-Z]+(?:[\s.]+[a-zA-Z]+)*$/g;
   const emailRegEx =
-    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
+  /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  
   const {
     value: enteredName,
     hasError: nameInputHasError,
@@ -26,7 +30,7 @@ const Register = () => {
     inputBlurHandler: nameBlurHandler,
     reset: resetNameInput,
   } = useInput((value) => nameRegEx.test(value));
-
+  
   const {
     value: enteredEmail,
     hasError: emailInputHasError,
@@ -35,26 +39,39 @@ const Register = () => {
     inputBlurHandler: emailBlurHandler,
     reset: resetEmailInput,
   } = useInput((value) => emailRegEx.test(value));
-
+  
   const {
-    value: passwordInputValue,
+    value: enteredPassword,
     reset: resetPasswordInput,
     valueChangeHandler: passwordChangedHandler,
     inputBlurHandler: passwordBlurHandler,
   } = useInput(() => true);
-
+  console.log(`Name: ` + enteredName);
+  console.log('Email: ' + enteredEmail);
+  console.log('Password: ' + enteredPassword);
+  const onSubmit = async () => {
+    if (enteredPassword === '' ) {
+      // setIsError(true);
+      return;
+    }
+    if (enteredPassword !== '' ) {
+      // const login = await dispatch(userActions.login(email, password));
+      dispatch(registerUser.registerUser(enteredName, enteredEmail, enteredPassword));
+    }
+  };
   return (
     <Container
-      maxWidth="sm"
+    maxWidth="sm"
       style={{ marginTop: "82px" }}
       component="form"
       onSubmit={(e) => {
         e.preventDefault();
+        onSubmit()
         resetNameInput();
         resetEmailInput();
         resetPasswordInput();
       }}
-    >
+      >
       <Grid
         container
         spacing={2}
@@ -97,7 +114,7 @@ const Register = () => {
             type="password"
             variant="outlined"
             fullWidth="true"
-            value={passwordInputValue}
+            value={enteredPassword}
             onInput={passwordChangedHandler}
             onBlur={passwordBlurHandler}
           />
