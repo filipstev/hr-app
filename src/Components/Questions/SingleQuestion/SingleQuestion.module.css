@@ -60,3 +60,7 @@
 .ButtonDelete:hover {
   cursor: pointer;
 }
+
+.Arrows i:hover {
+  cursor: pointer;
+}

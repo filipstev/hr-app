@@ -1,9 +1,13 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../../helpers/axiosInstance';
 import classes from './SingleQuestion.module.css';
 
 const SingleQuestion = (props) => {
-  const onEdit = () => {};
+  const navigate = useNavigate();
+  const onEdit = () => {
+    navigate('/edit-question', { state: { id: props.id } });
+  };
 
   const onDelete = () => {
     axiosInstance
@@ -15,6 +19,32 @@ const SingleQuestion = (props) => {
         console.log(err);
       });
   };
+
+  const moveUp = () => {
+    console.log(props.order);
+    if (props.order - 1 !== -1) {
+      axiosInstance
+        .put('/questions/' + props.id, {
+          data: { order: props.order - 1 },
+        })
+        .then((data) => {
+          console.log(data);
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
+    }
+  };
+
+  const moveDown = () => {
+    console.log(props.order + 1);
+    if (props.order + 1 < props.totalLength) {
+      axiosInstance.put('/questions/' + props.id, {
+        data: { order: props.order + 2 },
+      });
+    }
+  };
+
   return (
     <div
       style={{
@@ -31,8 +61,8 @@ const SingleQuestion = (props) => {
       <div className={classes.Left}>
         <div className={classes.Arrows}>
           {/* TODO:CUSTOM ICONS */}
-          <i class="fas fa-angle-up"></i>
-          <i class="fas fa-angle-down"></i>
+          <i className="fas fa-angle-up" onClick={moveUp}></i>
+          <i className="fas fa-angle-down" onClick={moveDown}></i>
         </div>
         <div className={classes.Text}>
           <div
@@ -43,7 +73,7 @@ const SingleQuestion = (props) => {
               letterSpacing: '0.04em',
             }}
           >
-            Question {props.order} - {props.type}
+            Question {props.order + 1} - {props.type}
           </div>
           <div
             style={{

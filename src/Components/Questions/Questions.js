@@ -25,9 +25,16 @@ const Questions = () => {
       });
   }, [user]);
 
+  useEffect(() => {
+    console.log(questions);
+    // questions.map((question) => {
+    //   console.log(question.attributes.order);
+    // });
+  }, [questions]);
+
   return (
     <>
-      <div style={{ width: '70%', margin: 'auto' }}>
+      <div style={{ width: '70%', margin: '80px auto' }}>
         <div
           style={{
             display: 'flex',
@@ -47,13 +54,11 @@ const Questions = () => {
           </h1>
           <div
             className={classes.Button}
-            onClick={() =>
-              navigate('/new-question', { state: { questions: questions } })
-            }
+            onClick={() => navigate('/new-question')}
           >
             <div>
               <i
-                class="fas fa-plus"
+                className="fas fa-plus"
                 style={{
                   marginRight: '8px',
                 }}
@@ -63,16 +68,16 @@ const Questions = () => {
             <span>Add new question</span>
           </div>
         </div>
-        {/* <SingleQuestion /> */}
         {questions.length > 0
           ? questions.map((question) => {
               return (
                 <SingleQuestion
                   title={question.attributes.text}
                   type={question.attributes.type}
-                  order={question.attributes.order + 1}
+                  order={question.attributes.order}
                   id={question.id}
                   key={question.id}
+                  totalLength={questions.length}
                 />
               );
             })

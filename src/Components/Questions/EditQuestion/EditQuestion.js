@@ -10,31 +10,35 @@ import {
   FormHelperText,
 } from '@mui/material';
 import axiosInstance from '../../../helpers/axiosInstance';
+import { useLocation } from 'react-router-dom';
 
 const AddQuestion = (props) => {
+  const location = useLocation();
   const [text, setText] = useState('');
   const [type, setType] = useState('text');
-  const [questionsLength, setQuestionsLength] = useState(null);
+  const [id, setId] = useState(null);
 
   useEffect(() => {
     axiosInstance
-      .get('/questions')
+      .get('/questions/' + location.state.id)
       .then((data) => {
-        setQuestionsLength(data.data.data.length);
+        console.log(data.data.data.attributes);
+        setText(data.data.data.attributes.text);
+        setType(data.data.data.attributes.type);
+        setId(data.data.data.id);
       })
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [location.state]);
 
   const submitQuestion = () => {
-    if (text !== '' && type && questionsLength >= 0) {
+    if (text !== '' && type && id) {
       axiosInstance
-        .post('/questions', {
+        .put('/questions/' + location.state.id, {
           data: {
             text: text,
             type: type,
-            order: questionsLength,
           },
         })
         .then((data) => {
@@ -67,7 +71,7 @@ const AddQuestion = (props) => {
             letterSpacing: '0.04em',
           }}
         >
-          Add new Question
+          Edit Question
         </h2>
         <TextField
           label="Question text"
