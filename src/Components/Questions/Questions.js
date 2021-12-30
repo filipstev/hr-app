@@ -16,7 +16,8 @@ const Questions = () => {
     axiosInstance
       .get('/questions')
       .then((data) => {
-        setQuestions(data);
+        console.log(data.data.data);
+        setQuestions(data.data.data);
         setMeta(meta);
       })
       .catch((err) => {
@@ -46,7 +47,9 @@ const Questions = () => {
           </h1>
           <div
             className={classes.Button}
-            onClick={() => navigate('/new-question')}
+            onClick={() =>
+              navigate('/new-question', { state: { questions: questions } })
+            }
           >
             <div>
               <i
@@ -63,7 +66,15 @@ const Questions = () => {
         {/* <SingleQuestion /> */}
         {questions.length > 0
           ? questions.map((question) => {
-              return <SingleQuestion />;
+              return (
+                <SingleQuestion
+                  title={question.attributes.text}
+                  type={question.attributes.type}
+                  order={question.attributes.order + 1}
+                  id={question.id}
+                  key={question.id}
+                />
+              );
             })
           : null}
       </div>

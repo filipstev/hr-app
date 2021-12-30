@@ -1,7 +1,20 @@
 import React from 'react';
+import axiosInstance from '../../../helpers/axiosInstance';
 import classes from './SingleQuestion.module.css';
 
-const SingleQuestion = () => {
+const SingleQuestion = (props) => {
+  const onEdit = () => {};
+
+  const onDelete = () => {
+    axiosInstance
+      .delete('/questions/' + props.id)
+      .then((data) => {
+        console.log('success');
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
   return (
     <div
       style={{
@@ -30,7 +43,7 @@ const SingleQuestion = () => {
               letterSpacing: '0.04em',
             }}
           >
-            Question 1 - Text
+            Question {props.order} - {props.type}
           </div>
           <div
             style={{
@@ -39,13 +52,17 @@ const SingleQuestion = () => {
               marginTop: '4px',
             }}
           >
-            Do you have any pets?
+            {props.title}
           </div>
         </div>
       </div>
       <div className={classes.Right}>
-        <div className={classes.ButtonEdit}>Edit</div>
-        <div className={classes.ButtonDelete}>Delete</div>
+        <div className={classes.ButtonEdit} onClick={onEdit}>
+          Edit
+        </div>
+        <div className={classes.ButtonDelete} onClick={onDelete}>
+          Delete
+        </div>
       </div>
     </div>
   );
