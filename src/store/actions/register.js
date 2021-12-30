@@ -1,8 +1,8 @@
-export const REGISTER_USER = 'REGISTER_USER';
-export const REGISTER_ERROR = 'REGISTER_ERROR';
-export const SET_REGISTER = 'SET_USER';
+export const REGISTER_USER = "REGISTER_USER";
+export const REGISTER_ERROR = "REGISTER_ERROR";
+export const SET_REGISTER = "SET_USER";
 
-export const registerUser = (name ,email, password) => ({
+export const registerUser = (name, email, password) => ({
   type: REGISTER_USER,
   name,
   email,
@@ -15,7 +15,6 @@ export const registerUser = (name ,email, password) => ({
 //   payload: user,
 // });
 
-export const loginError = () => ({
+export const registerError = () => ({
   type: REGISTER_ERROR,
 });
-
