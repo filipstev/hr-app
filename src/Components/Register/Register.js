@@ -10,10 +10,14 @@ import {
 } from "@material-ui/core";
 
 import useInput from "../../hooks/use-input";
+import * as registerUser from "../../store/actions/register";
+import { useDispatch, useSelector } from "react-redux";
 
 const Register = () => {
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
+  const registerError = useSelector((state) => state.register.isError);
+  console.log(registerError);
   const nameRegEx = /^[a-zA-Z]+(?:[\s.]+[a-zA-Z]+)*$/g;
   const emailRegEx =
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -37,12 +41,26 @@ const Register = () => {
   } = useInput((value) => emailRegEx.test(value));
 
   const {
-    value: passwordInputValue,
+    value: enteredPassword,
     reset: resetPasswordInput,
+
+    hasError: passwordInputHasError,
+    isValid: enteredPasswordIsValid,
     valueChangeHandler: passwordChangedHandler,
     inputBlurHandler: passwordBlurHandler,
-  } = useInput(() => true);
+  } = useInput((value) => +value.length > 5);
 
+  const onSubmit = async () => {
+    if (enteredPassword === "") {
+      // setIsError(true);
+      return;
+    }
+    if (enteredPassword !== "") {
+      dispatch(
+        registerUser.registerUser(enteredName, enteredEmail, enteredPassword)
+      );
+    }
+  };
   return (
     <Container
       maxWidth="sm"
@@ -50,6 +68,7 @@ const Register = () => {
       component="form"
       onSubmit={(e) => {
         e.preventDefault();
+        onSubmit();
         resetNameInput();
         resetEmailInput();
         resetPasswordInput();
@@ -93,11 +112,12 @@ const Register = () => {
 
         <Grid item style={{ width: "100%" }}>
           <TextField
+            error={passwordInputHasError ? true : false}
             label="Password"
             type="password"
             variant="outlined"
             fullWidth="true"
-            value={passwordInputValue}
+            value={enteredPassword}
             onInput={passwordChangedHandler}
             onBlur={passwordBlurHandler}
           />
@@ -110,9 +130,21 @@ const Register = () => {
             variant="outlined"
             fullWidth="true"
             accept="image/*"
+            onInput={(e) => {}}
           />
         </Grid>
-
+        <div>
+          {registerError && (
+            <div
+              style={{
+                color: "red",
+                marginTop: "10px",
+              }}
+            >
+              That E-mail is alredy in use
+            </div>
+          )}
+        </div>
         <Grid
           container
           spacing={3}
@@ -136,7 +168,11 @@ const Register = () => {
               variant="outlined"
               type="submit"
               disabled={
-                enteredEmailIsValid && enteredNameIsValid ? false : true
+                enteredEmailIsValid &&
+                enteredNameIsValid &&
+                enteredPasswordIsValid
+                  ? false
+                  : true
               }
             >
               Register

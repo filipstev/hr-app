@@ -18,7 +18,7 @@ function App() {
     }
     return true;
   };
-
+  
   useEffect(() => {
     console.log(localStorage.getItem('user'));
     let decoded;
