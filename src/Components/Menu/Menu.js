@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from "react";
 import {
   AppBar,
   Box,
@@ -9,13 +9,13 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-} from '@mui/material';
-import PropTypes from 'prop-types';
+} from "@mui/material";
+import PropTypes from "prop-types";
 
-import MenuIcon from '@mui/icons-material/Menu';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import MenuIcon from "@mui/icons-material/Menu";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 const drawerWidth = 240;
 
@@ -30,24 +30,24 @@ function MainMenu(props) {
 
   const drawerList = [
     {
-      text: 'Pending for approval',
-      navigateTo: 'pending-requests',
+      text: "Pending for approval",
+      navigateTo: "pending-requests",
     },
     {
-      text: 'Team',
-      navigateTo: 'team',
+      text: "Team",
+      navigateTo: "team",
     },
     {
-      text: 'Questions',
-      navigateTo: 'questions',
+      text: "Questions",
+      navigateTo: "questions",
     },
     {
-      text: 'Company Info',
-      navigateTo: 'company-info',
+      text: "Company Info",
+      navigateTo: "company-info",
     },
     {
-      text: 'My Profile',
-      navigateTo: 'my-profile',
+      text: "My Profile",
+      navigateTo: "my-profile",
     },
   ];
 
@@ -77,7 +77,7 @@ function MainMenu(props) {
     window !== undefined ? () => window().document.body : undefined;
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: "flex" }}>
       <CssBaseline />
       <AppBar
         position="fixed"
@@ -91,9 +91,9 @@ function MainMenu(props) {
           aria-label="open drawer"
           edge="start"
           onClick={handleDrawerToggle}
-          sx={{ mr: 2, display: { sm: 'none' } }}
+          sx={{ mr: 2, display: { sm: "none" } }}
         >
-          <p style={{ fontSize: '1rem' }}>Menu</p>
+          <p style={{ fontSize: "1rem" }}>Menu</p>
         </IconButton>
       </AppBar>
       <Box
@@ -110,10 +110,10 @@ function MainMenu(props) {
             keepMounted: true,
           }}
           sx={{
-            display: { xs: 'block', sm: 'none' },
+            display: { xs: "block", sm: "none" },
 
-            '& .MuiDrawer-paper': {
-              boxSizing: 'border-box',
+            "& .MuiDrawer-paper": {
+              boxSizing: "border-box",
               width: drawerWidth,
             },
           }}
@@ -123,10 +123,11 @@ function MainMenu(props) {
         <Drawer
           variant="permanent"
           sx={{
-            display: { xs: 'none', sm: 'block' },
-            '& .MuiDrawer-paper': {
-              boxSizing: 'border-box',
+            display: { xs: "none", sm: "block" },
+            "& .MuiDrawer-paper": {
+              boxSizing: "border-box",
               width: drawerWidth,
+              marginTop: "64px",
             },
           }}
           open
