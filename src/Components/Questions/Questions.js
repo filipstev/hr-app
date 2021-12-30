@@ -12,12 +12,24 @@ const Questions = () => {
   const [questions, setQuestions] = useState([]);
   const [meta, setMeta] = useState({});
 
+  function compare(a, b) {
+    if (a.attributes.order < b.attributes.order) {
+      return -1;
+    }
+    if (a.attributes.order > b.attributes.order) {
+      return 1;
+    }
+    return 0;
+  }
+
   useEffect(() => {
     axiosInstance
       .get('/questions')
       .then((data) => {
-        console.log(data.data.data);
-        setQuestions(data.data.data);
+        const qs = data.data.data;
+        qs.sort(compare);
+        console.log(qs);
+        setQuestions(qs);
         setMeta(meta);
       })
       .catch((err) => {
@@ -26,7 +38,7 @@ const Questions = () => {
   }, [user]);
 
   useEffect(() => {
-    console.log(questions);
+    // console.log(questions);
     // questions.map((question) => {
     //   console.log(question.attributes.order);
     // });
