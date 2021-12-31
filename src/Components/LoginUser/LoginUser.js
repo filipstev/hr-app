@@ -5,17 +5,17 @@ import {
   TextField,
   Typography,
   Button,
-} from '@material-ui/core';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import * as userActions from '../../store/actions/user';
-import { useDispatch, useSelector } from 'react-redux';
+} from "@material-ui/core";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import * as userActions from "../../store/actions/user";
+import { useDispatch, useSelector } from "react-redux";
 
 const Login = () => {
   const dispatch = useDispatch();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const [isError, setIsError] = useState(false);
 
@@ -30,11 +30,11 @@ const Login = () => {
   };
 
   const onSubmit = async () => {
-    if (password === '' || !validateEmail(email) || password.length < 6) {
+    if (password === "" || !validateEmail(email) || password.length < 6) {
       setIsError(true);
       return;
     }
-    if (password !== '' && validateEmail(email)) {
+    if (password !== "" && validateEmail(email)) {
       // const login = await dispatch(userActions.login(email, password));
       dispatch(userActions.signIn(email, password));
     }
@@ -42,7 +42,7 @@ const Login = () => {
 
   return (
     <>
-      <Container maxWidth="sm" style={{ marginTop: '82px' }}>
+      <Container maxWidth="sm" style={{ marginTop: "82px" }}>
         <Grid
           container
           spacing={2}
@@ -52,11 +52,11 @@ const Login = () => {
           textAlign="left"
           fullWidth="true"
         >
-          <Grid item style={{ width: '100%' }}>
+          <Grid item style={{ width: "100%" }}>
             <Typography align="left">uTeam - Login</Typography>
           </Grid>
 
-          <Grid item style={{ width: '100%' }}>
+          <Grid item style={{ width: "100%" }}>
             <TextField
               label="Email"
               variant="outlined"
@@ -66,7 +66,7 @@ const Login = () => {
               error={isError && !validateEmail(email) ? true : false}
             />
           </Grid>
-          <Grid item style={{ width: '100%' }}>
+          <Grid item style={{ width: "100%" }}>
             <TextField
               label="Password"
               type="password"
@@ -75,7 +75,7 @@ const Login = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               error={
-                isError && (password === '' || password.length < 6)
+                isError && (password === "" || password.length < 6)
                   ? true
                   : false
               }
@@ -84,8 +84,8 @@ const Login = () => {
           {loginError ? (
             <div
               style={{
-                color: 'red',
-                marginTop: '10px',
+                color: "red",
+                marginTop: "10px",
               }}
             >
               Couldn't find your account
@@ -96,14 +96,14 @@ const Login = () => {
             spacing={3}
             justifyContent="space-between"
             alignItems="center"
-            style={{ width: '100%' }}
+            style={{ width: "100%" }}
           >
             <Grid item>
               <Link
                 variant="link"
                 underline="hover"
                 color="black"
-                onClick={() => navigate('/register')}
+                onClick={() => navigate("/register")}
               >
                 Already have an account?
               </Link>

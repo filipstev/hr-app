@@ -8,7 +8,7 @@ import AddQuestion from "../Components/Questions/AddQuestion/AddQuestion";
 import Questions from "../Components/Questions/Questions";
 import Header from "../Components/Header/Header";
 import Team from "../Components/Team/Team";
-// Fix Header and MainMenu
+
 const JoinRoutes = () => {
   return (
     <>

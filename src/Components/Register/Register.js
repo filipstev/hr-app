@@ -1,4 +1,8 @@
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+
+import useInput from "../../hooks/use-input";
+import * as registerUser from "../../store/actions/register";
 
 import {
   Container,
@@ -9,15 +13,12 @@ import {
   Button,
 } from "@material-ui/core";
 
-import useInput from "../../hooks/use-input";
-import * as registerUser from "../../store/actions/register";
-import { useDispatch, useSelector } from "react-redux";
-
 const Register = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const registerError = useSelector((state) => state.register.isError);
-  console.log(registerError);
+
   const nameRegEx = /^[a-zA-Z]+(?:[\s.]+[a-zA-Z]+)*$/g;
   const emailRegEx =
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
