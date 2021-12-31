@@ -28,7 +28,6 @@ const Questions = () => {
       .then((data) => {
         const qs = data.data.data;
         qs.sort(compare);
-        console.log(qs);
         setQuestions(qs);
         setMeta(meta);
       })
@@ -37,12 +36,99 @@ const Questions = () => {
       });
   }, [user]);
 
-  useEffect(() => {
-    // console.log(questions);
-    // questions.map((question) => {
-    //   console.log(question.attributes.order);
-    // });
-  }, [questions]);
+  const moveQuestion = async (direction, id) => {
+    if (direction === 'up') {
+      let element;
+      let prev = -1;
+      const newOrder = [...questions];
+
+      questions.map((question, index, elements) => {
+        if (question.id === id) {
+          element = index;
+          prev = index - 1;
+        }
+      });
+
+      if (element >= 0 && prev >= 0) {
+        newOrder[element].attributes.order =
+          newOrder[element].attributes.order - 1;
+        newOrder[prev].attributes.order = newOrder[prev].attributes.order + 1;
+        console.log(
+          newOrder[element].attributes.order,
+          ' ',
+          newOrder[prev].attributes.order
+        );
+        setQuestions(newOrder.sort(compare));
+        await axiosInstance.put('/questions/' + newOrder[prev].id, {
+          data: { order: -1 },
+        });
+        await axiosInstance.put('/questions/' + newOrder[element].id, {
+          data: { order: newOrder[element].attributes.order },
+        });
+        await axiosInstance.put('/questions/' + newOrder[prev].id, {
+          data: { order: newOrder[prev].attributes.order },
+        });
+      }
+    }
+
+    if (direction === 'down') {
+      let element;
+      let next;
+      const newOrder = [...questions];
+      newOrder.map((question, index, elements) => {
+        if (question.id === id && elements[index + 1]) {
+          element = index;
+          next = index + 1;
+        }
+      });
+
+      if (element >= 0 && next) {
+        newOrder[element].attributes.order =
+          newOrder[element].attributes.order + 1;
+        newOrder[next].attributes.order = newOrder[next].attributes.order - 1;
+        setQuestions(newOrder.sort(compare));
+        await axiosInstance.put('/questions/' + newOrder[next].id, {
+          data: { order: -1 },
+        });
+        await axiosInstance.put('/questions/' + newOrder[element].id, {
+          data: { order: newOrder[element].attributes.order },
+        });
+        await axiosInstance.put('/questions/' + newOrder[next].id, {
+          data: { order: newOrder[next].attributes.order },
+        });
+      }
+
+      // console.log(next);
+      // console.log(element);
+
+      // console.log(newOrder[next]);
+    }
+  };
+
+  const deleteQuestion = async (id) => {
+    await axiosInstance
+      .delete('/questions/' + id)
+      .then((data) => {
+        console.log('success');
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    const index = questions.findIndex((q) => q.id === id);
+    if (questions[index + 1]) {
+      questions[index + 1].attributes.order =
+        questions[index + 1].attributes.order - 1;
+      axiosInstance.put('/questions/' + questions[index + 1].id, {
+        data: { order: questions[index + 1].attributes.order },
+      });
+    }
+    const newQuestions = [...questions];
+    newQuestions.splice(
+      questions.findIndex((q) => q.id === id),
+      1
+    );
+    setQuestions(newQuestions);
+  };
 
   return (
     <>
@@ -90,6 +176,8 @@ const Questions = () => {
                   id={question.id}
                   key={question.id}
                   totalLength={questions.length}
+                  moveQuestion={moveQuestion}
+                  deleteQuestion={deleteQuestion}
                 />
               );
             })
