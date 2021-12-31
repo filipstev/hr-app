@@ -12,7 +12,6 @@ import {
 } from "@mui/material";
 import PropTypes from "prop-types";
 
-import MenuIcon from "@mui/icons-material/Menu";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
 import { useNavigate } from "react-router-dom";
@@ -43,7 +42,7 @@ function MainMenu(props) {
     },
     {
       text: "Company Info",
-      navigateTo: "company-info",
+      navigateTo: "",
     },
     {
       text: "My Profile",
