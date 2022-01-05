@@ -115,13 +115,23 @@ const Questions = () => {
                 console.log(err);
             });
         const index = questions.findIndex((q) => q.id === id);
-        if (questions[index + 1]) {
-            questions[index + 1].attributes.order =
-                questions[index + 1].attributes.order - 1;
-            axiosInstance.put('/questions/' + questions[index + 1].id, {
-                data: { order: questions[index + 1].attributes.order },
-            });
+
+        for (let i = index; i < questions.length; i++) {
+            if (questions[i + 1]) {
+                questions[i + 1].attributes.order =
+                    questions[i + 1].attributes.order - 1;
+                await axiosInstance.put('/questions/' + questions[i + 1].id, {
+                    data: { order: questions[i + 1].attributes.order },
+                });
+            }
         }
+        // if (questions[index + 1]) {
+        //     questions[index + 1].attributes.order =
+        //         questions[index + 1].attributes.order - 1;
+        //     axiosInstance.put('/questions/' + questions[index + 1].id, {
+        //         data: { order: questions[index + 1].attributes.order },
+        //     });
+        // }
         const newQuestions = [...questions];
         newQuestions.splice(
             questions.findIndex((q) => q.id === id),

@@ -91,7 +91,7 @@ const AddQuestion = (props) => {
                         onChange={(e) => setType(e.target.value)}
                     >
                         <MenuItem value={'text'}>Text</MenuItem>
-                        <MenuItem value={'long'}>Long text</MenuItem>
+                        <MenuItem value={'long_text'}>Long text</MenuItem>
                         <MenuItem value={'image'}>Image</MenuItem>
                     </Select>
                 </FormControl>
