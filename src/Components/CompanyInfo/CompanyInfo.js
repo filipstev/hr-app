@@ -24,7 +24,6 @@ const CompanyInfo = () => {
             });
     };
 
-<<<<<<< HEAD
     return (
         <>
             <Container maxWidth="sm" style={{ marginTop: '82px' }}>
@@ -55,51 +54,8 @@ const CompanyInfo = () => {
                             fullWidth="true"
                         />
                     </Grid>
-                    <Button
-                        variant="outlined"
-                        color="black"
-                        style={{ margin: '0 8px' }}
-                        onClick={testFn}
-                    >
-                        SAVE
-                    </Button>
-                </Grid>
-            </Container>
-        </>
-    );
-=======
-  return (
-    <>
-      <Container maxWidth="sm" style={{ marginTop: '82px' }}>
-        <Grid
-          container
-          spacing={2}
-          direction="column"
-          justifyContent="center"
-          alignItems="flex-end"
-          textAlign="left"
-          fullWidth="true"
-        >
-          <Grid item style={{ width: '100%' }}>
-            <Typography align="left">Company Info</Typography>
-          </Grid>
-          <Grid item style={{ width: '100%' }}>
-            <TextField
-              label="Company Name"
-              variant="outlined"
-              fullWidth="true"
-            />
-          </Grid>
-          {/* TODO: DODATI UPLOAD INPUT UMESTO OVOG */}
-          <Grid item style={{ width: '100%' }}>
-            <TextField
-              label="Company Logo"
-              variant="outlined"
-              fullWidth="true"
-            />
-          </Grid>
-          {/* Ovo dugme je bilo problem :o */}
-          {/* <Button
+                    {/* Ovo dugme je bilo problem :o */}
+                    {/* <Button
             variant="outlined"
             color="black"
             style={{ margin: '0 8px' }}
@@ -107,11 +63,10 @@ const CompanyInfo = () => {
           >
             SAVE
           </Button> */}
-        </Grid>
-      </Container>
-    </>
-  );
->>>>>>> 92b918f9d8dc2b16bcf36ef6f69edfaec48c0e2a
+                </Grid>
+            </Container>
+        </>
+    );
 };
 
 export default CompanyInfo;

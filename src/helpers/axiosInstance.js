@@ -23,15 +23,6 @@ axiosInstance.interceptors.response.use(
             });
         }
 
-<<<<<<< HEAD
-    if (err.response.status === 401) {
-      localStorage.removeItem('user');
-      console.log(err.response.status);
-    } else {
-      return new Promise((resolve, reject) => {
-        reject(err);
-      });
-=======
         if (err.response.status === 403) {
             console.log(err.response.status);
         } else {
@@ -39,7 +30,6 @@ axiosInstance.interceptors.response.use(
                 reject(err);
             });
         }
->>>>>>> teams-page
     }
 );
 
@@ -52,17 +42,9 @@ axiosInstance.interceptors.request.use(
             config.headers.Authorization = `Bearer ${parsedUser.jwt}`;
         }
 
-<<<<<<< HEAD
-    console.log(config);
-
-    return config;
-  },
-  (error) => Promise.reject(error)
-=======
         return config;
     },
     (error) => Promise.reject(error)
->>>>>>> teams-page
 );
 
 export default axiosInstance;
