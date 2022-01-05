@@ -7,14 +7,14 @@ import rootSaga, { watcherSaga } from './sagas/rootSaga';
 const sagaMidleware = createSagaMiddleware();
 
 const rootReducer = combineReducers({
-  user: userReducer,
-  register: registerReducer,
+    user: userReducer,
+    register: registerReducer,
 });
 
 export const store = createStore(
-  rootReducer,
-  {},
-  applyMiddleware(sagaMidleware)
+    rootReducer,
+    {},
+    applyMiddleware(sagaMidleware)
 );
 
 sagaMidleware.run(watcherSaga);
