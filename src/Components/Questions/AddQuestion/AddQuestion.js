@@ -47,6 +47,7 @@ const AddQuestion = (props) => {
     }
   };
 
+<<<<<<< HEAD
   return (
     <>
       <div
@@ -102,6 +103,20 @@ const AddQuestion = (props) => {
       </div>
     </>
   );
+=======
+const AddQuestion = () => {
+    return (
+        <>
+            <Header />
+            <div>
+                <div>Add new Question</div>
+                <div></div>
+                <div></div>
+                <div>Save</div>
+            </div>
+        </>
+    );
+>>>>>>> teams-page
 };
 
 export default AddQuestion;
