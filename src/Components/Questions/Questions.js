@@ -142,7 +142,13 @@ const Questions = () => {
 
     return (
         <>
-            <div style={{ width: '70%', margin: '80px auto' }}>
+            <div
+                style={{
+                    width: '70%',
+                    margin: '80px auto',
+                    fontFamily: 'Comic Neue',
+                }}
+            >
                 <div
                     style={{
                         display: 'flex',
@@ -173,7 +179,9 @@ const Questions = () => {
                             ></i>
                         </div>
 
-                        <span>Add new question</span>
+                        <span style={{ fontWeight: '700' }}>
+                            Add new question
+                        </span>
                     </div>
                 </div>
                 {questions.length > 0

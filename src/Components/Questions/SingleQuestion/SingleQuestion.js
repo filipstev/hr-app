@@ -20,6 +20,7 @@ const SingleQuestion = (props) => {
                 alignItems: 'center',
                 marginBottom: '18px',
                 boxSizing: 'border-box',
+                fontFamily: 'Comic Neue',
             }}
         >
             <div className={classes.Left}>
@@ -58,6 +59,7 @@ const SingleQuestion = (props) => {
                             fontSize: '20px',
                             lineHeight: '23px',
                             marginTop: '4px',
+                            fontWeight: '500',
                         }}
                     >
                         {props.title}
