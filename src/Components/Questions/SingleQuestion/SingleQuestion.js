@@ -55,14 +55,9 @@ const SingleQuestion = (props) => {
                     </div>
                     <div
                         style={{
-                            width: '100%',
-                            border: '2px solid #797979',
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            padding: '20px',
-                            alignItems: 'center',
-                            marginBottom: '18px',
-                            boxSizing: 'border-box',
+                            fontSize: '20px',
+                            lineHeight: '23px',
+                            marginTop: '4px',
                         }}
                     >
                         {props.title}

@@ -9,6 +9,7 @@ import Questions from '../Components/Questions/Questions';
 import Header from '../Components/Header/Header';
 import Team from '../Components/Team/Team';
 import EditProfile from '../Components/Team/TeamEdit';
+import EditQuestion from '../Components/Questions/EditQuestion/EditQuestion';
 
 const JoinRoutes = () => {
     return (
@@ -21,6 +22,7 @@ const JoinRoutes = () => {
                     <Route path="/questions" element={<Questions />} />
                     <Route path="/company" element={<CompanyInfo />} />
                     <Route path="/new-question" element={<AddQuestion />} />
+                    <Route path="edit-question" element={<EditQuestion />} />
                     <Route path="/team" element={<Team />} />
                     <Route path="/team/:id/edit" element={<EditProfile />} />
                 </Routes>
