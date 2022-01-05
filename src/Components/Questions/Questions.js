@@ -11,6 +11,7 @@ const Questions = () => {
   const user = useSelector((state) => state.user.user);
   const [questions, setQuestions] = useState([]);
   const [meta, setMeta] = useState({});
+  const [blocked, setBlocked] = useState(false);
 
   function compare(a, b) {
     if (a.attributes.order < b.attributes.order) {
@@ -37,9 +38,10 @@ const Questions = () => {
   }, [user]);
 
   const moveQuestion = async (direction, id) => {
+    setBlocked(true);
     if (direction === 'up') {
       let element;
-      let prev = -1;
+      let prev;
       const newOrder = [...questions];
 
       questions.map((question, index, elements) => {
@@ -97,12 +99,8 @@ const Questions = () => {
           data: { order: newOrder[next].attributes.order },
         });
       }
-
-      // console.log(next);
-      // console.log(element);
-
-      // console.log(newOrder[next]);
     }
+    setBlocked(false);
   };
 
   const deleteQuestion = async (id) => {
@@ -178,6 +176,7 @@ const Questions = () => {
                   totalLength={questions.length}
                   moveQuestion={moveQuestion}
                   deleteQuestion={deleteQuestion}
+                  blocked={blocked}
                 />
               );
             })

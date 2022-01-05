@@ -27,11 +27,19 @@ const SingleQuestion = (props) => {
           {/* TODO:CUSTOM ICONS */}
           <i
             className="fas fa-angle-up"
-            onClick={() => props.moveQuestion('up', props.id)}
+            onClick={() => {
+              if (!props.blocked) {
+                props.moveQuestion('up', props.id);
+              }
+            }}
           ></i>
           <i
             className="fas fa-angle-down"
-            onClick={() => props.moveQuestion('down', props.id)}
+            onClick={() => {
+              if (!props.blocked) {
+                props.moveQuestion('down', props.id);
+              }
+            }}
           ></i>
         </div>
         <div className={classes.Text}>
