@@ -54,14 +54,15 @@ const CompanyInfo = () => {
               fullWidth="true"
             />
           </Grid>
-          <Button
+          {/* Ovo dugme je bilo problem :o */}
+          {/* <Button
             variant="outlined"
             color="black"
             style={{ margin: '0 8px' }}
             onClick={testFn}
           >
             SAVE
-          </Button>
+          </Button> */}
         </Grid>
       </Container>
     </>
