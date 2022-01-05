@@ -10,11 +10,13 @@ import {
   FormHelperText,
 } from '@mui/material';
 import axiosInstance from '../../../helpers/axiosInstance';
+import { useNavigate } from 'react-router-dom';
 
 const AddQuestion = (props) => {
   const [text, setText] = useState('');
   const [type, setType] = useState('text');
   const [questionsLength, setQuestionsLength] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     axiosInstance
@@ -27,9 +29,9 @@ const AddQuestion = (props) => {
       });
   }, []);
 
-  const submitQuestion = () => {
+  const submitQuestion = async () => {
     if (text !== '' && type && questionsLength >= 0) {
-      axiosInstance
+      await axiosInstance
         .post('/questions', {
           data: {
             text: text,
@@ -44,6 +46,8 @@ const AddQuestion = (props) => {
         .catch((err) => {
           console.log(err);
         });
+
+      navigate('/questions');
     }
   };
 

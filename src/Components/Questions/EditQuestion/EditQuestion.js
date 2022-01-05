@@ -10,9 +10,10 @@ import {
   FormHelperText,
 } from '@mui/material';
 import axiosInstance from '../../../helpers/axiosInstance';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const AddQuestion = (props) => {
+  const navigate = useNavigate();
   const location = useLocation();
   const [text, setText] = useState('');
   const [type, setType] = useState('text');
@@ -32,9 +33,9 @@ const AddQuestion = (props) => {
       });
   }, [location.state]);
 
-  const submitQuestion = () => {
+  const submitQuestion = async () => {
     if (text !== '' && type && id) {
-      axiosInstance
+      await axiosInstance
         .put('/questions/' + location.state.id, {
           data: {
             text: text,
@@ -48,6 +49,7 @@ const AddQuestion = (props) => {
         .catch((err) => {
           console.log(err);
         });
+      navigate('/questions');
     }
   };
 
