@@ -10,6 +10,7 @@ import Header from '../Components/Header/Header';
 import Team from '../Components/Team/Team';
 import EditProfile from '../Components/Team/TeamEdit';
 import EditQuestion from '../Components/Questions/EditQuestion/EditQuestion';
+import MyProfile from '../Components/MyProfile/MyProfile';
 
 const JoinRoutes = () => {
     return (
@@ -25,6 +26,7 @@ const JoinRoutes = () => {
                     <Route path="edit-question" element={<EditQuestion />} />
                     <Route path="/team" element={<Team />} />
                     <Route path="/team/:id/edit" element={<EditProfile />} />
+                    <Route path="/my-profile" element={<MyProfile />} />
                 </Routes>
             </BrowserRouter>
         </>

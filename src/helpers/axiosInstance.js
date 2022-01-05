@@ -23,7 +23,8 @@ axiosInstance.interceptors.response.use(
             });
         }
 
-        if (err.response.status === 403) {
+        if (err.response.status === 401) {
+            localStorage.removeItem('user');
             console.log(err.response.status);
         } else {
             return new Promise((resolve, reject) => {
@@ -41,6 +42,8 @@ axiosInstance.interceptors.request.use(
             console.log(parsedUser.jwt);
             config.headers.Authorization = `Bearer ${parsedUser.jwt}`;
         }
+
+        console.log(config);
 
         return config;
     },
