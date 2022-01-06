@@ -12,6 +12,7 @@ import {
     Typography,
     Button,
 } from '@material-ui/core';
+
 import axiosInstance from '../../helpers/axiosInstance';
 
 const Register = () => {

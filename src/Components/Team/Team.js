@@ -9,6 +9,7 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import { useNavigate } from 'react-router-dom';
 import { Container } from '@mui/material';
+
 const Team = () => {
     const [profiles, setProfiles] = useState([]);
     const [firstTime, setFirstTime] = useState(true);
@@ -22,12 +23,11 @@ const Team = () => {
             axiosInstance
                 .get('/profiles?sort=id')
                 .then(({ data }) => {
-                    console.log(data);
                     setFirstTime(false);
                     data.data.forEach((item) => {
                         help.push(item);
-                        setProfiles([...help]);
                     });
+                    setProfiles([...help]);
                 })
                 .catch((err) => {
                     console.log(new Error(err));
