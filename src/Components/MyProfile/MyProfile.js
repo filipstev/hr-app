@@ -1,7 +1,22 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import SingleContainer from './SingleContainer';
 
+import axiosInstance from '../../helpers/axiosInstance';
+
 const MyProfile = () => {
+    const [user, setUser] = useState({});
+    const userStorage = JSON.parse(localStorage.getItem('user'));
+    useEffect(() => {
+        axiosInstance
+            .get('/profiles?filters[user][id][$eq]=' + userStorage.user.id)
+            .then((data) => {
+                setUser(data.data.data[0]);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }, []);
+
     return (
         <div
             style={{
@@ -22,8 +37,12 @@ const MyProfile = () => {
             </h1>
 
             <div style={{ display: 'flex' }}>
-                <SingleContainer />
-                <SingleContainer />
+                <SingleContainer info user={user} />
+                <SingleContainer
+                    security
+                    user={user}
+                    email={userStorage.user.email}
+                />
             </div>
         </div>
     );

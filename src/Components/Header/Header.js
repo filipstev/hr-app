@@ -12,12 +12,14 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import { Link } from 'react-router-dom';
+import axiosInstance from '../../helpers/axiosInstance';
 
 const pages = ['Page One', 'Page Two', 'Page Three'];
 
 const ResponsiveAppBar = (props) => {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
+    const [logo, setLogo] = React.useState(null);
 
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
@@ -38,6 +40,24 @@ const ResponsiveAppBar = (props) => {
         handleCloseNavMenu();
     };
 
+    useEffect(() => {
+        axiosInstance
+            .get('/companies/2?populate=*')
+            .then((data) => {
+                console.log(
+                    'https://internship-hr-app.herokuapp.com' +
+                        data.data.data.attributes.logo.data.attributes.url
+                );
+                setLogo(
+                    'https://internship-hr-app.herokuapp.com' +
+                        data.data.data.attributes.logo.data.attributes.url
+                );
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }, []);
+
     return (
         <AppBar
             sx={{ bgcolor: '#E5E5E5', position: 'absolute', top: 0, left: 0 }}
@@ -50,7 +70,14 @@ const ResponsiveAppBar = (props) => {
                         component="div"
                         sx={{ mr: 2, flexGrow: 1, color: 'black' }}
                     >
-                        Logo
+                        <img
+                            style={{
+                                height: '45px',
+                                width: '45px',
+                            }}
+                            src={logo}
+                            alt="Logo"
+                        />
                     </Typography>
 
                     <Box
