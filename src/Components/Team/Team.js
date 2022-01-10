@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../helpers/axiosInstance';
 
 import Card from '@mui/material/Card';
@@ -7,7 +8,6 @@ import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
-import { useNavigate } from 'react-router-dom';
 import { Container } from '@mui/material';
 
 const Team = () => {
@@ -41,7 +41,7 @@ const Team = () => {
     const showProfiles = () => {
         return profiles.map(({ id, attributes }) => {
             return (
-                <Grid item>
+                <Grid item key={id}>
                     <Card sx={{ minWidth: 275 }}>
                         <CardContent>
                             <Typography
@@ -63,7 +63,11 @@ const Team = () => {
                             >
                                 Image Goes Here
                             </Typography>
-                            <Typography variant="h5" component="div">
+                            <Typography
+                                variant="h5"
+                                component="div"
+                                sx={{ textTransform: 'capitalize' }}
+                            >
                                 Status: {attributes.status}
                             </Typography>
                             <Typography sx={{ mb: 1.5 }} color="text.secondary">
@@ -113,7 +117,7 @@ const Team = () => {
                 <Button>+ Add New Team Member</Button>
             </Grid>
             <Grid container spacing={2} sx={{ marginLeft: 0 }}>
-                {profiles.length !== 0 ? showProfiles() : <p>Loading</p>}
+                {profiles.length !== 0 ? showProfiles() : <p>Loading...</p>}
             </Grid>
         </Container>
     );
