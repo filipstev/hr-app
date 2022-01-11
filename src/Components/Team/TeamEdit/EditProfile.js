@@ -53,10 +53,10 @@ const EditProfile = () => {
     }, []);
 
     const showEdit = () => {
-        console.log('Username: ', userName);
-        console.log('Status: ', userStatus);
-        console.log('Answers : ', answers);
-        console.log('Questions : ', questions);
+        // console.log('Username: ', userName);
+        // console.log('Status: ', userStatus);
+        // console.log('Answers : ', answers);
+        // console.log('Questions : ', questions);
         // Answers EndPoint
         // console.log('Looking for answers: ', profile.answers.data);
 
