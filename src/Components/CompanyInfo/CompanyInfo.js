@@ -13,14 +13,54 @@ import { useSelector } from 'react-redux';
 import axiosInstance from '../../helpers/axiosInstance';
 
 const CompanyInfo = () => {
-    const testFn = () => {
+    const [companyName, setCompanyName] = useState('');
+    const [files, setFiles] = useState([]);
+
+    useEffect(() => {
         axiosInstance
-            .get('/profiles')
+            .get('/companies/2')
+            .then((data) => {
+                setCompanyName(data.data.data.attributes.name);
+                console.log(data.data);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }, []);
+
+    const updateInfo = () => {
+        axiosInstance
+            .put('/companies/2', {
+                data: { name: companyName },
+            })
             .then((data) => {
                 console.log(data);
             })
             .catch((err) => {
                 console.log(err);
+            });
+
+        if (files.length > 0) {
+            uploadImage();
+        }
+    };
+
+    const uploadImage = async () => {
+        const formData = new FormData();
+
+        formData.append('files', files[0]);
+
+        axiosInstance
+            .post('/upload', formData)
+            .then((response) => {
+                axiosInstance.put('/companies/2', {
+                    data: {
+                        logo: response.data,
+                    },
+                });
+            })
+            .catch((error) => {
+                console.log(error);
             });
     };
 
@@ -39,30 +79,53 @@ const CompanyInfo = () => {
                     <Grid item style={{ width: '100%' }}>
                         <Typography align="left">Company Info</Typography>
                     </Grid>
-                    <Grid item style={{ width: '100%' }}>
+                    <Grid
+                        item
+                        style={{
+                            width: '100%',
+                            padding: 0,
+                            marginBottom: '12px',
+                        }}
+                    >
                         <TextField
                             label="Company Name"
                             variant="outlined"
                             fullWidth="true"
+                            value={companyName}
+                            onChange={(e) => setCompanyName(e.target.value)}
                         />
                     </Grid>
                     {/* TODO: DODATI UPLOAD INPUT UMESTO OVOG */}
-                    <Grid item style={{ width: '100%' }}>
-                        <TextField
-                            label="Company Logo"
-                            variant="outlined"
-                            fullWidth="true"
+                    <Grid item style={{ width: '100%', padding: 0 }}>
+                        <input
+                            type="file"
+                            onChange={(e) => setFiles(e.target.files)}
                         />
                     </Grid>
+
                     {/* Ovo dugme je bilo problem :o */}
                     {/* <Button
-            variant="outlined"
-            color="black"
-            style={{ margin: '0 8px' }}
-            onClick={testFn}
-          >
-            SAVE
-          </Button> */}
+                        variant="outlined"
+                        color="black"
+                        style={{ margin: '0 8px' }}
+                        onClick={testFn}
+                    >
+                        SAVE
+                    </Button> */}
+                    <div
+                        style={{
+                            border: '1px solid black',
+                            borderRadius: '4px',
+                            width: 'fit-content',
+                            padding: '3px 20px',
+                            marginTop: '30px',
+                            alignSelf: 'flex-end',
+                            cursor: 'pointer',
+                        }}
+                        onClick={updateInfo}
+                    >
+                        Save
+                    </div>
                 </Grid>
             </Container>
         </>

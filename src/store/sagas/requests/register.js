@@ -7,3 +7,14 @@ export function requestRegisterUser(name, email, password) {
         password,
     });
 }
+
+export function createNewProfile(name, id) {
+    return axiosInstance.post('/profiles', {
+        data: {
+            name: name,
+            company: 2,
+            user: id,
+            userRole: 'company_user',
+        },
+    });
+}
