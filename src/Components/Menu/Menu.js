@@ -30,7 +30,7 @@ function MainMenu(props) {
     const drawerList = [
         {
             text: 'Pending for approval',
-            navigateTo: 'pending-requests',
+            navigateTo: 'team/pending',
         },
         {
             text: 'Team',

@@ -8,7 +8,7 @@ import AddQuestion from '../Components/Questions/AddQuestion/AddQuestion';
 import Questions from '../Components/Questions/Questions';
 import Header from '../Components/Header/Header';
 import Team from '../Components/Team/Team';
-import EditProfile from '../Components/Team/TeamEdit';
+import EditProfile from '../Components/Team/TeamEdit/EditProfile';
 import EditQuestion from '../Components/Questions/EditQuestion/EditQuestion';
 import MyProfile from '../Components/MyProfile/MyProfile';
 
@@ -24,7 +24,10 @@ const JoinRoutes = () => {
                     <Route path="/company" element={<CompanyInfo />} />
                     <Route path="/new-question" element={<AddQuestion />} />
                     <Route path="edit-question" element={<EditQuestion />} />
-                    <Route path="/team" element={<Team />} />
+                    {/* Team Page Published */}
+                    <Route path="/:status/" element={<Team />} />
+                    {/* Team Page Pending */}
+                    <Route path="/team/:status" element={<Team />} />
                     <Route path="/team/:id/edit" element={<EditProfile />} />
                     <Route path="/my-profile" element={<MyProfile />} />
                 </Routes>

@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axiosInstance from '../../helpers/axiosInstance';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
@@ -9,34 +8,39 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import { Container } from '@mui/material';
+import axiosInstance from '../../helpers/axiosInstance';
 
 const Team = () => {
     const [profiles, setProfiles] = useState([]);
     const [firstTime, setFirstTime] = useState(true);
-
     const navigate = useNavigate();
-
+    const params = useParams();
     let help = [];
+    let status = '';
+    console.log(params);
+    if (params.status !== 'team') {
+        status = 'pending';
+    } else {
+        status = 'published';
+    }
 
     useEffect(() => {
-        if (firstTime) {
-            axiosInstance
-                .get('/profiles?sort=id')
-                .then(({ data }) => {
-                    setFirstTime(false);
-                    data.data.forEach((item) => {
-                        help.push(item);
-                    });
-                    setProfiles([...help]);
-                })
-                .catch((err) => {
-                    console.log(new Error(err));
+        axiosInstance
+            .get(`/profiles?filters[status][$eq]=${status}&sort=id&populate=*`)
+            .then(({ data }) => {
+                setFirstTime(false);
+                data.data.forEach((item) => {
+                    help.push(item);
                 });
-            return () => {
-                console.log('cleanup');
-            };
-        }
-    }, [firstTime]);
+                setProfiles([...help]);
+            })
+            .catch((err) => {
+                console.log(new Error(err));
+            });
+        return () => {
+            console.log('cleanup');
+        };
+    }, [status]);
 
     const showProfiles = () => {
         return profiles.map(({ id, attributes }) => {
@@ -95,7 +99,7 @@ const Team = () => {
                                     axiosInstance
                                         .delete(`/profiles/${id}`)
                                         .then(() => {
-                                            setFirstTime(true);
+                                            // setFirstTime(true);
                                         });
                                 }}
                             >
@@ -107,6 +111,7 @@ const Team = () => {
             );
         });
     };
+
     return (
         <Container maxWidth="false">
             <Grid
