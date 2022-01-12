@@ -12,12 +12,11 @@ import axiosInstance from '../../helpers/axiosInstance';
 
 const Team = () => {
     const [profiles, setProfiles] = useState([]);
-    const [firstTime, setFirstTime] = useState(true);
     const navigate = useNavigate();
     const params = useParams();
     let help = [];
     let status = '';
-    console.log(params);
+
     if (params.status !== 'team') {
         status = 'pending';
     } else {
@@ -28,7 +27,6 @@ const Team = () => {
         axiosInstance
             .get(`/profiles?filters[status][$eq]=${status}&sort=id&populate=*`)
             .then(({ data }) => {
-                setFirstTime(false);
                 data.data.forEach((item) => {
                     help.push(item);
                 });
@@ -99,7 +97,11 @@ const Team = () => {
                                     axiosInstance
                                         .delete(`/profiles/${id}`)
                                         .then(() => {
-                                            // setFirstTime(true);
+                                            setProfiles(
+                                                profiles.filter(
+                                                    (item) => item.id !== id
+                                                )
+                                            );
                                         });
                                 }}
                             >
@@ -118,7 +120,9 @@ const Team = () => {
                 container
                 sx={{ marginTop: '100px', justifyContent: 'space-between' }}
             >
-                <Typography>Team</Typography>
+                <Typography>
+                    {params.status === 'team' ? 'Team' : 'Pending for approval'}
+                </Typography>
                 <Button>+ Add New Team Member</Button>
             </Grid>
             <Grid container spacing={2} sx={{ marginLeft: 0 }}>

@@ -1,3 +1,7 @@
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import axiosInstance from '../../../helpers/axiosInstance';
+
 import {
     Button,
     Divider,
@@ -6,25 +10,29 @@ import {
     TextField,
     Typography,
 } from '@mui/material';
-import { useEffect, useState } from 'react';
-import axiosInstance from '../../../helpers/axiosInstance';
+//  Triple check everything!
+const ShowQuestions = () => {
+    const [questions, setQuestions] = useState([]);
+    // Popraviti answers state kada profil nema odgovora
+    const [answers, setAnswers] = useState([]);
+    const params = useParams();
 
-const ShowQuestions = ({ questions, answers }) => {
-    // console.log('Answers(ShowQuestion.js): ', answers[0].id);
-    const [putAnswers, setPutAnswers] = useState([]);
+    const getQ = () => {
+        return axiosInstance.get(`/questions`);
+    };
+
+    const getA = () => {
+        return axiosInstance.get(`/profiles/${params.id}?populate=*`);
+    };
+
+    const handleAnswerChange = (inputValue, i) => {
+        setAnswers([...answers], (answers[i].attributes.answer = inputValue));
+    };
 
     useEffect(() => {
-        answers.forEach((answer, i) => {
-            console.log('Answer: ', answer);
-            console.log('Iterator: ', i);
-            setPutAnswers(
-                [...putAnswers],
-                putAnswers.push({
-                    id: answer.id,
-                    answer: answer.attributes.answer,
-                })
-            );
-            console.log(putAnswers);
+        Promise.all([getQ(), getA()]).then((res) => {
+            setAnswers([...res[1].data.data.attributes.answers.data]);
+            setQuestions([...res[0].data.data]);
         });
         return () => {
             console.log('cleanup');
@@ -39,6 +47,25 @@ const ShowQuestions = ({ questions, answers }) => {
                     style={{ display: 'flex', flexDirection: 'column' }}
                     onSubmit={(e) => {
                         e.preventDefault();
+                        answers.forEach(({ id, attributes }, i) => {
+                            if (!id) {
+                                axiosInstance.post(`/answers`, {
+                                    data: {
+                                        answer: attributes.answer,
+                                        question: questions[i].id,
+                                        profile: `${params.id}`,
+                                    },
+                                });
+                            } else {
+                                axiosInstance.put(`/answers/${id}`, {
+                                    data: {
+                                        answer: attributes.answer,
+                                        question: questions[i].id,
+                                        profile: `${params.id}`,
+                                    },
+                                });
+                            }
+                        });
                     }}
                 >
                     <Typography
@@ -51,26 +78,33 @@ const ShowQuestions = ({ questions, answers }) => {
                         Answers
                     </Typography>
                     <br></br>
-                    {!questions ? (
+                    {!answers ? (
                         <p>Loading...</p>
                     ) : (
                         questions.map((question, i) => {
-                            // let answer = { ...answers[i] };
-                            // console.log(answer);
-                            // if (!answer) {
-                            //     answer = '';
-                            // }
-
+                            if (!answers[i]) {
+                                answers[i] = {
+                                    attributes: {
+                                        answer: '',
+                                    },
+                                };
+                            }
                             return (
                                 <>
-                                    <label>{question.attributes.text}</label>
+                                    <label>
+                                        {`Question ${i + 1}`} -{' '}
+                                        {question.attributes.text}
+                                    </label>
                                     <TextField
                                         type={question.attributes.type}
                                         sx={{ margin: '0 0 10px 0' }}
-                                        value={putAnswers[i].answer}
-                                        onChange={(e) => {
-                                            console.log(putAnswers[i]);
-                                        }}
+                                        value={answers[i].attributes.answer}
+                                        onInput={(e) =>
+                                            handleAnswerChange(
+                                                e.target.value,
+                                                i
+                                            )
+                                        }
                                     />
                                     <Divider />
                                 </>
@@ -88,7 +122,7 @@ const ShowQuestions = ({ questions, answers }) => {
             </Grid>
         );
     };
-    return <>{putAnswers ? page() : <p>Loading...</p>}</>;
+    return <>{page()}</>;
 };
 
 export default ShowQuestions;

@@ -1,3 +1,5 @@
+import { useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import {
     Button,
     FormControl,
@@ -5,9 +7,27 @@ import {
     TextField,
     Typography,
 } from '@mui/material';
+
 import axiosInstance from '../../../helpers/axiosInstance';
-const BasicInfo = ({ userName, setUserName, id }) => {
+
+const BasicInfo = () => {
+    const { id } = useParams();
+
+    const [username, setUsername] = useState('');
     /* Profile */
+    useEffect(() => {
+        axiosInstance
+            .get(`/profiles/${id}`)
+            .then(({ data }) => {
+                const name = data.data.attributes.name;
+                setUsername(name);
+            })
+            .catch((err) => console.error(new Error(err)));
+        return () => {
+            console.log('cleanup');
+        };
+    }, [id]);
+
     return (
         <Grid
             item
@@ -29,9 +49,9 @@ const BasicInfo = ({ userName, setUserName, id }) => {
                 <label>Name</label>
                 <TextField
                     type="text"
-                    value={userName}
+                    value={username}
                     onInput={(e) => {
-                        setUserName(e.target.value);
+                        setUsername(e.target.value);
                     }}
                 />
                 <label>Upload Img</label>
@@ -44,7 +64,7 @@ const BasicInfo = ({ userName, setUserName, id }) => {
                         axiosInstance
                             .put(`/profiles/${id}`, {
                                 data: {
-                                    name: userName,
+                                    name: username,
                                 },
                             })
                             .catch((err) => {

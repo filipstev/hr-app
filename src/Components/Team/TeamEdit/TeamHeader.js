@@ -8,11 +8,26 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import Typography from '@mui/material/Typography';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 
-const TeamHeader = ({ userStatus, id, setUserStatus, param }) => {
-    // console.log(params);
+const TeamHeader = () => {
+    const [userStatus, setUserStatus] = useState('');
+
+    const { id } = useParams();
+
     const navigate = useNavigate();
+
+    useEffect(() => {
+        axiosInstance.get(`/profiles/${id}`).then(({ data }) => {
+            const status = data.data.attributes.status;
+            setUserStatus(status);
+        });
+        return () => {
+            console.log('cleanup');
+        };
+    }, [id]);
+
     return (
         <Grid
             container
@@ -37,7 +52,6 @@ const TeamHeader = ({ userStatus, id, setUserStatus, param }) => {
                         label="Status"
                         value={userStatus}
                         onChange={(e) => {
-                            console.log(e.target.value);
                             axiosInstance
                                 .put(`/profiles/${id}`, {
                                     data: {
@@ -59,7 +73,7 @@ const TeamHeader = ({ userStatus, id, setUserStatus, param }) => {
                         variant="outlined"
                         onClick={(e) => {
                             axiosInstance.delete(`/profiles/${id}`);
-                            navigate('/profiles');
+                            navigate('/team');
                         }}
                     >
                         Delete
