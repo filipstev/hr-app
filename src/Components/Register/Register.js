@@ -12,8 +12,9 @@ import {
     Typography,
     Button,
 } from '@material-ui/core';
-import axiosInstance from '../../helpers/axiosInstance';
 
+import axiosInstance from '../../helpers/axiosInstance';
+// dodati user role, i kompaniju
 const Register = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();

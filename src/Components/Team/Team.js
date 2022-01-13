@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import axiosInstance from '../../helpers/axiosInstance';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
@@ -7,41 +7,43 @@ import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
-import { useNavigate } from 'react-router-dom';
 import { Container } from '@mui/material';
+import axiosInstance from '../../helpers/axiosInstance';
+
 const Team = () => {
     const [profiles, setProfiles] = useState([]);
-    const [firstTime, setFirstTime] = useState(true);
-
     const navigate = useNavigate();
-
+    const params = useParams();
     let help = [];
+    let status = '';
+    console.log(params);
+    if (params.status !== 'team') {
+        status = 'pending';
+    } else {
+        status = 'published';
+    }
 
     useEffect(() => {
-        if (firstTime) {
-            axiosInstance
-                .get('/profiles?sort=id')
-                .then(({ data }) => {
-                    console.log(data);
-                    setFirstTime(false);
-                    data.data.forEach((item) => {
-                        help.push(item);
-                        setProfiles([...help]);
-                    });
-                })
-                .catch((err) => {
-                    console.log(new Error(err));
+        axiosInstance
+            .get(`/profiles?filters[status][$eq]=${status}&sort=id&populate=*`)
+            .then(({ data }) => {
+                data.data.forEach((item) => {
+                    help.push(item);
                 });
-            return () => {
-                console.log('cleanup');
-            };
-        }
-    }, [firstTime]);
-
+                setProfiles([...help]);
+            })
+            .catch((err) => {
+                console.log(new Error(err));
+            });
+        return () => {
+            console.log('cleanup');
+        };
+    }, [status]);
+    console.log(profiles);
     const showProfiles = () => {
         return profiles.map(({ id, attributes }) => {
             return (
-                <Grid item>
+                <Grid item key={id}>
                     <Card sx={{ minWidth: 275 }}>
                         <CardContent>
                             <Typography
@@ -63,7 +65,11 @@ const Team = () => {
                             >
                                 Image Goes Here
                             </Typography>
-                            <Typography variant="h5" component="div">
+                            <Typography
+                                variant="h5"
+                                component="div"
+                                sx={{ textTransform: 'capitalize' }}
+                            >
                                 Status: {attributes.status}
                             </Typography>
                             <Typography sx={{ mb: 1.5 }} color="text.secondary">
@@ -81,7 +87,14 @@ const Team = () => {
                         >
                             <Button
                                 size="small"
-                                onClick={() => navigate(`/team/${id}/edit`)}
+                                onClick={() => {
+                                    if (status === 'pending') {
+                                        navigate(`/team/pending/${id}/edit`);
+                                    }
+                                    if (status === 'published') {
+                                        navigate(`/team/${id}/edit`);
+                                    }
+                                }}
                             >
                                 EDIT
                             </Button>
@@ -91,7 +104,11 @@ const Team = () => {
                                     axiosInstance
                                         .delete(`/profiles/${id}`)
                                         .then(() => {
-                                            setFirstTime(true);
+                                            setProfiles(
+                                                profiles.filter(
+                                                    (item) => item.id !== id
+                                                )
+                                            );
                                         });
                                 }}
                             >
@@ -103,17 +120,20 @@ const Team = () => {
             );
         });
     };
+
     return (
         <Container maxWidth="false">
             <Grid
                 container
                 sx={{ marginTop: '100px', justifyContent: 'space-between' }}
             >
-                <Typography>Team</Typography>
+                <Typography>
+                    {params.status === 'team' ? 'Team' : 'Pending for approval'}
+                </Typography>
                 <Button>+ Add New Team Member</Button>
             </Grid>
             <Grid container spacing={2} sx={{ marginLeft: 0 }}>
-                {profiles.length !== 0 ? showProfiles() : <p>Loading</p>}
+                {profiles.length !== 0 ? showProfiles() : <p>Loading...</p>}
             </Grid>
         </Container>
     );

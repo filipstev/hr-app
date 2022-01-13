@@ -2,7 +2,6 @@ import { call, put } from 'redux-saga/effects';
 import { registerError, registerUser } from '../../actions/register';
 import { createNewProfile, requestRegisterUser } from '../requests/register';
 import { requestGetUser } from '../requests/user';
-import { handleLoginUser } from './user';
 import { setUser } from '../../actions/user';
 
 export function* handleRegisterUser(action) {

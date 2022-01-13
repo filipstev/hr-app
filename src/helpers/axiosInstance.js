@@ -25,7 +25,7 @@ axiosInstance.interceptors.response.use(
 
         if (err.response.status === 401) {
             localStorage.removeItem('user');
-            console.log(err.response.status);
+            // console.log(err.response.status);
         } else {
             return new Promise((resolve, reject) => {
                 reject(err);
@@ -39,11 +39,11 @@ axiosInstance.interceptors.request.use(
         const user = localStorage.getItem('user');
         if (user) {
             const parsedUser = JSON.parse(localStorage.getItem('user'));
-            console.log(parsedUser.jwt);
+            // console.log(parsedUser.jwt);
             config.headers.Authorization = `Bearer ${parsedUser.jwt}`;
         }
 
-        console.log(config);
+        // console.log(config);
 
         return config;
     },
