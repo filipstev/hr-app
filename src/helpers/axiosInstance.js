@@ -25,6 +25,7 @@ axiosInstance.interceptors.response.use(
 
         if (err.response.status === 401) {
             localStorage.removeItem('user');
+            return (window.location.href = '/');
             // console.log(err.response.status);
         } else {
             return new Promise((resolve, reject) => {
