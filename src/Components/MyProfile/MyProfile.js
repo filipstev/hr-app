@@ -11,6 +11,7 @@ const MyProfile = () => {
             .get('/profiles?filters[user][id][$eq]=' + userStorage.user.id)
             .then((data) => {
                 console.log(userStorage.user.id, 'here');
+
                 setUser(data.data.data[0]);
             })
             .catch((err) => {
