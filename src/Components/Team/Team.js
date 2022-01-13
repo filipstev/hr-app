@@ -16,7 +16,7 @@ const Team = () => {
     const params = useParams();
     let help = [];
     let status = '';
-
+    console.log(params);
     if (params.status !== 'team') {
         status = 'pending';
     } else {
@@ -39,7 +39,7 @@ const Team = () => {
             console.log('cleanup');
         };
     }, [status]);
-
+    console.log(profiles);
     const showProfiles = () => {
         return profiles.map(({ id, attributes }) => {
             return (

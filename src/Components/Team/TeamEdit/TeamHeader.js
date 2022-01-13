@@ -14,8 +14,9 @@ import { useEffect, useState } from 'react';
 const TeamHeader = () => {
     const [userStatus, setUserStatus] = useState('');
 
-    const { id } = useParams();
-
+    const params = useParams();
+    const { id } = params;
+    console.log(params);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -27,7 +28,37 @@ const TeamHeader = () => {
             console.log('cleanup');
         };
     }, [id]);
-
+    const handleStatusChange = () => {
+        return (
+            <>
+                <InputLabel id="demo-simple-select-label">Status</InputLabel>
+                <Select
+                    style={{ paddingLeft: '16px' }}
+                    labelId="selectStatus"
+                    id="selectStatus"
+                    label="Status"
+                    value={userStatus}
+                    onChange={(e) => {
+                        axiosInstance
+                            .put(`/profiles/${id}`, {
+                                data: {
+                                    status: e.target.value,
+                                },
+                            })
+                            .then(() => {
+                                setUserStatus(e.target.value);
+                            })
+                            .catch((err) => {
+                                console.error(err);
+                            });
+                    }}
+                >
+                    <MenuItem value={'published'}>Published</MenuItem>
+                    <MenuItem value={'pending'}>Pending</MenuItem>
+                </Select>
+            </>
+        );
+    };
     return (
         <Grid
             container
@@ -37,38 +68,14 @@ const TeamHeader = () => {
         >
             <Grid item alignItems="center" display="flex">
                 <Typography sx={{ fontWeight: 'bold' }}>
-                    {/* {status === 'team' ? Edit Team Member : Moderate Team Member Entry} */}
+                    {status === 'team'
+                        ? 'Edit Team Member'
+                        : 'Moderate Team Member Entry'}
                 </Typography>
             </Grid>
             <Grid item display="flex" justifyContent="flex-end">
                 <FormControl style={{ display: 'flex', flexDirection: 'row' }}>
-                    <InputLabel id="demo-simple-select-label">
-                        Status
-                    </InputLabel>
-                    <Select
-                        style={{ paddingLeft: '16px' }}
-                        labelId="selectStatus"
-                        id="selectStatus"
-                        label="Status"
-                        value={userStatus}
-                        onChange={(e) => {
-                            axiosInstance
-                                .put(`/profiles/${id}`, {
-                                    data: {
-                                        status: e.target.value,
-                                    },
-                                })
-                                .then(() => {
-                                    setUserStatus(e.target.value);
-                                })
-                                .catch((err) => {
-                                    console.error(err);
-                                });
-                        }}
-                    >
-                        <MenuItem value={'published'}>Published</MenuItem>
-                        <MenuItem value={'pending'}>Pending</MenuItem>
-                    </Select>
+                    {handleStatusChange()}
                     <Button
                         variant="outlined"
                         onClick={(e) => {

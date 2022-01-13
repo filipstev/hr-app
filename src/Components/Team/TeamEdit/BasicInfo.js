@@ -35,7 +35,7 @@ const BasicInfo = () => {
             border="1px solid black"
             padding="10px"
         >
-            <FormControl style={{ display: 'flex', flexDirection: 'column' }}>
+            <FormControl sx={{ display: 'flex', flexDirection: 'column' }}>
                 <Typography
                     variant="body2"
                     sx={{
