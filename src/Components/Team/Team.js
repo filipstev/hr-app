@@ -10,18 +10,11 @@ import Grid from '@mui/material/Grid';
 import { Container } from '@mui/material';
 import axiosInstance from '../../helpers/axiosInstance';
 
-const Team = () => {
+const Team = ({ status }) => {
     const [profiles, setProfiles] = useState([]);
     const navigate = useNavigate();
     const params = useParams();
     let help = [];
-    let status = '';
-    console.log(params);
-    if (params.status !== 'team') {
-        status = 'pending';
-    } else {
-        status = 'published';
-    }
 
     useEffect(() => {
         axiosInstance
