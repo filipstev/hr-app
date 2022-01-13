@@ -25,12 +25,18 @@ const JoinRoutes = () => {
                     <Route path="/new-question" element={<AddQuestion />} />
                     <Route path="edit-question" element={<EditQuestion />} />
                     {/* Team Page Published */}
-                    <Route path="/:status/" element={<Team />} />
+                    <Route
+                        path="/team/"
+                        element={<Team status="published" />}
+                    />
                     {/* Team Page Pending */}
-                    <Route path="/team/:status" element={<Team />} />
+                    <Route
+                        path="/team/pending"
+                        element={<Team status="pending" />}
+                    />
                     <Route path="/team/:id/edit" element={<EditProfile />} />
                     <Route
-                        path="/team/:status/:id/edit"
+                        path="/team/pending/:id/edit"
                         element={<EditProfile />}
                     />
                     <Route path="/my-profile" element={<MyProfile />} />
