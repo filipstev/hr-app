@@ -87,7 +87,14 @@ const Team = () => {
                         >
                             <Button
                                 size="small"
-                                onClick={() => navigate(`/team/${id}/edit`)}
+                                onClick={() => {
+                                    if (status === 'pending') {
+                                        navigate(`/team/pending/${id}/edit`);
+                                    }
+                                    if (status === 'published') {
+                                        navigate(`/team/${id}/edit`);
+                                    }
+                                }}
                             >
                                 EDIT
                             </Button>

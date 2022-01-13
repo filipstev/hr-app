@@ -15,8 +15,9 @@ const TeamHeader = () => {
     const [userStatus, setUserStatus] = useState('');
 
     const params = useParams();
+
     const { id } = params;
-    console.log(params);
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -68,7 +69,7 @@ const TeamHeader = () => {
         >
             <Grid item alignItems="center" display="flex">
                 <Typography sx={{ fontWeight: 'bold' }}>
-                    {status === 'team'
+                    {!params.status
                         ? 'Edit Team Member'
                         : 'Moderate Team Member Entry'}
                 </Typography>

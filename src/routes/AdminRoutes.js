@@ -29,6 +29,10 @@ const JoinRoutes = () => {
                     {/* Team Page Pending */}
                     <Route path="/team/:status" element={<Team />} />
                     <Route path="/team/:id/edit" element={<EditProfile />} />
+                    <Route
+                        path="/team/:status/:id/edit"
+                        element={<EditProfile />}
+                    />
                     <Route path="/my-profile" element={<MyProfile />} />
                 </Routes>
             </BrowserRouter>
