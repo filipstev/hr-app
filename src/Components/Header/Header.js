@@ -46,11 +46,13 @@ const ResponsiveAppBar = (props) => {
             .then((data) => {
                 console.log(
                     'https://internship-hr-app.herokuapp.com' +
-                        data.data.data.attributes.logo.data.attributes.url
+                        data.data.data.attributes.logo.data.attributes.formats
+                            .small.url
                 );
                 setLogo(
                     'https://internship-hr-app.herokuapp.com' +
-                        data.data.data.attributes.logo.data.attributes.url
+                        data.data.data.attributes.logo.data.attributes.formats
+                            .small.url
                 );
             })
             .catch((err) => {

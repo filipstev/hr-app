@@ -6,9 +6,25 @@ import axiosInstance from '../../helpers/axiosInstance';
 const SingleContainer = (props) => {
     const [name, setName] = useState('');
     const [files, setFiles] = useState([]);
+    const [oldPassword, setOldPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
     useEffect(() => {
-        setName(props.user.attributes ? props.user.attributes.name : '');
-        console.log(props.user.attributes);
+        const userStorage = JSON.parse(localStorage.getItem('user'));
+        // KAD NADJEMO PASSWORD
+        // if (props.user.id) {
+        //     axiosInstance
+        //         .get('/users/' + userStorage.user.id)
+        //         .then((data) => {
+        //             console.log(data.data);
+        //         })
+        //         .catch((err) => {
+        //             console.log(err);
+        //         });
+        // }
+
+        if (props.user) {
+            setName(props.user.attributes ? props.user.attributes.name : '');
+        }
     }, [props.user]);
 
     const updateInfo = () => {
@@ -26,6 +42,18 @@ const SingleContainer = (props) => {
         if (files.length > 0) {
             uploadImage();
         }
+    };
+
+    const updatePassword = () => {
+        const userStorage = JSON.parse(localStorage.getItem('user'));
+        axiosInstance
+            .put('/users/' + userStorage.user.id, { data: {} })
+            .then((data) => {
+                console.log(data);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     };
 
     const uploadImage = async () => {
@@ -77,7 +105,6 @@ const SingleContainer = (props) => {
                     onChange={(e) => setName(e.target.value)}
                 />
                 <input type="file" onChange={(e) => setFiles(e.target.files)} />
-                {/* <Button /> */}
 
                 <div
                     style={{
@@ -125,11 +152,15 @@ const SingleContainer = (props) => {
                     variant="outlined"
                     label="Current password"
                     style={{ marginBottom: '15px', marginTop: '12px' }}
+                    value={oldPassword}
+                    onChange={(e) => setOldPassword(e.target.value)}
                 />
                 <TextField
                     variant="outlined"
                     label="New Password"
                     style={{ marginBottom: '15px', marginTop: '12px' }}
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
                 />
 
                 {/* <Button /> */}

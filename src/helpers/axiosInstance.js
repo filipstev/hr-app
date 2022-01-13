@@ -39,11 +39,8 @@ axiosInstance.interceptors.request.use(
         const user = localStorage.getItem('user');
         if (user) {
             const parsedUser = JSON.parse(localStorage.getItem('user'));
-            console.log(parsedUser.jwt);
             config.headers.Authorization = `Bearer ${parsedUser.jwt}`;
         }
-
-        console.log(config);
 
         return config;
     },

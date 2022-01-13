@@ -4,7 +4,6 @@ import { loginError, setUser, signIn } from '../../actions/user';
 import { requestGetUser } from '../requests/user';
 
 export function* handleLoginUser(action) {
-    console.log(action);
     try {
         const response = yield call(() =>
             requestGetUser(action.email, action.password)

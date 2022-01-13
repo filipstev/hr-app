@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 import jwtDecode from 'jwt-decode';
 import { useDispatch } from 'react-redux';
 import * as userActions from './store/actions/user';
+import { useNavigate } from 'react-router-dom';
 
 function App() {
     const dispatch = useDispatch();
@@ -20,7 +21,6 @@ function App() {
     };
 
     useEffect(() => {
-        console.log(localStorage.getItem('user'));
         let decoded;
         const user = JSON.parse(localStorage.getItem('user'));
         if (user) {
