@@ -14,7 +14,7 @@ import MenuItem from '@mui/material/MenuItem';
 import { Link } from 'react-router-dom';
 import axiosInstance from '../../helpers/axiosInstance';
 
-const pages = ['Page One', 'Page Two', 'Page Three'];
+const pages = ['Tesla', 'Ghetto', 'Page Three'];
 
 const ResponsiveAppBar = (props) => {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -44,11 +44,11 @@ const ResponsiveAppBar = (props) => {
         axiosInstance
             .get('/companies/2?populate=*')
             .then((data) => {
-                console.log(
-                    'https://internship-hr-app.herokuapp.com' +
-                        data.data.data.attributes.logo.data.attributes.formats
-                            .small.url
-                );
+                // console.log(
+                //     'https://internship-hr-app.herokuapp.com' +
+                //         data.data.data.attributes.logo.data.attributes.formats
+                //             .small.url
+                // );
                 setLogo(
                     'https://internship-hr-app.herokuapp.com' +
                         data.data.data.attributes.logo.data.attributes.formats
@@ -125,7 +125,7 @@ const ResponsiveAppBar = (props) => {
                                     onClick={() => navigatePage(page)}
                                 >
                                     <Link
-                                        to={`/${page
+                                        to={`/team/${page
                                             .toLowerCase()
                                             .replace(' ', '')}`}
                                         onClick={handleCloseNavMenu}
@@ -150,7 +150,9 @@ const ResponsiveAppBar = (props) => {
                     >
                         {pages.map((page) => (
                             <Link
-                                to={`/${page.toLowerCase().replace(' ', '')}`}
+                                to={`/team/${page
+                                    .toLowerCase()
+                                    .replace(' ', '')}`}
                                 style={{
                                     textDecoration: 'none',
                                     color: 'black',

@@ -11,6 +11,7 @@ import Team from '../Components/Team/Team';
 import EditProfile from '../Components/Team/TeamEdit/EditProfile';
 import EditQuestion from '../Components/Questions/EditQuestion/EditQuestion';
 import MyProfile from '../Components/MyProfile/MyProfile';
+import CompanyWall from '../Components/CompanyWall/CompanyWall';
 
 const JoinRoutes = () => {
     return (
@@ -31,9 +32,11 @@ const JoinRoutes = () => {
                     />
                     {/* Team Page Pending */}
                     <Route
+                        exact
                         path="/team/pending"
                         element={<Team status="pending" />}
                     />
+                    <Route path="/team/:slug" element={<CompanyWall />} />
                     <Route path="/team/:id/edit" element={<EditProfile />} />
                     <Route
                         path="/team/pending/:id/edit"

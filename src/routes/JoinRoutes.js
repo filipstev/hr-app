@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Login from '../Components/LoginUser/LoginUser';
 import Register from '../Components/Register/Register';
+import CompanyWall from '../Components/CompanyWall/CompanyWall';
 
 const JoinRoutes = () => {
     return (
@@ -10,6 +11,7 @@ const JoinRoutes = () => {
                 <Routes>
                     <Route path="/" element={<Login />} />
                     <Route path="/register" element={<Register />} />
+                    <Route path="/team/:slug" element={<CompanyWall />} />
                 </Routes>
             </BrowserRouter>
         </div>
