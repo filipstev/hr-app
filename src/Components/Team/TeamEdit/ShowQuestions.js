@@ -37,7 +37,7 @@ const ShowQuestions = () => {
         return () => {
             console.log('cleanup');
         };
-    });
+    }, []);
 
     const page = () => {
         return (
