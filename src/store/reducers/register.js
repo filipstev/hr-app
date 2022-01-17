@@ -7,6 +7,7 @@ const initialState = {
 };
 
 export default (state = initialState, action) => {
+    console.log(action);
     switch (action.type) {
         case SET_REGISTER:
             return {
@@ -14,6 +15,8 @@ export default (state = initialState, action) => {
                 name: action.name,
                 email: action.email,
                 password: action.password,
+                companyId: action.companyId,
+                file: action.file,
                 isError: false,
             };
         case REGISTER_ERROR:

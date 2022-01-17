@@ -8,6 +8,7 @@ const SingleContainer = (props) => {
     const [files, setFiles] = useState([]);
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
+
     useEffect(() => {
         const userStorage = JSON.parse(localStorage.getItem('user'));
         // KAD NADJEMO PASSWORD
@@ -64,6 +65,7 @@ const SingleContainer = (props) => {
         axiosInstance
             .post('/upload', formData)
             .then((response) => {
+                console.log(response);
                 axiosInstance.put('/profiles/' + props.user.id, {
                     data: {
                         profilePhoto: response.data,

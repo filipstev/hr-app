@@ -1,6 +1,8 @@
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
+import axiosInstance from '../../helpers/axiosInstance';
 import useInput from '../../hooks/use-input';
 import * as registerUser from '../../store/actions/register';
 
@@ -13,17 +15,34 @@ import {
     Button,
 } from '@material-ui/core';
 
-import axiosInstance from '../../helpers/axiosInstance';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+import { FormControl } from '@mui/material';
 // dodati user role, i kompaniju
 const Register = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const registerError = useSelector((state) => state.register.isError);
+    const [companies, setCompanies] = useState([]);
+    const [company, setCompany] = useState('');
+    const [companyId, setCompanyId] = useState('');
 
+    const registerError = useSelector((state) => state.register.isError);
+    const image = new FormData();
     const nameRegEx = /^[a-zA-Z]+(?:[\s.]+[a-zA-Z]+)*$/g;
     const emailRegEx =
         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+    useEffect(() => {
+        axiosInstance.get(`/companies`).then(({ data }) => {
+            setCompanies(data.data);
+            setCompany(data.data[0].attributes.slug);
+        });
+        return () => {
+            'cleanup';
+        };
+    }, []);
 
     const {
         value: enteredName,
@@ -46,7 +65,6 @@ const Register = () => {
     const {
         value: enteredPassword,
         reset: resetPasswordInput,
-
         hasError: passwordInputHasError,
         isValid: enteredPasswordIsValid,
         valueChangeHandler: passwordChangedHandler,
@@ -63,11 +81,58 @@ const Register = () => {
                 registerUser.registerUser(
                     enteredName,
                     enteredEmail,
-                    enteredPassword
+                    enteredPassword,
+                    companyId,
+                    image
                 )
             );
         }
     };
+
+    const selectCompany = () => {
+        return (
+            <>
+                <FormControl
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        width: '97%',
+                    }}
+                >
+                    <InputLabel id="selectCompany">Company</InputLabel>
+                    <Select
+                        sx={{ paddingLeft: '16px', width: '100%' }}
+                        labelId="selectCompany"
+                        id="selectCompany"
+                        label="Company"
+                        value={company}
+                        onChange={(e) => {
+                            setCompany(e.target.value);
+                            setCompanyId(
+                                companies.filter(
+                                    (company) =>
+                                        company.attributes.slug ===
+                                        e.target.value
+                                )[0].id
+                            );
+                        }}
+                    >
+                        {companies.map((item) => {
+                            return (
+                                <MenuItem
+                                    value={item.attributes.slug}
+                                    key={item.id}
+                                >
+                                    {item.attributes.name}
+                                </MenuItem>
+                            );
+                        })}
+                    </Select>
+                </FormControl>
+            </>
+        );
+    };
+
     return (
         <Container
             maxWidth="sm"
@@ -116,7 +181,7 @@ const Register = () => {
                         onBlur={emailBlurHandler}
                     />
                 </Grid>
-
+                {selectCompany()}
                 <Grid item style={{ width: '100%' }}>
                     <TextField
                         error={passwordInputHasError ? true : false}
@@ -138,31 +203,7 @@ const Register = () => {
                         fullWidth="true"
                         accept="image/*"
                         onInput={(e) => {
-                            console.log(e);
-                            var file = e.target.files[0];
-                            var img = new Image();
-                            let x = document.querySelector('#img');
-                            img.onload = function () {
-                                let node = x.firstChild;
-                                x.removeChild(node);
-                                var sizes = {
-                                    width: this.width,
-                                    height: this.height,
-                                };
-                                URL.revokeObjectURL(this.src);
-
-                                console.log('onload: sizes', sizes);
-                                console.log('onload: this', this.file);
-                                x.appendChild(this);
-                                console.log(x.firstChild);
-                            };
-
-                            var objectURL = URL.createObjectURL(file);
-
-                            console.log('change: file', file);
-                            console.log('change: objectURL', objectURL);
-                            img.src = objectURL;
-                            console.log(x);
+                            image.append('files', e.target.files[0]);
                         }}
                     />
                     <div id="img"></div>

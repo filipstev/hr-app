@@ -11,11 +11,10 @@ import Typography from '@mui/material/Typography';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
-const TeamHeader = () => {
+const TeamHeader = ({ edit }) => {
     const [userStatus, setUserStatus] = useState('');
 
     const params = useParams();
-
     const { id } = params;
 
     const navigate = useNavigate();
@@ -29,10 +28,11 @@ const TeamHeader = () => {
             console.log('cleanup');
         };
     }, [id]);
+
     const handleStatusChange = () => {
         return (
             <>
-                <InputLabel id="demo-simple-select-label">Status</InputLabel>
+                <InputLabel id="selectStatus">Status</InputLabel>
                 <Select
                     style={{ paddingLeft: '16px' }}
                     labelId="selectStatus"
@@ -69,14 +69,37 @@ const TeamHeader = () => {
         >
             <Grid item alignItems="center" display="flex">
                 <Typography sx={{ fontWeight: 'bold' }}>
-                    {!params.status
+                    {edit === 'editPublished'
                         ? 'Edit Team Member'
                         : 'Moderate Team Member Entry'}
                 </Typography>
             </Grid>
             <Grid item display="flex" justifyContent="flex-end">
                 <FormControl style={{ display: 'flex', flexDirection: 'row' }}>
-                    {handleStatusChange()}
+                    {edit === 'editPublished' ? (
+                        handleStatusChange()
+                    ) : (
+                        <Button
+                            variant="outlined"
+                            sx={{ marginRight: '10px' }}
+                            onClick={() => {
+                                axiosInstance
+                                    .put(`/profiles/${id}`, {
+                                        data: {
+                                            status: 'published',
+                                        },
+                                    })
+                                    .then(() => {
+                                        setUserStatus('published');
+                                    })
+                                    .catch((err) => {
+                                        console.error(err);
+                                    });
+                            }}
+                        >
+                            approve
+                        </Button>
+                    )}
                     <Button
                         variant="outlined"
                         onClick={(e) => {
