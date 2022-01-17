@@ -29,12 +29,15 @@ const JoinRoutes = () => {
                         path="/team/"
                         element={<Team status="published" />}
                     />
+                    <Route
+                        path="/team/:id/edit"
+                        element={<EditProfile edit="editPublished" />}
+                    />
                     {/* Team Page Pending */}
                     <Route
                         path="/team/pending"
                         element={<Team status="pending" />}
                     />
-                    <Route path="/team/:id/edit" element={<EditProfile />} />
                     <Route
                         path="/team/pending/:id/edit"
                         element={<EditProfile />}

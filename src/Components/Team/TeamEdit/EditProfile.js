@@ -4,14 +4,14 @@ import TeamHeader from './TeamHeader';
 import ShowQuestions from './ShowQuestions';
 import BasicInfo from './BasicInfo';
 
-const EditProfile = () => {
+const EditProfile = ({ edit }) => {
     const showEdit = () => {
         return (
             <Container sx={{ marginTop: '150px', padding: '0 200px 0 40px' }}>
-                <TeamHeader />
+                <TeamHeader edit={edit} />
                 <Grid container direction="row" justifyContent="space-between">
-                    <BasicInfo />
-                    <ShowQuestions />
+                    <BasicInfo edit={edit} />
+                    <ShowQuestions edit={edit} />
                 </Grid>
             </Container>
         );

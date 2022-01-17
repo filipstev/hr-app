@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
@@ -13,12 +13,14 @@ import axiosInstance from '../../helpers/axiosInstance';
 const Team = ({ status }) => {
     const [profiles, setProfiles] = useState([]);
     const navigate = useNavigate();
-    const params = useParams();
+
     let help = [];
 
     useEffect(() => {
         axiosInstance
-            .get(`/profiles?filters[status][$eq]=${status}&sort=id&populate=*`)
+            .get(
+                `/profiles?filters[status][$eq]=${status}&sort=id&populate=*&pagination[pageSize]=50`
+            )
             .then(({ data }) => {
                 data.data.forEach((item) => {
                     help.push(item);
@@ -32,84 +34,146 @@ const Team = ({ status }) => {
             console.log('cleanup');
         };
     }, [status]);
-    console.log(profiles);
+
+    const month = [
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'May',
+        'Jun',
+        'Jul',
+        'Aug',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dec',
+    ];
+
+    console.log(status);
+    const handleFormatDate = (date) => {
+        const day = date.getDate();
+        const monthInLetters = month[date.getMonth()];
+        const year = date.getFullYear();
+
+        const fullDate = `${day}/${monthInLetters}/${year}`;
+        return `Joined: ${fullDate}`;
+    };
+
     const showProfiles = () => {
         return profiles.map(({ id, attributes }) => {
+            console.log(attributes);
             return (
-                <Grid item key={id}>
-                    <Card sx={{ minWidth: 275 }}>
-                        <CardContent>
-                            <Typography
-                                sx={{ fontSize: 14 }}
-                                color="text.secondary"
-                                gutterBottom
-                            >
-                                ID: {id}
-                            </Typography>
-                            <Typography
-                                variant="h5"
-                                component="div"
+                <>
+                    <Grid item key={id}>
+                        <Card sx={{ minWidth: 275 }}>
+                            <CardContent>
+                                <Typography
+                                    sx={{ fontSize: 14 }}
+                                    color="text.secondary"
+                                    gutterBottom
+                                >
+                                    ID: {id}
+                                </Typography>
+
+                                {!attributes.profilePhoto.data ? (
+                                    <Typography
+                                        variant="h5"
+                                        component="div"
+                                        sx={{
+                                            width: '200px',
+                                            height: '200px',
+                                            margin: '0 auto',
+                                            lineHeight: '200px',
+                                        }}
+                                    >
+                                        Image Goes Here
+                                    </Typography>
+                                ) : (
+                                    <div
+                                        style={{
+                                            width: '200px',
+                                            height: '200px',
+                                            margin: '0 auto',
+                                        }}
+                                    >
+                                        <img
+                                            style={{
+                                                width: '100%',
+                                                height: '100%',
+                                            }}
+                                            src={
+                                                attributes.profilePhoto.data
+                                                    .attributes.formats.small
+                                                    .url
+                                            }
+                                            alt="profile"
+                                        />
+                                    </div>
+                                )}
+
+                                <Typography
+                                    variant="h5"
+                                    component="div"
+                                    sx={{ textTransform: 'capitalize' }}
+                                >
+                                    Name: {attributes.name}
+                                </Typography>
+                                <Typography
+                                    sx={{ mb: 1.5 }}
+                                    color="text.secondary"
+                                >
+                                    Status: {attributes.status}
+                                </Typography>
+                                <Typography variant="body2">
+                                    {handleFormatDate(
+                                        new Date(attributes.createdAt)
+                                    )}
+                                </Typography>
+                            </CardContent>
+                            <CardActions
                                 sx={{
-                                    width: '200px',
-                                    height: '200px',
-                                    margin: '0 auto',
-                                    lineHeight: '200px',
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
                                 }}
                             >
-                                Image Goes Here
-                            </Typography>
-                            <Typography
-                                variant="h5"
-                                component="div"
-                                sx={{ textTransform: 'capitalize' }}
-                            >
-                                Status: {attributes.status}
-                            </Typography>
-                            <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                                Name: {attributes.name}
-                            </Typography>
-                            <Typography variant="body2">
-                                Joined: {attributes.createdAt}
-                            </Typography>
-                        </CardContent>
-                        <CardActions
-                            sx={{
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                            }}
-                        >
-                            <Button
-                                size="small"
-                                onClick={() => {
-                                    if (status === 'pending') {
-                                        navigate(`/team/pending/${id}/edit`);
-                                    }
-                                    if (status === 'published') {
-                                        navigate(`/team/${id}/edit`);
-                                    }
-                                }}
-                            >
-                                EDIT
-                            </Button>
-                            <Button
-                                size="small"
-                                onClick={(e) => {
-                                    axiosInstance
-                                        .delete(`/profiles/${id}`)
-                                        .then(() => {
-                                            setProfiles(
-                                                profiles.filter(
-                                                    (item) => item.id !== id
-                                                )
+                                <Button
+                                    size="small"
+                                    onClick={() => {
+                                        if (status === 'pending') {
+                                            navigate(
+                                                `/team/pending/${id}/edit`
                                             );
-                                        });
-                                }}
-                            >
-                                DELETE
-                            </Button>
-                        </CardActions>
-                    </Card>
-                </Grid>
+                                        }
+                                        if (status === 'published') {
+                                            navigate(`/team/${id}/edit`);
+                                        }
+                                    }}
+                                >
+                                    {status === 'published'
+                                        ? 'EDIT'
+                                        : 'DETAILS'}
+                                </Button>
+                                <Button
+                                    size="small"
+                                    onClick={(e) => {
+                                        axiosInstance
+                                            .delete(`/profiles/${id}`)
+                                            .then(() => {
+                                                setProfiles(
+                                                    profiles.filter(
+                                                        (item) => item.id !== id
+                                                    )
+                                                );
+                                            });
+                                    }}
+                                >
+                                    DELETE
+                                </Button>
+                            </CardActions>
+                        </Card>
+                    </Grid>
+                </>
             );
         });
     };
@@ -121,9 +185,11 @@ const Team = ({ status }) => {
                 sx={{ marginTop: '100px', justifyContent: 'space-between' }}
             >
                 <Typography>
-                    {params.status === 'team' ? 'Team' : 'Pending for approval'}
+                    {status === 'published' ? 'Team' : 'Pending for approval'}
                 </Typography>
-                <Button>+ Add New Team Member</Button>
+                {status === 'published' && (
+                    <Button>+ Add New Team Member</Button>
+                )}
             </Grid>
             <Grid container spacing={2} sx={{ marginLeft: 0 }}>
                 {profiles.length !== 0 ? showProfiles() : <p>Loading...</p>}
