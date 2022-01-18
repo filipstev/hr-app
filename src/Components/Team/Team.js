@@ -9,6 +9,7 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import { Container } from '@mui/material';
 import axiosInstance from '../../helpers/axiosInstance';
+import DeleteProfile from './DeleteProfile';
 
 const Team = ({ status }) => {
     const [profiles, setProfiles] = useState([]);
@@ -19,7 +20,7 @@ const Team = ({ status }) => {
     useEffect(() => {
         axiosInstance
             .get(
-                `/profiles?filters[status][$eq]=${status}&sort=id&populate=*&pagination[pageSize]=50`
+                `/profiles?filters[status][$eq]=${status}&sort=createdAt&populate=*&pagination[pageSize]=50`
             )
             .then(({ data }) => {
                 data.data.forEach((item) => {
@@ -50,7 +51,6 @@ const Team = ({ status }) => {
         'Dec',
     ];
 
-    console.log(status);
     const handleFormatDate = (date) => {
         const day = date.getDate();
         const monthInLetters = month[date.getMonth()];
@@ -62,7 +62,6 @@ const Team = ({ status }) => {
 
     const showProfiles = () => {
         return profiles.map(({ id, attributes }) => {
-            console.log(attributes);
             return (
                 <>
                     <Grid item key={id}>
@@ -157,15 +156,17 @@ const Team = ({ status }) => {
                                 <Button
                                     size="small"
                                     onClick={(e) => {
-                                        axiosInstance
-                                            .delete(`/profiles/${id}`)
-                                            .then(() => {
-                                                setProfiles(
-                                                    profiles.filter(
-                                                        (item) => item.id !== id
-                                                    )
-                                                );
-                                            });
+                                        // axiosInstance
+                                        //     .delete(`/profiles/${id}`)
+                                        //     .then(() => {
+                                        //         setProfiles(
+                                        //             profiles.filter(
+                                        //                 (item) => item.id !== id
+                                        //             )
+                                        //         );
+                                        //     });
+                                        console.log(profiles.attributes);
+                                        DeleteProfile(id);
                                     }}
                                 >
                                     DELETE

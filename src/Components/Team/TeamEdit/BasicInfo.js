@@ -14,19 +14,13 @@ const BasicInfo = () => {
 
     const [username, setUsername] = useState('');
     const [image, setImage] = React.useState(null);
-    let asd;
     /* Profile */
     useEffect(() => {
         axiosInstance
             .get(`/profiles/${id}?populate=*`)
             .then(({ data }) => {
-                console.log(data.data.attributes);
                 const name = data.data.attributes.name;
                 setUsername(name);
-                setImage(
-                    data.data.attributes.profilePhoto.data.attributes.data
-                        .formats.small.url
-                );
             })
             .catch((err) => console.error(new Error(err)));
 
@@ -34,7 +28,6 @@ const BasicInfo = () => {
             console.log('cleanup');
         };
     }, [id]);
-    console.log(image);
     return (
         <Grid
             item
@@ -42,14 +35,6 @@ const BasicInfo = () => {
             border="1px solid black"
             padding="10px"
         >
-            <img
-                style={{
-                    height: '45px',
-                    width: '45px',
-                }}
-                src={image}
-                alt="profile"
-            />
             <FormControl sx={{ display: 'flex', flexDirection: 'column' }}>
                 <Typography
                     variant="body2"
