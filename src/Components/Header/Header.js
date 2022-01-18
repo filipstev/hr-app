@@ -50,9 +50,8 @@ const ResponsiveAppBar = (props) => {
                 //             .small.url
                 // );
                 setLogo(
-                    'https://internship-hr-app.herokuapp.com' +
-                        data.data.data.attributes.logo.data.attributes.formats
-                            .small.url
+                    data.data.data.attributes.logo.data.attributes.formats.small
+                        .url
                 );
             })
             .catch((err) => {

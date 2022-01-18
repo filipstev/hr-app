@@ -47,9 +47,7 @@ const CompanyWall = () => {
         return profiles.map(({ id, attributes }) => {
             let image;
             if (attributes.profilePhoto.data !== null) {
-                image =
-                    'https://internship-hr-app.herokuapp.com' +
-                    attributes.profilePhoto.data.attributes.url;
+                image = attributes.profilePhoto.data.attributes.url;
             }
 
             if (attributes.status === 'published') {
