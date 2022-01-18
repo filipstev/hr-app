@@ -30,19 +30,22 @@ const JoinRoutes = () => {
                         path="/team/"
                         element={<Team status="published" />}
                     />
+                    <Route
+                        path="/team/:id/edit"
+                        element={<EditProfile edit="editPublished" />}
+                    />
                     {/* Team Page Pending */}
                     <Route
                         exact
                         path="/team/pending"
                         element={<Team status="pending" />}
                     />
-                    <Route path="/team/:slug" element={<CompanyWall />} />
-                    <Route path="/team/:id/edit" element={<EditProfile />} />
                     <Route
                         path="/team/pending/:id/edit"
                         element={<EditProfile />}
                     />
                     <Route path="/my-profile" element={<MyProfile />} />
+                    <Route path="/team/:slug" element={<CompanyWall />} />
                 </Routes>
             </BrowserRouter>
         </>

@@ -2,11 +2,13 @@ export const REGISTER_USER = 'REGISTER_USER';
 export const REGISTER_ERROR = 'REGISTER_ERROR';
 export const SET_REGISTER = 'SET_USER';
 
-export const registerUser = (name, email, password) => ({
+export const registerUser = (name, email, password, companyId, file) => ({
     type: REGISTER_USER,
     name,
     email,
     password,
+    companyId,
+    file,
 });
 
 // Maybe reuse this component

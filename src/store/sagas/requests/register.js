@@ -8,13 +8,18 @@ export function requestRegisterUser(name, email, password) {
     });
 }
 
-export function createNewProfile(name, id) {
+export function createNewProfile(name, id, companyId, photoId) {
     return axiosInstance.post('/profiles', {
         data: {
             name: name,
-            company: 2,
+            company: companyId,
             user: id,
             userRole: 'company_user',
+            profilePhoto: photoId,
         },
     });
+}
+
+export function uploadAndConnectImage(file) {
+    return axiosInstance.post('/upload', file);
 }
