@@ -97,6 +97,10 @@ const Team = ({ status }) => {
                                             margin: '0 auto',
                                         }}
                                     >
+                                        {console.log(
+                                            attributes.profilePhoto.data
+                                                .attributes
+                                        )}
                                         <img
                                             style={{
                                                 width: '100%',

@@ -13,14 +13,17 @@ const BasicInfo = () => {
     const { id } = useParams();
 
     const [username, setUsername] = useState('');
-    const [image, setImage] = React.useState(null);
+    const [image, setImage] = useState('');
+    const [newImage, setNewImage] = useState('');
     /* Profile */
     useEffect(() => {
         axiosInstance
             .get(`/profiles/${id}?populate=*`)
             .then(({ data }) => {
                 const name = data.data.attributes.name;
+                const imageID = data.data.attributes.profilePhoto.data;
                 setUsername(name);
+                setImage(imageID);
             })
             .catch((err) => console.error(new Error(err)));
 
@@ -28,6 +31,27 @@ const BasicInfo = () => {
             console.log('cleanup');
         };
     }, [id]);
+
+    const handleChangeImage = async () => {
+        if (image !== null) {
+            axiosInstance.delete(`/upload/files/${image.id}`);
+        }
+        const uploadAndConnectNewImage = await axiosInstance.post(
+            `/upload`,
+            newImage
+        );
+
+        if (uploadAndConnectNewImage.status === 200) {
+            const imgid = uploadAndConnectNewImage.data[0].id;
+            console.log(imgid);
+            axiosInstance.put(`/profiles/${id}`, {
+                data: {
+                    profilePhoto: `${imgid}`,
+                },
+            });
+        }
+    };
+
     return (
         <Grid
             item
@@ -35,7 +59,14 @@ const BasicInfo = () => {
             border="1px solid black"
             padding="10px"
         >
-            <FormControl sx={{ display: 'flex', flexDirection: 'column' }}>
+            <FormControl
+                sx={{ display: 'flex', flexDirection: 'column' }}
+                component="form"
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    handleChangeImage();
+                }}
+            >
                 <Typography
                     variant="body2"
                     sx={{
@@ -55,7 +86,15 @@ const BasicInfo = () => {
                     }}
                 />
                 <label>Upload Img</label>
-                <TextField type="file" />
+                <TextField
+                    type="file"
+                    onInput={(e) => {
+                        const image = new FormData();
+                        image.append('files', e.target.files[0]);
+
+                        setNewImage(image);
+                    }}
+                />
                 <Button
                     variant="outlined"
                     type="submit"
