@@ -17,9 +17,8 @@ const ShowQuestions = () => {
 
     const params = useParams();
     const getQ = () => {
-        return axiosInstance.get(`/questions?populate=*`);
+        return axiosInstance.get(`/questions?populate=*&sort[order]=asc`);
     };
-
     const getA = () => {
         return axiosInstance.get(`/profiles/${params.id}?populate=*`);
     };

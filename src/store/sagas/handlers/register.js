@@ -33,12 +33,11 @@ export function* handleRegisterUser(action) {
                     jwt: response.data.jwt,
                     user: response.data.user,
                 };
-                localStorage.setItem('user', JSON.stringify(user));
-                const imageResponse = yield call(() => {
-                    // uploadAndConnectImage(action.file);
-                    axiosInstance.post('/upload', action.file).then((res) => {
-                        // console.log('Post Response', res.data[0].id);
 
+                localStorage.setItem('user', JSON.stringify(user));
+
+                const imageResponse = yield call(() => {
+                    uploadAndConnectImage(action.file).then((res) => {
                         createNewProfile(
                             action.name,
                             user.user.id,
@@ -47,18 +46,14 @@ export function* handleRegisterUser(action) {
                         );
                     });
                 });
-                console.log('After Img Response: ', imageResponse);
 
-                // console.log(action.file);
-
-                // yield call(() => {
-                //     createNewProfile(
-                //         action.name,
-                //         user.user.id,
-                //         action.companyId
-                //         // imgId
-                //     );
-                // });
+                if (imageResponse !== 200) {
+                    createNewProfile(
+                        action.name,
+                        user.user.id,
+                        action.companyId
+                    );
+                }
 
                 yield put(setUser(user));
             }

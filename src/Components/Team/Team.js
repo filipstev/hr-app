@@ -96,6 +96,10 @@ const Team = ({ status }) => {
                                             margin: '0 auto',
                                         }}
                                     >
+                                        {console.log(
+                                            attributes.profilePhoto.data
+                                                .attributes
+                                        )}
                                         <img
                                             style={{
                                                 width: '100%',
@@ -103,8 +107,8 @@ const Team = ({ status }) => {
                                             }}
                                             src={
                                                 attributes.profilePhoto.data
-                                                    .attributes.formats.small
-                                                    .url
+                                                    .attributes.formats
+                                                    .thumbnail.url
                                             }
                                             alt="profile"
                                         />
@@ -156,17 +160,13 @@ const Team = ({ status }) => {
                                 <Button
                                     size="small"
                                     onClick={(e) => {
-                                        // axiosInstance
-                                        //     .delete(`/profiles/${id}`)
-                                        //     .then(() => {
-                                        //         setProfiles(
-                                        //             profiles.filter(
-                                        //                 (item) => item.id !== id
-                                        //             )
-                                        //         );
-                                        //     });
-                                        console.log(profiles.attributes);
-                                        DeleteProfile(id);
+                                        DeleteProfile(id).then(() => {
+                                            setProfiles(
+                                                profiles.filter(
+                                                    (item) => item.id !== id
+                                                )
+                                            );
+                                        });
                                     }}
                                 >
                                     DELETE
