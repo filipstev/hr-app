@@ -30,6 +30,7 @@ const Register = () => {
 
     const registerError = useSelector((state) => state.register.isError);
     const image = new FormData();
+
     const nameRegEx = /^[a-zA-Z]+(?:[\s.]+[a-zA-Z]+)*$/g;
     const emailRegEx =
         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -39,6 +40,7 @@ const Register = () => {
             setCompanies(data.data);
             setCompany(data.data[0].attributes.slug);
         });
+
         return () => {
             'cleanup';
         };

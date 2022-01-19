@@ -10,13 +10,14 @@ import Select from '@mui/material/Select';
 import Typography from '@mui/material/Typography';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import DeleteProfile from '../DeleteProfile';
 
 const TeamHeader = ({ edit }) => {
     const [userStatus, setUserStatus] = useState('');
 
     const params = useParams();
     const { id } = params;
-
+    console.log(edit);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -103,8 +104,12 @@ const TeamHeader = ({ edit }) => {
                     <Button
                         variant="outlined"
                         onClick={(e) => {
-                            axiosInstance.delete(`/profiles/${id}`);
-                            navigate('/team');
+                            DeleteProfile(id);
+                            if (edit === 'editPublished') {
+                                navigate('/team');
+                                return;
+                            }
+                            navigate('/team/pending');
                         }}
                     >
                         Delete
