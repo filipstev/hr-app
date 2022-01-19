@@ -14,10 +14,11 @@ import DeleteProfile from './DeleteProfile';
 const Team = ({ status }) => {
     const [profiles, setProfiles] = useState([]);
     const navigate = useNavigate();
-
-    let help = [];
+    const [link, setLink] = useState(false);
 
     useEffect(() => {
+        let help = [];
+
         axiosInstance
             .get(
                 `/profiles?filters[status][$eq]=${status}&sort=createdAt&populate=*&pagination[pageSize]=50`
@@ -32,7 +33,7 @@ const Team = ({ status }) => {
                 console.log(new Error(err));
             });
         return () => {
-            console.log('cleanup');
+            help = [];
         };
     }, [status]);
 
@@ -103,8 +104,8 @@ const Team = ({ status }) => {
                                             }}
                                             src={
                                                 attributes.profilePhoto.data
-                                                    .attributes.formats.small
-                                                    .url
+                                                    .attributes.formats
+                                                    .thumbnail.url
                                             }
                                             alt="profile"
                                         />
@@ -156,17 +157,13 @@ const Team = ({ status }) => {
                                 <Button
                                     size="small"
                                     onClick={(e) => {
-                                        // axiosInstance
-                                        //     .delete(`/profiles/${id}`)
-                                        //     .then(() => {
-                                        //         setProfiles(
-                                        //             profiles.filter(
-                                        //                 (item) => item.id !== id
-                                        //             )
-                                        //         );
-                                        //     });
-                                        console.log(profiles.attributes);
-                                        DeleteProfile(id);
+                                        DeleteProfile(id).then(() => {
+                                            setProfiles(
+                                                profiles.filter(
+                                                    (item) => item.id !== id
+                                                )
+                                            );
+                                        });
                                     }}
                                 >
                                     DELETE
@@ -189,8 +186,15 @@ const Team = ({ status }) => {
                     {status === 'published' ? 'Team' : 'Pending for approval'}
                 </Typography>
                 {status === 'published' && (
-                    <Button>+ Add New Team Member</Button>
+                    <Button
+                        onClick={() => {
+                            setLink(!link);
+                        }}
+                    >
+                        + Add New Team Member
+                    </Button>
                 )}
+                {link && <p>{`${''}Link-to-app/register/<company-slug>`}</p>}
             </Grid>
             <Grid container spacing={2} sx={{ marginLeft: 0 }}>
                 {profiles.length !== 0 ? showProfiles() : <p>Loading...</p>}
