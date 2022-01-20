@@ -91,7 +91,7 @@ const Modal = (props) => {
                             <img
                                 src={
                                     props.modalInfo[1].profilePhoto.data
-                                        .attributes.formats.small.url
+                                        .attributes.formats.thumbnail.url
                                 }
                                 style={{
                                     width: '200px',
