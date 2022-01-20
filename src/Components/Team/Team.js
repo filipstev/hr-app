@@ -10,16 +10,23 @@ import Grid from '@mui/material/Grid';
 import { Container } from '@mui/material';
 import axiosInstance from '../../helpers/axiosInstance';
 import DeleteProfile from './DeleteProfile';
+import { useDispatch, useSelector } from 'react-redux';
+import { ACTIONS } from '../../store/reducers/team';
 
 const Team = ({ status }) => {
-    const [profiles, setProfiles] = useState([]);
+    // const [profiles, setProfiles] = useState([]);
     const navigate = useNavigate();
     const [link, setLink] = useState(false);
     const [slug, setSlug] = useState({});
-    const userStorage = JSON.parse(localStorage.getItem('user'));
-
+    const profiles = useSelector((state) => state.profiles.profiles);
+    const pageNumber = useSelector((state) => state.profiles.pageNumber);
+    let num = 1;
+    console.log('PAGENUMBER: ', pageNumber);
+    const dispatch = useDispatch();
     useEffect(() => {
+        const userStorage = JSON.parse(localStorage.getItem('user'));
         let help = [];
+        // Get company slug for "add team member"
         axiosInstance
             .get(
                 '/profiles?filters[user][id][$eq]=' +
@@ -34,15 +41,23 @@ const Team = ({ status }) => {
             .catch((err) => {
                 console.log(err);
             });
+        // Get profiles for the page
         axiosInstance
             .get(
-                `/profiles?filters[status][$eq]=${status}&sort=createdAt&populate=*&pagination[pageSize]=50`
+                `/profiles?filters[status][$eq]=${status}&sort=createdAt&populate=*&pagination[page]=${num}`
             )
             .then(({ data }) => {
                 data.data.forEach((item) => {
                     help.push(item);
                 });
-                setProfiles([...help]);
+                dispatch({
+                    type: ACTIONS.FETCH_PROFILES,
+                    fetchedProfiles: help,
+                });
+                dispatch({
+                    type: ACTIONS.PAGE_NUMBER,
+                    pageNumber: data.meta.pagination.pageCount,
+                });
             })
             .catch((err) => {
                 console.log(new Error(err));
@@ -76,10 +91,11 @@ const Team = ({ status }) => {
         return `Joined: ${fullDate}`;
     };
 
-    const handleLink = async () => {
-        axiosInstance.get(`/profiles/me`);
+    const handlePageNumber = () => {
+        for (let i = 0; i < num; i++) {
+            return <p>{i + 1}</p>;
+        }
     };
-
     const showProfiles = () => {
         return profiles.map(({ id, attributes }) => {
             return (
@@ -177,11 +193,11 @@ const Team = ({ status }) => {
                                     size="small"
                                     onClick={(e) => {
                                         DeleteProfile(id).then(() => {
-                                            setProfiles(
-                                                profiles.filter(
-                                                    (item) => item.id !== id
-                                                )
-                                            );
+                                            // setProfiles(
+                                            //     profiles.filter(
+                                            //         (item) => item.id !== id
+                                            //     )
+                                            // );
                                         });
                                     }}
                                 >
@@ -204,20 +220,23 @@ const Team = ({ status }) => {
                 <Typography>
                     {status === 'published' ? 'Team' : 'Pending for approval'}
                 </Typography>
+                {handlePageNumber()}
                 {status === 'published' && (
                     <Button
                         onClick={() => {
                             setLink(!link);
+                            dispatch({ type: ACTIONS.FETCH_PROFILES });
+
                             console.log(slug);
                         }}
                     >
                         + Add New Team Member
                     </Button>
                 )}
-                {link && <p>{`${''}localhost:3000/register/${slug}`}</p>}
+                {link && <p>{`localhost:3000/register/${slug}`}</p>}
             </Grid>
             <Grid container spacing={2} sx={{ marginLeft: 0 }}>
-                {profiles.length !== 0 ? showProfiles() : <p>Loading...</p>}
+                {profiles ? showProfiles() : <p>Loading...</p>}
             </Grid>
         </Container>
     );

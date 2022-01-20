@@ -49,7 +49,7 @@ const Register = () => {
         return () => {
             'cleanup';
         };
-    }, []);
+    }, [slug]);
 
     const {
         value: enteredName,
