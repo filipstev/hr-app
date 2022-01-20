@@ -15,10 +15,25 @@ const Team = ({ status }) => {
     const [profiles, setProfiles] = useState([]);
     const navigate = useNavigate();
     const [link, setLink] = useState(false);
+    const [slug, setSlug] = useState({});
+    const userStorage = JSON.parse(localStorage.getItem('user'));
 
     useEffect(() => {
         let help = [];
-
+        axiosInstance
+            .get(
+                '/profiles?filters[user][id][$eq]=' +
+                    userStorage.user.id +
+                    '&populate=*'
+            )
+            .then((data) => {
+                setSlug(
+                    data.data.data[0].attributes.company.data.attributes.slug
+                );
+            })
+            .catch((err) => {
+                console.log(err);
+            });
         axiosInstance
             .get(
                 `/profiles?filters[status][$eq]=${status}&sort=createdAt&populate=*&pagination[pageSize]=50`
@@ -61,6 +76,10 @@ const Team = ({ status }) => {
         return `Joined: ${fullDate}`;
     };
 
+    const handleLink = async () => {
+        axiosInstance.get(`/profiles/me`);
+    };
+
     const showProfiles = () => {
         return profiles.map(({ id, attributes }) => {
             return (
@@ -97,10 +116,6 @@ const Team = ({ status }) => {
                                             margin: '0 auto',
                                         }}
                                     >
-                                        {console.log(
-                                            attributes.profilePhoto.data
-                                                .attributes
-                                        )}
                                         <img
                                             style={{
                                                 width: '100%',
@@ -193,12 +208,13 @@ const Team = ({ status }) => {
                     <Button
                         onClick={() => {
                             setLink(!link);
+                            console.log(slug);
                         }}
                     >
                         + Add New Team Member
                     </Button>
                 )}
-                {link && <p>{`${''}Link-to-app/register/<company-slug>`}</p>}
+                {link && <p>{`${''}localhost:3000/register/${slug}`}</p>}
             </Grid>
             <Grid container spacing={2} sx={{ marginLeft: 0 }}>
                 {profiles.length !== 0 ? showProfiles() : <p>Loading...</p>}
