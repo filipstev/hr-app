@@ -96,7 +96,7 @@ const Register = () => {
         }
     };
 
-    const selectCompany = () => {
+    const SelectCompany = () => {
         return (
             <>
                 <FormControl
@@ -188,7 +188,7 @@ const Register = () => {
                         onBlur={emailBlurHandler}
                     />
                 </Grid>
-                {selectCompany()}
+                <SelectCompany />
                 <Grid item style={{ width: '100%' }}>
                     <TextField
                         error={passwordInputHasError ? true : false}

@@ -14,7 +14,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ACTIONS } from '../../store/reducers/team';
 
 const Team = ({ status }) => {
-    // const [profiles, setProfiles] = useState([]);
     const navigate = useNavigate();
     const [link, setLink] = useState(false);
     const [slug, setSlug] = useState({});
@@ -98,12 +97,12 @@ const Team = ({ status }) => {
         return `Joined: ${fullDate}`;
     };
 
-    const handlePageNumber = () => {
+    const PageNumbers = () => {
         for (let i = 0; i < num; i++) {
             return <p>{i + 1}</p>;
         }
     };
-    const showProfiles = () => {
+    const ShowProfiles = () => {
         return profiles.map(({ id, attributes }) => {
             return (
                 <>
@@ -229,7 +228,7 @@ const Team = ({ status }) => {
                 <Typography>
                     {status === 'published' ? 'Team' : 'Pending for approval'}
                 </Typography>
-                {handlePageNumber()}
+                <PageNumbers />
                 {status === 'published' && (
                     <Button
                         onClick={() => {
@@ -243,7 +242,7 @@ const Team = ({ status }) => {
                 {link && <p>{`localhost:3000/register/${slug}`}</p>}
             </Grid>
             <Grid container spacing={2} sx={{ marginLeft: 0 }}>
-                {profiles ? showProfiles() : <p>Loading...</p>}
+                {profiles ? <ShowProfiles /> : <p>Loading...</p>}
             </Grid>
         </Container>
     );
