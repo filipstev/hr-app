@@ -4,16 +4,15 @@ export const ACTIONS = {
 };
 
 const initalState = { profiles: [], pageNumber: '' };
+
 const getProfilesReducer = (state = initalState, action) => {
     switch (action.type) {
         case ACTIONS.FETCH_PROFILES:
-            console.log(ACTIONS.FETCH_PROFILES);
             return {
                 ...state,
                 profiles: action.fetchedProfiles,
             };
         case ACTIONS.PAGE_NUMBER:
-            console.log(ACTIONS.PAGE_NUMBER);
             return {
                 ...state,
                 pageNumber: action.pageNumber,

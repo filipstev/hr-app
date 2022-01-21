@@ -10,7 +10,12 @@ const JoinRoutes = () => {
             <BrowserRouter>
                 <Routes>
                     <Route path="/" element={<Login />} />
-                    <Route path="/register/:slug" element={<Register />} />
+                    <Route exact path="/register" element={<Register />} />
+                    <Route
+                        exact
+                        path="/register/:slug"
+                        element={<Register />}
+                    />
                     <Route path="/team/:slug" element={<CompanyWall />} />
                 </Routes>
             </BrowserRouter>

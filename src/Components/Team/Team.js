@@ -24,9 +24,31 @@ const Team = ({ status }) => {
     console.log('PAGENUMBER: ', pageNumber);
     const dispatch = useDispatch();
     useEffect(() => {
-        const userStorage = JSON.parse(localStorage.getItem('user'));
-        let help = [];
         // Get company slug for "add team member"
+        getCompanySlug();
+    }, []);
+    // Get Profiles
+    useEffect(() => {
+        getProfiles();
+    }, [status]);
+
+    const month = [
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'May',
+        'Jun',
+        'Jul',
+        'Aug',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dec',
+    ];
+
+    const getCompanySlug = () => {
+        const userStorage = JSON.parse(localStorage.getItem('user'));
         axiosInstance
             .get(
                 '/profiles?filters[user][id][$eq]=' +
@@ -41,7 +63,10 @@ const Team = ({ status }) => {
             .catch((err) => {
                 console.log(err);
             });
-        // Get profiles for the page
+    };
+
+    const getProfiles = () => {
+        let help = [];
         axiosInstance
             .get(
                 `/profiles?filters[status][$eq]=${status}&sort=createdAt&populate=*&pagination[page]=${num}`
@@ -62,25 +87,7 @@ const Team = ({ status }) => {
             .catch((err) => {
                 console.log(new Error(err));
             });
-        return () => {
-            help = [];
-        };
-    }, [status]);
-
-    const month = [
-        'Jan',
-        'Feb',
-        'Mar',
-        'Apr',
-        'May',
-        'Jun',
-        'Jul',
-        'Aug',
-        'Sep',
-        'Oct',
-        'Nov',
-        'Dec',
-    ];
+    };
 
     const handleFormatDate = (date) => {
         const day = date.getDate();
@@ -193,11 +200,13 @@ const Team = ({ status }) => {
                                     size="small"
                                     onClick={(e) => {
                                         DeleteProfile(id).then(() => {
-                                            // setProfiles(
-                                            //     profiles.filter(
-                                            //         (item) => item.id !== id
-                                            //     )
-                                            // );
+                                            dispatch({
+                                                type: ACTIONS.FETCH_PROFILES,
+                                                fetchedProfiles:
+                                                    profiles.filter(
+                                                        (item) => item.id !== id
+                                                    ),
+                                            });
                                         });
                                     }}
                                 >
@@ -225,8 +234,6 @@ const Team = ({ status }) => {
                     <Button
                         onClick={() => {
                             setLink(!link);
-                            dispatch({ type: ACTIONS.FETCH_PROFILES });
-
                             console.log(slug);
                         }}
                     >
