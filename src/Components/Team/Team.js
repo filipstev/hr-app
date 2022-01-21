@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ReactQueryDevtools } from 'react-query/devtools';
 
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
@@ -8,28 +9,14 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import { Container } from '@mui/material';
-import axiosInstance from '../../helpers/axiosInstance';
 import DeleteProfile from './DeleteProfile';
-import { useDispatch, useSelector } from 'react-redux';
-import { ACTIONS } from '../../store/reducers/team';
+import { useProfiles } from '../../queryFunctions/fetchProfiles';
 
 const Team = ({ status }) => {
+    const profileQuery = useProfiles(status);
+
     const navigate = useNavigate();
     const [link, setLink] = useState(false);
-    const [slug, setSlug] = useState({});
-    const profiles = useSelector((state) => state.profiles.profiles);
-    const pageNumber = useSelector((state) => state.profiles.pageNumber);
-    let num = 1;
-    console.log('PAGENUMBER: ', pageNumber);
-    const dispatch = useDispatch();
-    useEffect(() => {
-        // Get company slug for "add team member"
-        getCompanySlug();
-    }, []);
-    // Get Profiles
-    useEffect(() => {
-        getProfiles();
-    }, [status]);
 
     const month = [
         'Jan',
@@ -46,48 +33,6 @@ const Team = ({ status }) => {
         'Dec',
     ];
 
-    const getCompanySlug = () => {
-        const userStorage = JSON.parse(localStorage.getItem('user'));
-        axiosInstance
-            .get(
-                '/profiles?filters[user][id][$eq]=' +
-                    userStorage.user.id +
-                    '&populate=*'
-            )
-            .then((data) => {
-                setSlug(
-                    data.data.data[0].attributes.company.data.attributes.slug
-                );
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    };
-
-    const getProfiles = () => {
-        let help = [];
-        axiosInstance
-            .get(
-                `/profiles?filters[status][$eq]=${status}&sort=createdAt&populate=*&pagination[page]=${num}`
-            )
-            .then(({ data }) => {
-                data.data.forEach((item) => {
-                    help.push(item);
-                });
-                dispatch({
-                    type: ACTIONS.FETCH_PROFILES,
-                    fetchedProfiles: help,
-                });
-                dispatch({
-                    type: ACTIONS.PAGE_NUMBER,
-                    pageNumber: data.meta.pagination.pageCount,
-                });
-            })
-            .catch((err) => {
-                console.log(new Error(err));
-            });
-    };
-
     const handleFormatDate = (date) => {
         const day = date.getDate();
         const monthInLetters = month[date.getMonth()];
@@ -97,13 +42,8 @@ const Team = ({ status }) => {
         return `Joined: ${fullDate}`;
     };
 
-    const PageNumbers = () => {
-        for (let i = 0; i < num; i++) {
-            return <p>{i + 1}</p>;
-        }
-    };
     const ShowProfiles = () => {
-        return profiles.map(({ id, attributes }) => {
+        return profileQuery.data.data.data.map(({ id, attributes }) => {
             return (
                 <>
                     <Grid item key={id}>
@@ -198,15 +138,7 @@ const Team = ({ status }) => {
                                 <Button
                                     size="small"
                                     onClick={(e) => {
-                                        DeleteProfile(id).then(() => {
-                                            dispatch({
-                                                type: ACTIONS.FETCH_PROFILES,
-                                                fetchedProfiles:
-                                                    profiles.filter(
-                                                        (item) => item.id !== id
-                                                    ),
-                                            });
-                                        });
+                                        DeleteProfile(id).then(() => {});
                                     }}
                                 >
                                     DELETE
@@ -228,22 +160,27 @@ const Team = ({ status }) => {
                 <Typography>
                     {status === 'published' ? 'Team' : 'Pending for approval'}
                 </Typography>
-                <PageNumbers />
+                {/* Pagination */}
                 {status === 'published' && (
                     <Button
                         onClick={() => {
                             setLink(!link);
-                            console.log(slug);
+                            // console.log(slug);
                         }}
                     >
                         + Add New Team Member
                     </Button>
                 )}
-                {link && <p>{`localhost:3000/register/${slug}`}</p>}
+                {/* {link && <p>{`localhost:3000/register/${slug}`}</p>} */}
             </Grid>
             <Grid container spacing={2} sx={{ marginLeft: 0 }}>
-                {profiles ? <ShowProfiles /> : <p>Loading...</p>}
+                {profileQuery.status === 'success' ? (
+                    <ShowProfiles />
+                ) : (
+                    <p>Loading...</p>
+                )}
             </Grid>
+            <ReactQueryDevtools />
         </Container>
     );
 };
