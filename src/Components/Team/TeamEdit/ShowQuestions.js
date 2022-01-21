@@ -16,6 +16,7 @@ const ShowQuestions = () => {
     const [answers, setAnswers] = useState([]);
 
     const params = useParams();
+
     const getQ = () => {
         return axiosInstance.get(`/questions?populate=*&sort[order]=asc`);
     };
@@ -78,7 +79,7 @@ const ShowQuestions = () => {
         });
     };
 
-    const showQuestionInput = () => {
+    const ShowQuestionInput = () => {
         return questions.map((question, i) => {
             if (!answers[i]) {
                 answers[i] = {
@@ -126,7 +127,7 @@ const ShowQuestions = () => {
                         Answers
                     </Typography>
                     <br></br>
-                    {!answers ? <p>Loading...</p> : showQuestionInput()}
+                    {!answers ? <p>Loading...</p> : <ShowQuestionInput />}
                     <Button
                         variant="outlined"
                         type="submit"
