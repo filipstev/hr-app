@@ -1,15 +1,16 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import userReducer from './reducers/user';
 import registerReducer from './reducers/register';
-
 import createSagaMiddleware from 'redux-saga';
 import rootSaga, { watcherSaga } from './sagas/rootSaga';
+import getProfilesReducer from './reducers/team';
 
 const sagaMidleware = createSagaMiddleware();
 
 const rootReducer = combineReducers({
     user: userReducer,
     register: registerReducer,
+    profiles: getProfilesReducer,
 });
 
 export const store = createStore(

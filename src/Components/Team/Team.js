@@ -34,6 +34,48 @@ const Team = ({ status }) => {
         'Dec',
     ];
 
+    const getCompanySlug = () => {
+        const userStorage = JSON.parse(localStorage.getItem('user'));
+        axiosInstance
+            .get(
+                '/profiles?filters[user][id][$eq]=' +
+                    userStorage.user.id +
+                    '&populate=*'
+            )
+            .then((data) => {
+                setSlug(
+                    data.data.data[0].attributes.company.data.attributes.slug
+                );
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    };
+
+    const getProfiles = () => {
+        let help = [];
+        axiosInstance
+            .get(
+                `/profiles?filters[status][$eq]=${status}&sort=createdAt&populate=*&pagination[page]=${num}`
+            )
+            .then(({ data }) => {
+                data.data.forEach((item) => {
+                    help.push(item);
+                });
+                dispatch({
+                    type: ACTIONS.FETCH_PROFILES,
+                    fetchedProfiles: help,
+                });
+                dispatch({
+                    type: ACTIONS.PAGE_NUMBER,
+                    pageNumber: data.meta.pagination.pageCount,
+                });
+            })
+            .catch((err) => {
+                console.log(new Error(err));
+            });
+    };
+
     const handleFormatDate = (date) => {
         const day = date.getDate();
         const monthInLetters = month[date.getMonth()];
@@ -167,16 +209,18 @@ const Team = ({ status }) => {
                 <Typography>
                     {status === 'published' ? 'Team' : 'Pending for approval'}
                 </Typography>
+                <PageNumbers />
                 {status === 'published' && (
                     <Button
                         onClick={() => {
                             setLink(!link);
+                            console.log(slug);
                         }}
                     >
                         + Add New Team Member
                     </Button>
                 )}
-                {link && <p>{`${''}Link-to-app/register/<company-slug>`}</p>}
+                {link && <p>{`localhost:3000/register/${slug}`}</p>}
             </Grid>
             <Grid container spacing={2} sx={{ marginLeft: 0 }}>
                 {profileQuery.status === 'success' ? (

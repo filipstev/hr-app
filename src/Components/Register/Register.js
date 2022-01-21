@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import axiosInstance from '../../helpers/axiosInstance';
@@ -23,7 +23,8 @@ import { FormControl } from '@mui/material';
 const Register = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-
+    const { slug } = useParams();
+    console.log(slug);
     const [companies, setCompanies] = useState([]);
     const [company, setCompany] = useState('');
     const [companyId, setCompanyId] = useState('');
@@ -38,13 +39,17 @@ const Register = () => {
     useEffect(() => {
         axiosInstance.get(`/companies`).then(({ data }) => {
             setCompanies(data.data);
+            if (slug) {
+                setCompany(slug);
+                return;
+            }
             setCompany(data.data[0].attributes.slug);
         });
 
         return () => {
             'cleanup';
         };
-    }, []);
+    }, [slug]);
 
     const {
         value: enteredName,
@@ -91,7 +96,7 @@ const Register = () => {
         }
     };
 
-    const selectCompany = () => {
+    const SelectCompany = () => {
         return (
             <>
                 <FormControl
@@ -183,7 +188,7 @@ const Register = () => {
                         onBlur={emailBlurHandler}
                     />
                 </Grid>
-                {selectCompany()}
+                <SelectCompany />
                 <Grid item style={{ width: '100%' }}>
                     <TextField
                         error={passwordInputHasError ? true : false}
