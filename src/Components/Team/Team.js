@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useQuery } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 
 import Card from '@mui/material/Card';
@@ -33,48 +32,6 @@ const Team = ({ status }) => {
         'Nov',
         'Dec',
     ];
-
-    const getCompanySlug = () => {
-        const userStorage = JSON.parse(localStorage.getItem('user'));
-        axiosInstance
-            .get(
-                '/profiles?filters[user][id][$eq]=' +
-                    userStorage.user.id +
-                    '&populate=*'
-            )
-            .then((data) => {
-                setSlug(
-                    data.data.data[0].attributes.company.data.attributes.slug
-                );
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    };
-
-    const getProfiles = () => {
-        let help = [];
-        axiosInstance
-            .get(
-                `/profiles?filters[status][$eq]=${status}&sort=createdAt&populate=*&pagination[page]=${num}`
-            )
-            .then(({ data }) => {
-                data.data.forEach((item) => {
-                    help.push(item);
-                });
-                dispatch({
-                    type: ACTIONS.FETCH_PROFILES,
-                    fetchedProfiles: help,
-                });
-                dispatch({
-                    type: ACTIONS.PAGE_NUMBER,
-                    pageNumber: data.meta.pagination.pageCount,
-                });
-            })
-            .catch((err) => {
-                console.log(new Error(err));
-            });
-    };
 
     const handleFormatDate = (date) => {
         const day = date.getDate();
@@ -181,13 +138,7 @@ const Team = ({ status }) => {
                                 <Button
                                     size="small"
                                     onClick={(e) => {
-                                        DeleteProfile(id).then(() => {
-                                            // setProfiles(
-                                            //     profiles.filter(
-                                            //         (item) => item.id !== id
-                                            //     )
-                                            // );
-                                        });
+                                        DeleteProfile(id).then(() => {});
                                     }}
                                 >
                                     DELETE
@@ -209,18 +160,18 @@ const Team = ({ status }) => {
                 <Typography>
                     {status === 'published' ? 'Team' : 'Pending for approval'}
                 </Typography>
-                <PageNumbers />
+                {/* Pagination */}
                 {status === 'published' && (
                     <Button
                         onClick={() => {
                             setLink(!link);
-                            console.log(slug);
+                            // console.log(slug);
                         }}
                     >
                         + Add New Team Member
                     </Button>
                 )}
-                {link && <p>{`localhost:3000/register/${slug}`}</p>}
+                {/* {link && <p>{`localhost:3000/register/${slug}`}</p>} */}
             </Grid>
             <Grid container spacing={2} sx={{ marginLeft: 0 }}>
                 {profileQuery.status === 'success' ? (
