@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useQuery } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
 
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
@@ -8,34 +10,14 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import { Container } from '@mui/material';
-import axiosInstance from '../../helpers/axiosInstance';
 import DeleteProfile from './DeleteProfile';
+import { useProfiles } from '../../queryFunctions/fetchProfiles';
 
 const Team = ({ status }) => {
-    const [profiles, setProfiles] = useState([]);
+    const profileQuery = useProfiles(status);
+
     const navigate = useNavigate();
     const [link, setLink] = useState(false);
-
-    useEffect(() => {
-        let help = [];
-
-        axiosInstance
-            .get(
-                `/profiles?filters[status][$eq]=${status}&sort=createdAt&populate=*&pagination[pageSize]=50`
-            )
-            .then(({ data }) => {
-                data.data.forEach((item) => {
-                    help.push(item);
-                });
-                setProfiles([...help]);
-            })
-            .catch((err) => {
-                console.log(new Error(err));
-            });
-        return () => {
-            help = [];
-        };
-    }, [status]);
 
     const month = [
         'Jan',
@@ -61,8 +43,8 @@ const Team = ({ status }) => {
         return `Joined: ${fullDate}`;
     };
 
-    const showProfiles = () => {
-        return profiles.map(({ id, attributes }) => {
+    const ShowProfiles = () => {
+        return profileQuery.data.data.data.map(({ id, attributes }) => {
             return (
                 <>
                     <Grid item key={id}>
@@ -97,10 +79,6 @@ const Team = ({ status }) => {
                                             margin: '0 auto',
                                         }}
                                     >
-                                        {console.log(
-                                            attributes.profilePhoto.data
-                                                .attributes
-                                        )}
                                         <img
                                             style={{
                                                 width: '100%',
@@ -162,11 +140,11 @@ const Team = ({ status }) => {
                                     size="small"
                                     onClick={(e) => {
                                         DeleteProfile(id).then(() => {
-                                            setProfiles(
-                                                profiles.filter(
-                                                    (item) => item.id !== id
-                                                )
-                                            );
+                                            // setProfiles(
+                                            //     profiles.filter(
+                                            //         (item) => item.id !== id
+                                            //     )
+                                            // );
                                         });
                                     }}
                                 >
@@ -201,8 +179,13 @@ const Team = ({ status }) => {
                 {link && <p>{`${''}Link-to-app/register/<company-slug>`}</p>}
             </Grid>
             <Grid container spacing={2} sx={{ marginLeft: 0 }}>
-                {profiles.length !== 0 ? showProfiles() : <p>Loading...</p>}
+                {profileQuery.status === 'success' ? (
+                    <ShowProfiles />
+                ) : (
+                    <p>Loading...</p>
+                )}
             </Grid>
+            <ReactQueryDevtools />
         </Container>
     );
 };
