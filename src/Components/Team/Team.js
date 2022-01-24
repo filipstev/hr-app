@@ -8,15 +8,23 @@ import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
-import { Container } from '@mui/material';
+import Container from '@mui/material/Container';
+import Pagination from '@mui/material/Pagination';
 import DeleteProfile from './DeleteProfile';
 import { useProfiles } from '../../queryFunctions/fetchProfiles';
 
 const Team = ({ status }) => {
-    const profileQuery = useProfiles(status);
-
+    const [page, setPage] = useState(1);
+    const [pageCount, setPageCount] = useState(2);
+    const profileQuery = useProfiles(status, page);
     const navigate = useNavigate();
     const [link, setLink] = useState(false);
+
+    useEffect(() => {
+        console.log(profileQuery);
+        profileQuery.status === 'success' &&
+            setPageCount(profileQuery.data.data.meta.pagination.pageCount);
+    }, [profileQuery]);
 
     const month = [
         'Jan',
@@ -161,6 +169,7 @@ const Team = ({ status }) => {
                     {status === 'published' ? 'Team' : 'Pending for approval'}
                 </Typography>
                 {/* Pagination */}
+
                 {status === 'published' && (
                     <Button
                         onClick={() => {
@@ -173,6 +182,11 @@ const Team = ({ status }) => {
                 )}
                 {/* {link && <p>{`localhost:3000/register/${slug}`}</p>} */}
             </Grid>
+            <Pagination
+                sx={{ justifyContent: 'center', padding: '20px 0' }}
+                count={pageCount}
+                onClick={(e) => setPage(e.target.innerText)}
+            />
             <Grid container spacing={2} sx={{ marginLeft: 0 }}>
                 {profileQuery.status === 'success' ? (
                     <ShowProfiles />
@@ -180,6 +194,11 @@ const Team = ({ status }) => {
                     <p>Loading...</p>
                 )}
             </Grid>
+            <Pagination
+                sx={{ justifyContent: 'center', padding: '20px 0' }}
+                count={pageCount}
+                onClick={(e) => setPage(e.target.innerText)}
+            />
             <ReactQueryDevtools />
         </Container>
     );
