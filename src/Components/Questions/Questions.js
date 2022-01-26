@@ -5,7 +5,7 @@ import axiosInstance from '../../helpers/axiosInstance';
 import Header from '../Header/Header';
 import classes from './Questions.module.css';
 import SingleQuestion from './SingleQuestion/SingleQuestion';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 
 function compare(a, b) {
     if (a.attributes.order < b.attributes.order) {
@@ -32,16 +32,66 @@ const Questions = () => {
     const [meta, setMeta] = useState({});
     const [blocked, setBlocked] = useState(false);
 
-    const { data, status } = useQuery(['questions', setQuestions], () =>
-        fetchQuestions(setQuestions)
+    const changeUp = async ({ newOrder, prev, element }) => {
+        console.log(newOrder, prev, element);
+        await axiosInstance.put('/questions/' + newOrder[prev].id, {
+            data: { order: -1 },
+        });
+        await axiosInstance.put('/questions/' + newOrder[element].id, {
+            data: { order: newOrder[element].attributes.order },
+        });
+        await axiosInstance.put('/questions/' + newOrder[prev].id, {
+            data: { order: newOrder[prev].attributes.order },
+        });
+    };
+
+    const changeDown = async ({ newOrder, next, element }) => {
+        await axiosInstance.put('/questions/' + newOrder[next].id, {
+            data: { order: -1 },
+        });
+        await axiosInstance.put('/questions/' + newOrder[element].id, {
+            data: { order: newOrder[element].attributes.order },
+        });
+        await axiosInstance.put('/questions/' + newOrder[next].id, {
+            data: { order: newOrder[next].attributes.order },
+        });
+    };
+
+    const deleteQuestionAsync = async (id) => {
+        await axiosInstance
+            .delete('/questions/' + id)
+            .then((data) => {
+                console.log('success');
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+        const index = data.findIndex((q) => q.id === id);
+
+        for (let i = index; i < data.length; i++) {
+            if (data[i + 1]) {
+                await axiosInstance.put('/questions/' + data[i + 1].id, {
+                    data: { order: data[i + 1].attributes.order - 1 },
+                });
+            }
+        }
+    };
+
+    const { data, status, refetch } = useQuery(
+        ['questions', setQuestions],
+        () => fetchQuestions(setQuestions)
     );
+
+    const { mutateAsync: moveUp } = useMutation(changeUp);
+    const { mutateAsync: moveDown } = useMutation(changeDown);
+    const { mutateAsync: deleteQ } = useMutation(deleteQuestionAsync);
 
     const moveQuestion = async (direction, id) => {
         setBlocked(true);
         if (direction === 'up') {
             let element;
             let prev;
-            const newOrder = [...questions];
+            const newOrder = [...data];
 
             questions.map((question, index, elements) => {
                 if (question.id === id) {
@@ -55,28 +105,28 @@ const Questions = () => {
                     newOrder[element].attributes.order - 1;
                 newOrder[prev].attributes.order =
                     newOrder[prev].attributes.order + 1;
-                console.log(
-                    newOrder[element].attributes.order,
-                    ' ',
-                    newOrder[prev].attributes.order
-                );
+
                 setQuestions(newOrder.sort(compare));
-                await axiosInstance.put('/questions/' + newOrder[prev].id, {
-                    data: { order: -1 },
+                const data = { newOrder, prev, element };
+                moveUp(data).then(() => {
+                    refetch();
                 });
-                await axiosInstance.put('/questions/' + newOrder[element].id, {
-                    data: { order: newOrder[element].attributes.order },
-                });
-                await axiosInstance.put('/questions/' + newOrder[prev].id, {
-                    data: { order: newOrder[prev].attributes.order },
-                });
+                // await axiosInstance.put('/questions/' + newOrder[prev].id, {
+                //     data: { order: -1 },
+                // });
+                // await axiosInstance.put('/questions/' + newOrder[element].id, {
+                //     data: { order: newOrder[element].attributes.order },
+                // });
+                // await axiosInstance.put('/questions/' + newOrder[prev].id, {
+                //     data: { order: newOrder[prev].attributes.order },
+                // });
             }
         }
 
         if (direction === 'down') {
             let element;
             let next;
-            const newOrder = [...questions];
+            const newOrder = [...data];
             newOrder.map((question, index, elements) => {
                 if (question.id === id && elements[index + 1]) {
                     element = index;
@@ -89,41 +139,50 @@ const Questions = () => {
                     newOrder[element].attributes.order + 1;
                 newOrder[next].attributes.order =
                     newOrder[next].attributes.order - 1;
+                const data = { newOrder, next, element };
                 setQuestions(newOrder.sort(compare));
-                await axiosInstance.put('/questions/' + newOrder[next].id, {
-                    data: { order: -1 },
+
+                moveDown(data).then(() => {
+                    refetch();
                 });
-                await axiosInstance.put('/questions/' + newOrder[element].id, {
-                    data: { order: newOrder[element].attributes.order },
-                });
-                await axiosInstance.put('/questions/' + newOrder[next].id, {
-                    data: { order: newOrder[next].attributes.order },
-                });
+                // setQuestions(newOrder.sort(compare));
+                // await axiosInstance.put('/questions/' + newOrder[next].id, {
+                //     data: { order: -1 },
+                // });
+                // await axiosInstance.put('/questions/' + newOrder[element].id, {
+                //     data: { order: newOrder[element].attributes.order },
+                // });
+                // await axiosInstance.put('/questions/' + newOrder[next].id, {
+                //     data: { order: newOrder[next].attributes.order },
+                // });
             }
         }
         setBlocked(false);
     };
 
     const deleteQuestion = async (id) => {
-        await axiosInstance
-            .delete('/questions/' + id)
-            .then((data) => {
-                console.log('success');
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-        const index = questions.findIndex((q) => q.id === id);
+        // await axiosInstance
+        //     .delete('/questions/' + id)
+        //     .then((data) => {
+        //         console.log('success');
+        //     })
+        //     .catch((err) => {
+        //         console.log(err);
+        //     });
+        deleteQ(id).then(() => {
+            refetch();
+        });
+        // const index = questions.findIndex((q) => q.id === id);
 
-        for (let i = index; i < questions.length; i++) {
-            if (questions[i + 1]) {
-                questions[i + 1].attributes.order =
-                    questions[i + 1].attributes.order - 1;
-                await axiosInstance.put('/questions/' + questions[i + 1].id, {
-                    data: { order: questions[i + 1].attributes.order },
-                });
-            }
-        }
+        // for (let i = index; i < questions.length; i++) {
+        //     if (questions[i + 1]) {
+        //         questions[i + 1].attributes.order =
+        //             questions[i + 1].attributes.order - 1;
+        //         await axiosInstance.put('/questions/' + questions[i + 1].id, {
+        //             data: { order: questions[i + 1].attributes.order },
+        //         });
+        //     }
+        // }
         // if (questions[index + 1]) {
         //     questions[index + 1].attributes.order =
         //         questions[index + 1].attributes.order - 1;
