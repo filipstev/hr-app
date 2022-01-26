@@ -8,50 +8,62 @@ import {
     TextField,
     Typography,
 } from '@mui/material';
+import { useGetProfile } from '../../../queryFunctions/fetchSingleProfile';
+import { ReactQueryDevtools } from 'react-query/devtools';
+import { useMutation } from 'react-query';
+import { useMutateProfile } from '../../../hooks/use-mutate-profile';
 
 const BasicInfo = () => {
     const { id } = useParams();
+    const { data, isLoading } = useGetProfile(id);
 
     const [username, setUsername] = useState('');
     const [image, setImage] = useState('');
     const [newImage, setNewImage] = useState('');
+
+    const deleteImageMutation = useMutation(() => {
+        return axiosInstance.delete(`/upload/files/${image.id}`);
+    });
+
+    const uploadImageMutation = useMutation((imgFile) => {
+        return axiosInstance.post(`/upload`, imgFile.newImage);
+    });
+
     /* Profile */
+    const editProfile = useMutateProfile((data) => {
+        return axiosInstance.put(`/profiles/${id}`, data);
+    });
+
     useEffect(() => {
-        axiosInstance
-            .get(`/profiles/${id}?populate=*`)
-            .then(({ data }) => {
-                const name = data.data.attributes.name;
-                const imageID = data.data.attributes.profilePhoto.data;
-                setUsername(name);
-                setImage(imageID);
-            })
-            .catch((err) => console.error(new Error(err)));
+        !isLoading && setUsername(data.data.data.attributes.name);
+        !isLoading && setImage(data.data.data.attributes.profilePhoto.data);
+    }, [isLoading]);
 
-        return () => {
-            console.log('cleanup');
-        };
-    }, [id]);
+    const handleSubmit = () => {
+        // if (image) {
+        //     deleteImageMutation.mutate({});
+        // }
 
-    const handleChangeImage = async () => {
-        if (image !== null) {
-            axiosInstance.delete(`/upload/files/${image.id}`);
-        }
-        const uploadAndConnectNewImage = await axiosInstance.post(
-            `/upload`,
-            newImage
-        );
+        // uploadImageMutation.mutate({ newImage });
 
-        if (uploadAndConnectNewImage.status === 200) {
-            const imgid = uploadAndConnectNewImage.data[0].id;
-            console.log(imgid);
-            axiosInstance.put(`/profiles/${id}`, {
-                data: {
-                    profilePhoto: `${imgid}`,
-                },
-            });
-        }
+        // !uploadImageMutation.isSuccess &&
+        editProfile.mutate({
+            data: {
+                name: username,
+                profilePhoto: `239`,
+            },
+            id,
+        });
+
+        // uploadImageMutation.isSuccess &&
+        //     editProfile.mutate({
+        //         data: {
+        //             name: username,
+        //             profilePhoto: `${uploadImageMutation.data.data[0].id}`,
+        //         },
+        //         id,
+        //     });
     };
-
     return (
         <Grid
             item
@@ -59,12 +71,17 @@ const BasicInfo = () => {
             border="1px solid black"
             padding="10px"
         >
+            <div>
+                {editProfile.isLoading
+                    ? 'Chaning Username'
+                    : 'Username Changed'}
+            </div>
             <FormControl
                 sx={{ display: 'flex', flexDirection: 'column' }}
                 component="form"
                 onSubmit={(e) => {
                     e.preventDefault();
-                    handleChangeImage();
+                    handleSubmit();
                 }}
             >
                 <Typography
@@ -99,21 +116,11 @@ const BasicInfo = () => {
                     variant="outlined"
                     type="submit"
                     sx={{ marginTop: '15px' }}
-                    onClick={(e) => {
-                        axiosInstance
-                            .put(`/profiles/${id}`, {
-                                data: {
-                                    name: username,
-                                },
-                            })
-                            .catch((err) => {
-                                console.error(new Error(err));
-                            });
-                    }}
                 >
                     Save
                 </Button>
             </FormControl>
+            <ReactQueryDevtools />
         </Grid>
     );
 };

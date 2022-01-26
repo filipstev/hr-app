@@ -3,24 +3,30 @@ import { useQuery } from 'react-query';
 import React from 'react';
 import axiosInstance from '../../helpers/axiosInstance';
 
-const fetchTodoList = async (status) => {
-    const profiles = await axiosInstance.get(
-        `/profiles?filters[status][$eq]=${status}&sort=createdAt&populate=*&pagination[pageSize]=50`
-    );
-    return profiles;
-};
-
-const ReactQueryTeam = () => {
-    const info = useQuery('profiles', fetchTodoList);
-    console.log(info.data.data.data);
+export const Profiles = () => {
+    const fetchTodoList = async () => {
+        const profiles = await axiosInstance.get(
+            `/profiles?filters[status][$eq]=${'pending'}&sort=createdAt&populate=*&pagination[pageSize]=50`
+        );
+        return profiles;
+    };
+    const { data: profiles, status } = useQuery('profiles', fetchTodoList);
+    console.log(profiles.data);
+    if (status.loading) {
+        return <div>Loading...</div>;
+    }
+    if (status.error) {
+        return <div>Error</div>;
+    }
     return (
         <div style={{ marginTop: '100px' }}>
-            {info.data.data.data.map((profile) => {
-                return <p>{profile.attributes.name}</p>;
-            })}
             <ReactQueryDevtools />
         </div>
     );
+};
+
+const ReactQueryTeam = () => {
+    return <Profiles />;
 };
 
 export default ReactQueryTeam;

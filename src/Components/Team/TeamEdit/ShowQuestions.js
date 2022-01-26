@@ -10,98 +10,113 @@ import {
     TextField,
     Typography,
 } from '@mui/material';
+import { useGetProfile } from '../../../queryFunctions/fetchSingleProfile';
+import { useGetQuestions } from '../../../queryFunctions/fetchQuestions';
+import { useMutateAnswers } from '../../../hooks/use-mutate-answers';
 //  Triple check everything!
 const ShowQuestions = () => {
-    const [questions, setQuestions] = useState([]);
+    const { id } = useParams();
+
+    const { data: profile, status: profileStatus } = useGetProfile(id);
+    const { data: questions, status: questionStatus } = useGetQuestions();
+
     const [answers, setAnswers] = useState([]);
 
-    const params = useParams();
-
-    const getQ = () => {
-        return axiosInstance.get(`/questions?populate=*&sort[order]=asc`);
-    };
-    const getA = () => {
-        return axiosInstance.get(`/profiles/${params.id}?populate=*`);
-    };
-
-    const handleAnswerChange = (inputValue, i) => {
-        setAnswers([...answers], (answers[i].attributes.answer = inputValue));
-    };
-
-    useEffect(() => {
-        Promise.all([getQ(), getA()]).then((res) => {
-            const answerhelp = res[1].data.data.attributes.answers.data;
-            const questionhelp = res[0].data.data;
-
-            setQuestions([...questionhelp]);
-
-            handleConnectQuestionsAndAnswers(answerhelp, questionhelp);
-        });
-        return () => {
-            console.log('cleanup');
-        };
-    }, []);
+    const newAnswer = useMutateAnswers((data) => {
+        return axiosInstance.post(`/answers`, data);
+    });
+    const editAnswer = useMutateAnswers((data) => {
+        return axiosInstance.put(`/answers/${data.id}`, data);
+    });
 
     const handleConnectQuestionsAndAnswers = (answers, questions) => {
         let answersinrow = [];
+        console.log(answers);
+        console.log(questions);
+        // questions.forEach((question) => {
+        //     answers.forEach((answer) => {
+        //         question.attributes.answers.data.forEach((answerinq) => {
+        //             if (answer.id === answerinq.id) {
+        //                 answersinrow.push(answerinq);
+        //             }
+        //         });
+        //     });
+        // });
+        // setAnswers([...answersinrow]);
+    };
 
-        questions.forEach((question) => {
-            answers.forEach((answer) => {
-                question.attributes.answers.data.forEach((answerinq) => {
-                    if (answer.id === answerinq.id) {
-                        answersinrow.push(answerinq);
-                    }
-                });
-            });
-        });
-        setAnswers([...answersinrow]);
+    const handleAnswerChange = (inputValue, i) => {
+        // setAnswers([...answers], (answers[i].attributes.answer = inputValue));
     };
 
     const handleAnswerSubmit = () => {
-        answers.forEach(({ id, attributes }, i) => {
-            if (!id) {
-                axiosInstance.post(`/answers`, {
-                    data: {
-                        answer: attributes.answer,
-                        question: questions[i].id,
-                        profile: `${params.id}`,
-                    },
-                });
-            } else {
-                axiosInstance.put(`/answers/${id}`, {
-                    data: {
-                        answer: attributes.answer,
-                        question: questions[i].id,
-                        profile: `${params.id}`,
-                    },
-                });
-            }
-        });
+        // answers.forEach(({ id, attributes }, i) => {
+        //     const answerData = {
+        //         answer: attributes.answer,
+        //         question: questions.data.data[i].id,
+        //         profile: `${params.id}`,
+        //     };
+        //     if (!id) {
+        //         newAnswer.mutate({
+        //             data: answerData,
+        //         });
+        //     } else {
+        //         editAnswer.mutate({
+        //             id: id,
+        //             data: answerData,
+        //         });
+        //     }
+        // });
     };
+    useEffect(() => {
+        profileStatus === 'success' &&
+            setAnswers(profile.data.data.attributes.answers.data);
+    }, [profileStatus]);
+
+    useEffect(() => {
+        if (!!answers.length && questions) {
+            handleConnectQuestionsAndAnswers(answers, questions.data.data);
+        }
+    }, [answers, questions]);
 
     const ShowQuestionInput = () => {
-        return questions.map((question, i) => {
-            if (!answers[i]) {
-                answers[i] = {
-                    attributes: {
-                        answer: '',
-                    },
-                };
-            }
+        return questions.data.data.map((question, i) => {
+            // if (!answers[i]) {
+            //     answers[i] = {
+            //         attributes: {
+            //             answer: '',
+            //         },
+            //     };
+            // }
             return (
-                <>
-                    <label>
-                        {`Question ${i + 1} - `}
-                        {question.attributes.text}
-                    </label>
-                    <TextField
-                        type={question.attributes.type}
-                        sx={{ margin: '0 0 10px 0' }}
-                        value={answers[i].attributes.answer}
-                        onInput={(e) => handleAnswerChange(e.target.value, i)}
-                    />
-                    <Divider />
-                </>
+                profileStatus === 'success' && (
+                    <>
+                        <label>
+                            {`Question ${i + 1} - `}
+                            {question.attributes.text}
+                        </label>
+                        {profileStatus === 'success' && (
+                            <TextField
+                                key={question.id}
+                                type={question.attributes.type}
+                                sx={{ margin: '0 0 10px 0' }}
+                                value={
+                                    !!profile.data.data.attributes.answers.data
+                                        .length
+                                        ? profile.data.data.attributes.answers
+                                              .data[i].attributes.answer
+                                        : ''
+                                }
+                                onInput={(e) => {
+                                    profile.data.data.attributes.answers.data[
+                                        i
+                                    ].attributes.answer = e.target.value;
+                                }}
+                            />
+                        )}
+                        <Divider />
+                    </>
+                )
             );
         });
     };
@@ -114,7 +129,7 @@ const ShowQuestions = () => {
                     style={{ display: 'flex', flexDirection: 'column' }}
                     onSubmit={(e) => {
                         e.preventDefault();
-                        handleAnswerSubmit();
+                        // handleAnswerSubmit();
                     }}
                 >
                     <Typography
@@ -127,7 +142,12 @@ const ShowQuestions = () => {
                         Answers
                     </Typography>
                     <br></br>
-                    {!answers ? <p>Loading...</p> : <ShowQuestionInput />}
+
+                    {questionStatus !== 'success' ? (
+                        <p>Loading...</p>
+                    ) : (
+                        <ShowQuestionInput />
+                    )}
                     <Button
                         variant="outlined"
                         type="submit"

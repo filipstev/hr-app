@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ReactQueryDevtools } from 'react-query/devtools';
 
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
@@ -15,16 +14,19 @@ import { useProfiles } from '../../queryFunctions/fetchProfiles';
 
 const Team = ({ status }) => {
     const [page, setPage] = useState(1);
-    const [pageCount, setPageCount] = useState(2);
+    const [pageCount, setPageCount] = useState(1);
     const profileQuery = useProfiles(status, page);
     const navigate = useNavigate();
     const [link, setLink] = useState(false);
 
     useEffect(() => {
-        console.log(profileQuery);
         profileQuery.status === 'success' &&
             setPageCount(profileQuery.data.data.meta.pagination.pageCount);
     }, [profileQuery]);
+
+    useEffect(() => {
+        setPage(1);
+    }, [status]);
 
     const month = [
         'Jan',
@@ -146,7 +148,7 @@ const Team = ({ status }) => {
                                 <Button
                                     size="small"
                                     onClick={(e) => {
-                                        DeleteProfile(id).then(() => {});
+                                        DeleteProfile(id);
                                     }}
                                 >
                                     DELETE
@@ -168,7 +170,6 @@ const Team = ({ status }) => {
                 <Typography>
                     {status === 'published' ? 'Team' : 'Pending for approval'}
                 </Typography>
-                {/* Pagination */}
 
                 {status === 'published' && (
                     <Button
@@ -180,12 +181,16 @@ const Team = ({ status }) => {
                         + Add New Team Member
                     </Button>
                 )}
-                {/* {link && <p>{`localhost:3000/register/${slug}`}</p>} */}
             </Grid>
+
             <Pagination
-                sx={{ justifyContent: 'center', padding: '20px 0' }}
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    padding: '20px 0',
+                }}
                 count={pageCount}
-                onClick={(e) => setPage(e.target.innerText)}
+                onChange={(e) => setPage(e.target.innerText)}
             />
             <Grid container spacing={2} sx={{ marginLeft: 0 }}>
                 {profileQuery.status === 'success' ? (
@@ -194,12 +199,16 @@ const Team = ({ status }) => {
                     <p>Loading...</p>
                 )}
             </Grid>
+
             <Pagination
-                sx={{ justifyContent: 'center', padding: '20px 0' }}
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    padding: '20px 0',
+                }}
                 count={pageCount}
-                onClick={(e) => setPage(e.target.innerText)}
+                onClick={(e) => setPage(+e.target.innerText)}
             />
-            <ReactQueryDevtools />
         </Container>
     );
 };
