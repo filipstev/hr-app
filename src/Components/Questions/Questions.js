@@ -5,7 +5,26 @@ import axiosInstance from '../../helpers/axiosInstance';
 import Header from '../Header/Header';
 import classes from './Questions.module.css';
 import SingleQuestion from './SingleQuestion/SingleQuestion';
+import { useQuery } from 'react-query';
 
+function compare(a, b) {
+    if (a.attributes.order < b.attributes.order) {
+        return -1;
+    }
+    if (a.attributes.order > b.attributes.order) {
+        return 1;
+    }
+    return 0;
+}
+
+const fetchQuestions = async (setQuestions) => {
+    const res = await axiosInstance.get(`/questions`);
+    console.log(res.data.data);
+    const sortedQuestions = res.data.data.sort(compare);
+    setQuestions(sortedQuestions);
+
+    return sortedQuestions;
+};
 const Questions = () => {
     const navigate = useNavigate();
     const user = useSelector((state) => state.user.user);
@@ -13,29 +32,9 @@ const Questions = () => {
     const [meta, setMeta] = useState({});
     const [blocked, setBlocked] = useState(false);
 
-    function compare(a, b) {
-        if (a.attributes.order < b.attributes.order) {
-            return -1;
-        }
-        if (a.attributes.order > b.attributes.order) {
-            return 1;
-        }
-        return 0;
-    }
-
-    useEffect(() => {
-        axiosInstance
-            .get('/questions')
-            .then((data) => {
-                const qs = data.data.data;
-                qs.sort(compare);
-                setQuestions(qs);
-                setMeta(meta);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    }, [user]);
+    const { data, status } = useQuery(['questions', setQuestions], () =>
+        fetchQuestions(setQuestions)
+    );
 
     const moveQuestion = async (direction, id) => {
         setBlocked(true);
@@ -184,23 +183,25 @@ const Questions = () => {
                         </span>
                     </div>
                 </div>
-                {questions.length > 0
-                    ? questions.map((question) => {
-                          return (
-                              <SingleQuestion
-                                  title={question.attributes.text}
-                                  type={question.attributes.type}
-                                  order={question.attributes.order}
-                                  id={question.id}
-                                  key={question.id}
-                                  totalLength={questions.length}
-                                  moveQuestion={moveQuestion}
-                                  deleteQuestion={deleteQuestion}
-                                  blocked={blocked}
-                              />
-                          );
-                      })
-                    : null}
+                {data ? (
+                    data.map((question) => {
+                        return (
+                            <SingleQuestion
+                                title={question.attributes.text}
+                                type={question.attributes.type}
+                                order={question.attributes.order}
+                                id={question.id}
+                                key={question.id}
+                                totalLength={questions.length}
+                                moveQuestion={moveQuestion}
+                                deleteQuestion={deleteQuestion}
+                                blocked={blocked}
+                            />
+                        );
+                    })
+                ) : (
+                    <div>Loading...</div>
+                )}
             </div>
         </>
     );
