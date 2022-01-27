@@ -12,6 +12,7 @@ import { useGetProfile } from '../../../queryFunctions/fetchSingleProfile';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { useMutation } from 'react-query';
 import { useMutateProfile } from '../../../hooks/use-mutate-profile';
+import { useMutateImage } from '../../../hooks/use-mutate-image';
 
 const BasicInfo = () => {
     const { id } = useParams();
@@ -37,33 +38,28 @@ const BasicInfo = () => {
     useEffect(() => {
         !isLoading && setUsername(data.data.data.attributes.name);
         !isLoading && setImage(data.data.data.attributes.profilePhoto.data);
-    }, [isLoading]);
+    }, [isLoading, data]);
 
-    const handleSubmit = () => {
-        // if (image) {
-        //     deleteImageMutation.mutate({});
-        // }
-
-        // uploadImageMutation.mutate({ newImage });
-
-        // !uploadImageMutation.isSuccess &&
+    const handleSubmit = async () => {
         editProfile.mutate({
             data: {
                 name: username,
-                profilePhoto: `239`,
             },
             id,
         });
 
-        // uploadImageMutation.isSuccess &&
-        //     editProfile.mutate({
-        //         data: {
-        //             name: username,
-        //             profilePhoto: `${uploadImageMutation.data.data[0].id}`,
-        //         },
-        //         id,
-        //     });
+        const asd = await uploadImageMutation.mutateAsync({ newImage });
+        if (asd.status) {
+            deleteImageMutation.mutate({});
+            editProfile.mutate({
+                data: {
+                    profilePhoto: `${asd.data[0].id}`,
+                },
+                id,
+            });
+        }
     };
+
     return (
         <Grid
             item
@@ -72,7 +68,7 @@ const BasicInfo = () => {
             padding="10px"
         >
             <div>
-                {editProfile.isLoading
+                {!editProfile.isSuccess
                     ? 'Chaning Username'
                     : 'Username Changed'}
             </div>

@@ -71,7 +71,7 @@ const ShowQuestions = () => {
     useEffect(() => {
         profileStatus === 'success' &&
             setAnswers(profile.data.data.attributes.answers.data);
-    }, [profileStatus]);
+    }, [profileStatus, profile]);
 
     useEffect(() => {
         if (!!answers.length && questions) {
@@ -100,13 +100,7 @@ const ShowQuestions = () => {
                                 key={question.id}
                                 type={question.attributes.type}
                                 sx={{ margin: '0 0 10px 0' }}
-                                value={
-                                    !!profile.data.data.attributes.answers.data
-                                        .length
-                                        ? profile.data.data.attributes.answers
-                                              .data[i].attributes.answer
-                                        : ''
-                                }
+                                value={''}
                                 onInput={(e) => {
                                     profile.data.data.attributes.answers.data[
                                         i
