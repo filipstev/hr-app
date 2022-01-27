@@ -1,8 +1,9 @@
 import React from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import Login from '../Components/LoginUser/LoginUser';
 import Register from '../Components/Register/Register';
 import CompanyWall from '../Components/CompanyWall/CompanyWall';
+import NotFound from '../Components/NotFound/NotFound';
 
 const JoinRoutes = () => {
     return (
@@ -17,6 +18,7 @@ const JoinRoutes = () => {
                         element={<Register />}
                     />
                     <Route path="/team/:slug" element={<CompanyWall />} />
+                    <Route path="*" element={<Navigate replace to="/" />} />
                 </Routes>
             </BrowserRouter>
         </div>

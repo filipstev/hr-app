@@ -15,6 +15,37 @@ import MenuItem from '@mui/material/MenuItem';
 import FormHelperText from '@mui/material/FormHelperText';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import { useQuery } from 'react-query';
+
+function compareLast(a, b) {
+    if (a.attributes.createdAt > b.attributes.createdAt) {
+        return -1;
+    }
+    if (a.attributes.createdAt < b.attributes.createdAt) {
+        return 1;
+    }
+    return 0;
+}
+
+function compareFirst(a, b) {
+    if (a.attributes.createdAt < b.attributes.createdAt) {
+        return -1;
+    }
+    if (a.attributes.createdAt > b.attributes.createdAt) {
+        return 1;
+    }
+    return 0;
+}
+
+function compareName(a, b) {
+    if (a.attributes.name < b.attributes.name) {
+        return -1;
+    }
+    if (a.attributes.name > b.attributes.name) {
+        return 1;
+    }
+    return 0;
+}
 
 const CompanyWall = () => {
     const navigate = useNavigate();
@@ -27,6 +58,27 @@ const CompanyWall = () => {
     const [nameFilter, setNameFilter] = useState('');
     const [emptyFilter, setEmptyFilter] = useState(false);
 
+    const fetchProfiles = async () => {
+        const res = await axiosInstance.get(
+            '/profiles?filters[company][slug][$eq]=' +
+                location.pathname.split('/')[2] +
+                '&populate=*'
+        );
+
+        let publishedProfiles = [];
+
+        res.data.data.map((profile) => {
+            if (profile.attributes.status === 'published') {
+                publishedProfiles.push(profile);
+            }
+        });
+        if (publishedProfiles.length === 0) {
+            setEmptyFilter(true);
+        }
+        setAllProfiles(publishedProfiles);
+        return publishedProfiles;
+    };
+
     const handleChange = (e) => {
         setSort(e.target.value);
     };
@@ -34,6 +86,10 @@ const CompanyWall = () => {
     const onNameFilterChange = (e) => {
         setNameFilter(e.target.value);
     };
+
+    const { data, status, refetch } = useQuery(['team-profiles'], () =>
+        fetchProfiles()
+    );
 
     useEffect(() => {
         let newProfiles = [];
@@ -54,36 +110,6 @@ const CompanyWall = () => {
         }
     }, [nameFilter]);
 
-    function compareLast(a, b) {
-        if (a.attributes.createdAt > b.attributes.createdAt) {
-            return -1;
-        }
-        if (a.attributes.createdAt < b.attributes.createdAt) {
-            return 1;
-        }
-        return 0;
-    }
-
-    function compareFirst(a, b) {
-        if (a.attributes.createdAt < b.attributes.createdAt) {
-            return -1;
-        }
-        if (a.attributes.createdAt > b.attributes.createdAt) {
-            return 1;
-        }
-        return 0;
-    }
-
-    function compareName(a, b) {
-        if (a.attributes.name < b.attributes.name) {
-            return -1;
-        }
-        if (a.attributes.name > b.attributes.name) {
-            return 1;
-        }
-        return 0;
-    }
-
     useEffect(() => {
         let newProfiles = [];
         if (sort === 'last') {
@@ -101,7 +127,7 @@ const CompanyWall = () => {
     useEffect(() => {
         axiosInstance
             .get(
-                'https://internship-hr-app.herokuapp.com/api/profiles?filters[company][slug][$eq]=' +
+                '/profiles?filters[company][slug][$eq]=' +
                     location.pathname.split('/')[2] +
                     '&populate=*'
             )
@@ -264,6 +290,7 @@ const CompanyWall = () => {
                 ) : (
                     <p>Loading...</p>
                 )}
+                {/* {showProfiles()} */}
             </Grid>
             <Modal
                 show={modalOpen}

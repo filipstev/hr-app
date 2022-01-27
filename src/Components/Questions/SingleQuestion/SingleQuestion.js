@@ -37,6 +37,7 @@ const SingleQuestion = (props) => {
                     <i
                         className="fas fa-angle-down"
                         onClick={() => {
+                            console.log(props.blocked);
                             if (!props.blocked) {
                                 props.moveQuestion('down', props.id);
                             }
