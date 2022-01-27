@@ -12,6 +12,8 @@ import {
 import axiosInstance from '../../../helpers/axiosInstance';
 import { useLocation, useNavigate } from 'react-router-dom';
 
+import { useMutation, useQuery } from 'react-query';
+
 const EditQuestion = (props) => {
     const navigate = useNavigate();
     const location = useLocation();
@@ -19,19 +21,34 @@ const EditQuestion = (props) => {
     const [type, setType] = useState('text');
     const [id, setId] = useState(null);
 
-    useEffect(() => {
-        axiosInstance
-            .get('/questions/' + location.state.id)
-            .then((data) => {
-                console.log(data.data.data.attributes);
-                setText(data.data.data.attributes.text);
-                setType(data.data.data.attributes.type);
-                setId(data.data.data.id);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    }, [location.state]);
+    const fetchQuestion = async (setText, setType, setId) => {
+        const res = await axiosInstance.get(`/questions/${location.state.id}`);
+
+        setText(res.data.data.attributes.text);
+        setType(res.data.data.attributes.type);
+        setId(res.data.data.id);
+
+        return res.data.data;
+    };
+
+    const { data, status, refetch } = useQuery(
+        ['questions', setText, setType, setId],
+        () => fetchQuestion(setText, setType, setId)
+    );
+
+    // useEffect(() => {
+    //     axiosInstance
+    //         .get('/questions/' + location.state.id)
+    //         .then((data) => {
+    //             console.log(data.data.data.attributes);
+    //             setText(data.data.data.attributes.text);
+    //             setType(data.data.data.attributes.type);
+    //             setId(data.data.data.id);
+    //         })
+    //         .catch((err) => {
+    //             console.log(err);
+    //         });
+    // }, [location.state]);
 
     const submitQuestion = async () => {
         if (text !== '' && type && id) {
@@ -76,6 +93,8 @@ const EditQuestion = (props) => {
                     Edit Question
                 </h2>
                 <TextField
+                    defaultValue=" "
+                    autoFocus
                     label="Question text"
                     variant="outlined"
                     fullWidth="true"

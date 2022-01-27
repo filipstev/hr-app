@@ -11,17 +11,30 @@ import React, { useState, useEffect } from 'react';
 import Header from '../Header/Header';
 import { useSelector } from 'react-redux';
 import axiosInstance from '../../helpers/axiosInstance';
+import { useQuery } from 'react-query';
+
+const fetchCompanyName = async () => {
+    const res = await axiosInstance.get('/companies/2');
+
+    // console.log(res.data.data.attributes.name);
+
+    return res.data.data.attributes.name;
+};
 
 const CompanyInfo = () => {
-    const [companyName, setCompanyName] = useState('');
+    const [companyName, setCompanyName] = useState(' ');
     const [files, setFiles] = useState([]);
+
+    const { data, status, refetch } = useQuery(['companyName'], () =>
+        fetchCompanyName()
+    );
 
     useEffect(() => {
         axiosInstance
             .get('/companies/2')
             .then((data) => {
                 setCompanyName(data.data.data.attributes.name);
-                console.log(data.data);
+                // console.log(data.data);
             })
             .catch((err) => {
                 console.log(err);
@@ -88,10 +101,12 @@ const CompanyInfo = () => {
                         }}
                     >
                         <TextField
+                            autoFocus
+                            defaultValue=" "
                             label="Company Name"
                             variant="outlined"
                             fullWidth="true"
-                            value={companyName}
+                            value={companyName !== ' ' ? companyName : data}
                             onChange={(e) => setCompanyName(e.target.value)}
                         />
                     </Grid>

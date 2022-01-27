@@ -249,7 +249,9 @@ const CompanyWall = () => {
                         >
                             <MenuItem value={'last'}>Last Joined</MenuItem>
                             <MenuItem value={'first'}>First Joined</MenuItem>
-                            <MenuItem value={'name'}>Name</MenuItem>
+                            <MenuItem value={'name'}>Name (A-Z) </MenuItem>
+                            {/* TODO: Mozda ubaciti obrnuto sortiranje po imenu */}
+                            {/* <MenuItem value={'name'}>Name (Z-A) </MenuItem> */}
                         </Select>
                     </FormControl>
                 </div>
