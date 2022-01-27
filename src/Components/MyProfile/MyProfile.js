@@ -2,22 +2,22 @@ import React, { useEffect, useState } from 'react';
 import SingleContainer from './SingleContainer';
 
 import axiosInstance from '../../helpers/axiosInstance';
+import { useQuery } from 'react-query';
+
+const userStorage = JSON.parse(localStorage.getItem('user'));
+
+const fetchUserData = async () => {
+    const res = await axiosInstance.get(
+        '/profiles?filters[user][id][$eq]=' + userStorage.user.id
+    );
+
+    return res.data.data[0];
+};
 
 const MyProfile = () => {
     const [user, setUser] = useState({});
-    const userStorage = JSON.parse(localStorage.getItem('user'));
-    useEffect(() => {
-        axiosInstance
-            .get('/profiles?filters[user][id][$eq]=' + userStorage.user.id)
-            .then((data) => {
-                console.log(userStorage.user.id, 'here');
 
-                setUser(data.data.data[0]);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    }, []);
+    const { data, status, refetch } = useQuery(['user'], () => fetchUserData());
 
     return (
         <div
@@ -39,10 +39,10 @@ const MyProfile = () => {
             </h1>
 
             <div style={{ display: 'flex' }}>
-                <SingleContainer info user={user} />
+                <SingleContainer info user={data} />
                 <SingleContainer
                     security
-                    user={user}
+                    user={data}
                     email={userStorage.user.email}
                 />
             </div>
