@@ -5,6 +5,7 @@ import { Button, Divider, TextField, FormControl } from '@mui/material';
 import { useGetQuestions } from '../../../queryFunctions/fetchQuestions';
 import { useMutateAnswers } from '../../../hooks/use-mutate-answers';
 import { useGetAnswersOfProfile } from '../../../queryFunctions/fetchAnswers';
+import { useEffect, useState } from 'react';
 
 const EditAnswers = () => {
     const { id } = useParams();
@@ -21,6 +22,8 @@ const EditAnswers = () => {
         isLoading: questionsIsLoading,
     } = useGetQuestions();
 
+    const [answerArray, setAnswerArray] = useState([]);
+
     const newAnswer = useMutateAnswers((data) => {
         return axiosInstance.post(`/answers`, data);
     });
@@ -29,23 +32,42 @@ const EditAnswers = () => {
         return axiosInstance.put(`/answers/${data.id}`, data);
     });
 
+    const handleAnswerChange = (value, i) => {
+        // setAnswerArray(
+        //     (answerArray) => [...answerArray],
+        //     (answerArray[i].answer = value)
+        // );
+        answerArray[i].answer = '123';
+        console.log(answerArray[i]);
+    };
+
+    console.log(answerArray[0]);
     if (questionsIsLoading || answersIsLoading) {
         return <p>Q&A is loading</p>;
     }
-    const Questions = () =>
-        questions.data.data.map((question, i) => {
-            let answer;
+    const Questions = () => {
+        return questions.data.data.map((question, i) => {
             // If there are no answers, or answers are not connected to question
-            if (!answers.data.data.question || !answers.data.data) {
-                answer = '';
-            }
-            // If there is answer
-            // if (answers.data.data.length) {
-            //     answer = answers.data.data.find(
-            //         (item) => item.attributes.question.data.id === question.id
-            //     ).attributes.answer;
+            // if (!answers.data.data.question || !answers.data.data) {
+            //     setAnswerArray(...answerArray, {});
             // }
+            // If there is answer
 
+            if (answers.length) {
+                const asd = answers.find(
+                    (item) => item.attributes.question.data.id === question.id
+                );
+
+                // setAnswerArray(
+                //     (answerArray) => [...answerArray],
+                //     (answerArray[i] = {
+                //         id: asd.id,
+                //         answer: asd.attributes.answer,
+                //     })
+                // );
+                answerArray[i] = { id: asd.id, answer: asd.attributes.answer };
+                console.log(answerArray);
+            }
             return (
                 <div key={question.id}>
                     <label>
@@ -56,11 +78,9 @@ const EditAnswers = () => {
                     <TextField
                         type={question.attributes.type}
                         sx={{ margin: '0 0 10px 0' }}
-                        value={answer}
+                        value={answerArray[i].answer}
                         onInput={(e) => {
-                            // answers.data.data.attributes.answers.data[
-                            //     i
-                            // ].attributes.answer = e.target.value;
+                            handleAnswerChange(e.target.value, i);
                         }}
                     />
 
@@ -68,6 +88,7 @@ const EditAnswers = () => {
                 </div>
             );
         });
+    };
 
     return (
         <>
@@ -77,6 +98,15 @@ const EditAnswers = () => {
                 onSubmit={(e) => {
                     e.preventDefault();
                     // handleAnswerSubmit();
+                    // answerArray.forEach((answer) => {
+                    //     editAnswer.mutate({
+                    //         data: {
+                    //             answer: answer.answer,
+                    //         },
+                    //         id: answer.id,
+                    //     });
+                    // });
+                    console.log(answerArray);
                 }}
             >
                 <Questions />

@@ -11,16 +11,30 @@ import Container from '@mui/material/Container';
 import Pagination from '@mui/material/Pagination';
 import DeleteProfile from './DeleteProfile';
 import { useProfiles } from '../../queryFunctions/fetchProfiles';
+import { useCompany } from '../../queryFunctions/fetchCompany';
+import { useSelector } from 'react-redux';
 
 const Team = ({ status }) => {
+    const navigate = useNavigate();
+    const userId = useSelector((state) => state.user.user.user.id);
+
     const [page, setPage] = useState(1);
     const [pageCount, setPageCount] = useState(1);
-    const { data: profiles, isLoading, isFetching } = useProfiles(status, page);
-    console.log(profiles);
-    console.log(isLoading);
-    const navigate = useNavigate();
 
     const [link, setLink] = useState(false);
+
+    const [companyName, setCompanyName] = useState('');
+    // Get User Company so we can filter profiles by Company Name
+    const { data: company, isFetched } = useCompany(userId);
+    const {
+        data: profiles,
+        isLoading,
+        isFetching,
+    } = useProfiles(status, page, companyName);
+
+    useEffect(() => {
+        isFetched && setCompanyName(company.data[0].attributes.name);
+    }, [company, isFetched]);
 
     useEffect(() => {
         !isLoading && setPageCount(profiles.meta.pagination.pageCount);
@@ -165,6 +179,7 @@ const Team = ({ status }) => {
     if (isFetching) {
         return <p style={{ marginTop: '150px' }}>Is Loading...</p>;
     }
+
     return (
         <Container maxWidth="false">
             <Grid

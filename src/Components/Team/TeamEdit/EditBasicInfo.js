@@ -20,7 +20,7 @@ const BasicInfo = ({ edit }) => {
     const { id } = useParams();
     const { data: profile, isLoading } = useGetProfile(id);
     const [username, setUsername] = useState('');
-    console.log('EditBasicInfoProfile: ', profile);
+
     const image = !isLoading && profile.data.attributes.profilePhoto.data;
     const [newImage, setNewImage] = useState('');
 

@@ -5,7 +5,7 @@ export const useMutateAnswers = (mutation) => {
 
     return useMutation(mutation, {
         onSuccess: (data, variables) => {
-            console.log('Data', data);
+            console.log('Data', data.data.data);
             console.log('Variables: ', variables);
             queryClient.setQueryData(['answers', { id: variables.id }], data);
         },
