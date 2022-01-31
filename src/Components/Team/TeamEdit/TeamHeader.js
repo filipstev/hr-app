@@ -19,7 +19,6 @@ import Typography from '@mui/material/Typography';
 const TeamHeader = ({ edit }) => {
     const { id } = useParams();
     const { data, isLoading } = useGetProfile(id);
-
     const navigate = useNavigate();
 
     const editProfile = useMutateProfile((data) => {
@@ -28,32 +27,32 @@ const TeamHeader = ({ edit }) => {
 
     const StatusChange = () => {
         return (
-            !isLoading && (
-                <>
-                    <InputLabel id="selectStatus">Status</InputLabel>
-                    <Select
-                        style={{ paddingLeft: '16px' }}
-                        labelId="selectStatus"
-                        id="selectStatus"
-                        label="Status"
-                        value={data.data.data.attributes.status}
-                        onChange={(e) => {
-                            editProfile.mutate({
-                                data: {
-                                    status: e.target.value,
-                                },
-                                id,
-                            });
-                        }}
-                    >
-                        <MenuItem value={'published'}>Published</MenuItem>
-                        <MenuItem value={'pending'}>Pending</MenuItem>
-                    </Select>
-                </>
-            )
+            <>
+                <InputLabel id="selectStatus">Status</InputLabel>
+                <Select
+                    style={{ paddingLeft: '16px' }}
+                    labelId="selectStatus"
+                    id="selectStatus"
+                    label="Status"
+                    value={data.data.attributes.status}
+                    onChange={(e) => {
+                        editProfile.mutate({
+                            data: {
+                                status: e.target.value,
+                            },
+                            id,
+                        });
+                    }}
+                >
+                    <MenuItem value={'published'}>Published</MenuItem>
+                    <MenuItem value={'pending'}>Pending</MenuItem>
+                </Select>
+            </>
         );
     };
-
+    if (isLoading) {
+        return <p>Loading</p>;
+    }
     return (
         <Grid
             container

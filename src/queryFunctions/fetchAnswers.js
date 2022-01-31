@@ -1,13 +1,13 @@
 import { useQuery } from 'react-query';
 import axiosInstance from '../helpers/axiosInstance';
 
-const fetchQuestions = async (id) => {
+const fetchAnswers = async (id) => {
     const answers = await axiosInstance.get(
-        `/api/answers/?filters[profile][id][$eq]=${id}&populate=*`
+        `/answers/?filters[profile][id][$eq]=${id}&populate=*`
     );
     return answers;
 };
 
-export const useGetQuestions = (id) => {
-    return useQuery(['questions', id], fetchQuestions(id));
+export const useGetAnswersOfProfile = (id) => {
+    return useQuery(['answers', id], () => fetchAnswers(id));
 };

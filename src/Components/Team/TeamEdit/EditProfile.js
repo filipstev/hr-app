@@ -1,8 +1,8 @@
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
 import TeamHeader from './TeamHeader';
-import BasicInfo from './BasicInfo';
-import ShowQuestions from './ShowQuestions';
+import BasicInfo from './EditBasicInfo';
+import ShowAnswers from './ShowAnswers';
 
 const EditProfile = ({ edit }) => {
     return (
@@ -11,7 +11,7 @@ const EditProfile = ({ edit }) => {
                 <TeamHeader edit={edit} />
                 <Grid container direction="row" justifyContent="space-between">
                     <BasicInfo edit={edit} />
-                    <ShowQuestions edit={edit} />
+                    <ShowAnswers edit={edit} />
                 </Grid>
             </Container>
         </>

@@ -15,18 +15,20 @@ import { useProfiles } from '../../queryFunctions/fetchProfiles';
 const Team = ({ status }) => {
     const [page, setPage] = useState(1);
     const [pageCount, setPageCount] = useState(1);
-    const profileQuery = useProfiles(status, page);
+    const { data: profiles, isLoading, isFetching } = useProfiles(status, page);
+    console.log(profiles);
+    console.log(isLoading);
     const navigate = useNavigate();
+
     const [link, setLink] = useState(false);
 
     useEffect(() => {
-        profileQuery.status === 'success' &&
-            setPageCount(profileQuery.data.data.meta.pagination.pageCount);
-    }, [profileQuery]);
+        !isLoading && setPageCount(profiles.meta.pagination.pageCount);
+    }, [profiles, isLoading]);
 
     useEffect(() => {
         setPage(1);
-    }, [status]);
+    }, []);
 
     const month = [
         'Jan',
@@ -53,7 +55,7 @@ const Team = ({ status }) => {
     };
 
     const ShowProfiles = () => {
-        return profileQuery.data.data.data.map(({ id, attributes }) => {
+        return profiles.data.map(({ id, attributes }) => {
             return (
                 <>
                     <Grid item key={id}>
@@ -98,7 +100,7 @@ const Team = ({ status }) => {
                                                     .attributes.formats
                                                     .thumbnail.url
                                             }
-                                            alt="profile"
+                                            alt="profiles"
                                         />
                                     </div>
                                 )}
@@ -160,7 +162,9 @@ const Team = ({ status }) => {
             );
         });
     };
-
+    if (isFetching) {
+        return <p style={{ marginTop: '150px' }}>Is Loading...</p>;
+    }
     return (
         <Container maxWidth="false">
             <Grid
@@ -193,22 +197,8 @@ const Team = ({ status }) => {
                 onChange={(e) => setPage(e.target.innerText)}
             />
             <Grid container spacing={2} sx={{ marginLeft: 0 }}>
-                {profileQuery.status === 'success' ? (
-                    <ShowProfiles />
-                ) : (
-                    <p>Loading...</p>
-                )}
+                <ShowProfiles />
             </Grid>
-
-            <Pagination
-                sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    padding: '20px 0',
-                }}
-                count={pageCount}
-                onClick={(e) => setPage(+e.target.innerText)}
-            />
         </Container>
     );
 };

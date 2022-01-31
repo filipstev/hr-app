@@ -1,6 +1,13 @@
 import axiosInstance from '../../../helpers/axiosInstance';
 import { useParams } from 'react-router-dom';
-import React, { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
+// React Query
+import { useMutation } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
+// Custom React Query
+import { useGetProfile } from '../../../queryFunctions/fetchSingleProfile';
+import { useMutateProfile } from '../../../hooks/use-mutate-profile';
+
 import {
     Button,
     FormControl,
@@ -8,18 +15,13 @@ import {
     TextField,
     Typography,
 } from '@mui/material';
-import { useGetProfile } from '../../../queryFunctions/fetchSingleProfile';
-import { ReactQueryDevtools } from 'react-query/devtools';
-import { useMutation } from 'react-query';
-import { useMutateProfile } from '../../../hooks/use-mutate-profile';
-import { useMutateImage } from '../../../hooks/use-mutate-image';
 
-const BasicInfo = () => {
+const BasicInfo = ({ edit }) => {
     const { id } = useParams();
-    const { data, isLoading } = useGetProfile(id);
-
+    const { data: profile, isLoading } = useGetProfile(id);
     const [username, setUsername] = useState('');
-    const [image, setImage] = useState('');
+    console.log('EditBasicInfoProfile: ', profile);
+    const image = !isLoading && profile.data.attributes.profilePhoto.data;
     const [newImage, setNewImage] = useState('');
 
     const deleteImageMutation = useMutation(() => {
@@ -30,15 +32,9 @@ const BasicInfo = () => {
         return axiosInstance.post(`/upload`, imgFile.newImage);
     });
 
-    /* Profile */
     const editProfile = useMutateProfile((data) => {
         return axiosInstance.put(`/profiles/${id}`, data);
     });
-
-    useEffect(() => {
-        !isLoading && setUsername(data.data.data.attributes.name);
-        !isLoading && setImage(data.data.data.attributes.profilePhoto.data);
-    }, [isLoading, data]);
 
     const handleSubmit = async () => {
         editProfile.mutate({
@@ -49,6 +45,7 @@ const BasicInfo = () => {
         });
 
         const asd = await uploadImageMutation.mutateAsync({ newImage });
+
         if (asd.status) {
             deleteImageMutation.mutate({});
             editProfile.mutate({
@@ -60,6 +57,13 @@ const BasicInfo = () => {
         }
     };
 
+    useEffect(() => {
+        !isLoading && setUsername(profile.data.attributes.name);
+    }, [isLoading]);
+
+    if (isLoading) {
+        return <p>Profile is Loading</p>;
+    }
     return (
         <Grid
             item
@@ -72,6 +76,7 @@ const BasicInfo = () => {
                     ? 'Chaning Username'
                     : 'Username Changed'}
             </div>
+            <div>{username}</div>
             <FormControl
                 sx={{ display: 'flex', flexDirection: 'column' }}
                 component="form"
