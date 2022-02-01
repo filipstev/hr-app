@@ -16,6 +16,9 @@ const AddQuestion = (props) => {
     const [text, setText] = useState('');
     const [type, setType] = useState('text');
     const [questionsLength, setQuestionsLength] = useState(null);
+    const [company, setCompany] = useState('');
+    const [meta, setMeta] = useState();
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -27,6 +30,11 @@ const AddQuestion = (props) => {
             .catch((err) => {
                 console.log(err);
             });
+        axiosInstance
+            .get('/profiles?filters[user][id][$eq]=80&populate=*')
+            .then((data) => {
+                setCompany(data.data.data[0].attributes.company.data.id);
+            });
     }, []);
 
     const submitQuestion = async () => {
@@ -37,6 +45,7 @@ const AddQuestion = (props) => {
                         text: text,
                         type: type,
                         order: questionsLength,
+                        company: company,
                     },
                 })
                 .then((data) => {

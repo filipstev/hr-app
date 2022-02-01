@@ -6,3 +6,8 @@ export function requestGetUser(email, password) {
         password: password,
     });
 }
+export function checkUserProfile(id) {
+    return axiosInstance.get(
+        `/profiles?filters[user][id][$eq]=${id}&populate=*`
+    );
+}

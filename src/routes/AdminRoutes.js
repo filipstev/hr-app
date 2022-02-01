@@ -15,12 +15,12 @@ import CompanyWall from '../Components/CompanyWall/CompanyWall';
 import ReactQueryTeam from '../Components/Team/ReactQueryTeam';
 import NotFound from '../Components/NotFound/NotFound';
 
-const JoinRoutes = () => {
+const AdminRoutes = (props) => {
     return (
         <>
             <BrowserRouter>
                 <Header />
-                <MainMenu />
+                <MainMenu role={props.role} />
                 <Routes>
                     <Route path="/" element={<CompanyInfo />} />
                     <Route path="/questions" element={<Questions />} />
@@ -56,4 +56,4 @@ const JoinRoutes = () => {
     );
 };
 
-export default JoinRoutes;
+export default AdminRoutes;

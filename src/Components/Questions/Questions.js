@@ -18,7 +18,10 @@ function compare(a, b) {
 }
 
 const fetchQuestions = async (setQuestions) => {
-    const res = await axiosInstance.get(`/questions`);
+    //TODO: DINAMICKI ID ZA KOMPANIJE
+    const res = await axiosInstance.get(
+        `/questions?filters[company][id][$eq]=2&populate=*`
+    );
     console.log(res.data.data);
     const sortedQuestions = res.data.data.sort(compare);
     setQuestions(sortedQuestions);

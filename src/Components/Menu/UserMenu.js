@@ -19,12 +19,10 @@ import { useSelector } from 'react-redux';
 
 const drawerWidth = 240;
 
-function MainMenu(props) {
+function UserMenu(props) {
     const navigate = useNavigate();
     const { window } = props;
     const [mobileOpen, setMobileOpen] = React.useState(false);
-
-    const user = JSON.parse(localStorage.getItem('user'));
 
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
@@ -32,21 +30,14 @@ function MainMenu(props) {
 
     const drawerList = [
         {
-            text: 'Pending for approval',
-            navigateTo: 'team/pending',
+            text: 'Questions',
+            navigateTo: '',
         },
         {
             text: 'Team',
             navigateTo: 'team',
         },
-        {
-            text: 'Questions',
-            navigateTo: 'questions',
-        },
-        {
-            text: 'Company Info',
-            navigateTo: '',
-        },
+
         {
             text: 'My Profile',
             navigateTo: 'my-profile',
@@ -57,7 +48,10 @@ function MainMenu(props) {
         <div>
             <List>
                 {drawerList.map((item, index) => {
+                    console.log(item, 'here');
                     const { text, navigateTo } = item;
+                    console.log(text);
+
                     return (
                         <ListItem
                             button
@@ -141,11 +135,11 @@ function MainMenu(props) {
     );
 }
 
-MainMenu.propTypes = {
+UserMenu.propTypes = {
     /**
      * Injected by the documentation to work in an iframe.
      * You won't need it on your project.
      */
     window: PropTypes.func,
 };
-export default MainMenu;
+export default UserMenu;
