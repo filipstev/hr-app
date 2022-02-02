@@ -21,6 +21,26 @@ const EditQuestion = (props) => {
     const [type, setType] = useState('text');
     const [id, setId] = useState(null);
 
+    const submitQuestion = async () => {
+        if (text !== '' && type && id) {
+            await axiosInstance
+                .put('/questions/' + location.state.id, {
+                    data: {
+                        text: text,
+                        type: type,
+                    },
+                })
+                .then((data) => {
+                    console.log('success');
+                    console.log(data);
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+            navigate('/questions');
+        }
+    };
+
     const fetchQuestion = async (setText, setType, setId) => {
         const res = await axiosInstance.get(`/questions/${location.state.id}`);
 
@@ -50,25 +70,7 @@ const EditQuestion = (props) => {
     //         });
     // }, [location.state]);
 
-    const submitQuestion = async () => {
-        if (text !== '' && type && id) {
-            await axiosInstance
-                .put('/questions/' + location.state.id, {
-                    data: {
-                        text: text,
-                        type: type,
-                    },
-                })
-                .then((data) => {
-                    console.log('success');
-                    console.log(data);
-                })
-                .catch((err) => {
-                    console.log(err);
-                });
-            navigate('/questions');
-        }
-    };
+    const { mutate: editQuestion } = useMutation(submitQuestion);
 
     return (
         <>
@@ -120,7 +122,7 @@ const EditQuestion = (props) => {
                 <Button
                     style={{ alignSelf: 'flex-end' }}
                     variant="outlined"
-                    onClick={submitQuestion}
+                    onClick={() => editQuestion()}
                 >
                     Save
                 </Button>

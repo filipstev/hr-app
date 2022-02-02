@@ -2,12 +2,41 @@ import React, { useEffect, useState } from 'react';
 import { Button, TextField } from '@material-ui/core';
 import axios from 'axios';
 import axiosInstance from '../../helpers/axiosInstance';
+import { useMutation } from 'react-query';
 
 const SingleContainer = (props) => {
     const [name, setName] = useState('');
     const [files, setFiles] = useState([]);
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
+
+    const updateInfo = async () => {
+        await axiosInstance.put('/profiles/' + props.user.id, {
+            data: { name: name },
+        });
+
+        if (files.length > 0) {
+            const formData = new FormData();
+
+            formData.append('files', files[0]);
+
+            axiosInstance
+                .post('/upload', formData)
+                .then((response) => {
+                    console.log(response);
+                    axiosInstance.put('/profiles/' + props.user.id, {
+                        data: {
+                            profilePhoto: response.data,
+                        },
+                    });
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        }
+    };
+
+    const { mutate: updateUser } = useMutation(updateInfo);
 
     useEffect(() => {
         const userStorage = JSON.parse(localStorage.getItem('user'));
@@ -27,23 +56,6 @@ const SingleContainer = (props) => {
             setName(props.user.attributes ? props.user.attributes.name : '');
         }
     }, [props.user]);
-
-    const updateInfo = () => {
-        axiosInstance
-            .put('/profiles/' + props.user.id, {
-                data: { name: name },
-            })
-            .then((data) => {
-                console.log(data);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-
-        if (files.length > 0) {
-            uploadImage();
-        }
-    };
 
     const updatePassword = () => {
         const userStorage = JSON.parse(localStorage.getItem('user'));
@@ -118,7 +130,7 @@ const SingleContainer = (props) => {
                         alignSelf: 'flex-end',
                         cursor: 'pointer',
                     }}
-                    onClick={updateInfo}
+                    onClick={() => updateUser()}
                 >
                     Save
                 </div>

@@ -18,7 +18,10 @@ function compare(a, b) {
 }
 
 const fetchQuestions = async (setQuestions) => {
-    const res = await axiosInstance.get(`/questions`);
+    //TODO: DINAMICKI ID ZA KOMPANIJE
+    const res = await axiosInstance.get(
+        `/questions?filters[company][id][$eq]=2&populate=*`
+    );
     console.log(res.data.data);
     const sortedQuestions = res.data.data.sort(compare);
     setQuestions(sortedQuestions);
@@ -43,6 +46,8 @@ const Questions = () => {
         await axiosInstance.put('/questions/' + newOrder[prev].id, {
             data: { order: newOrder[prev].attributes.order },
         });
+
+        setBlocked(false);
     };
 
     const changeDown = async ({ newOrder, next, element }) => {
@@ -55,6 +60,8 @@ const Questions = () => {
         await axiosInstance.put('/questions/' + newOrder[next].id, {
             data: { order: newOrder[next].attributes.order },
         });
+
+        setBlocked(false);
     };
 
     const deleteQuestionAsync = async (id) => {
@@ -82,8 +89,8 @@ const Questions = () => {
         () => fetchQuestions(setQuestions)
     );
 
-    const { mutateAsync: moveUp } = useMutation(changeUp);
-    const { mutateAsync: moveDown } = useMutation(changeDown);
+    const { mutate: moveUp } = useMutation(changeUp);
+    const { mutate: moveDown } = useMutation(changeDown);
     const { mutateAsync: deleteQ } = useMutation(deleteQuestionAsync);
 
     const moveQuestion = async (direction, id) => {
@@ -108,9 +115,7 @@ const Questions = () => {
 
                 setQuestions(newOrder.sort(compare));
                 const data = { newOrder, prev, element };
-                moveUp(data).then(() => {
-                    refetch();
-                });
+                moveUp(data);
                 // await axiosInstance.put('/questions/' + newOrder[prev].id, {
                 //     data: { order: -1 },
                 // });
@@ -139,12 +144,11 @@ const Questions = () => {
                     newOrder[element].attributes.order + 1;
                 newOrder[next].attributes.order =
                     newOrder[next].attributes.order - 1;
+                const sortedOrder = newOrder.sort(compare);
                 const data = { newOrder, next, element };
-                setQuestions(newOrder.sort(compare));
+                setQuestions(sortedOrder);
 
-                moveDown(data).then(() => {
-                    refetch();
-                });
+                moveDown(data);
                 // setQuestions(newOrder.sort(compare));
                 // await axiosInstance.put('/questions/' + newOrder[next].id, {
                 //     data: { order: -1 },
@@ -157,7 +161,6 @@ const Questions = () => {
                 // });
             }
         }
-        setBlocked(false);
     };
 
     const deleteQuestion = async (id) => {
@@ -243,7 +246,7 @@ const Questions = () => {
                     </div>
                 </div>
                 {data ? (
-                    data.map((question) => {
+                    data.sort(compare).map((question) => {
                         return (
                             <SingleQuestion
                                 title={question.attributes.text}

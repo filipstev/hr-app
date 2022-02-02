@@ -3,6 +3,7 @@ const initialState = {
     user: {},
     isLoggedIn: false,
     isError: false,
+    role: null,
 };
 
 export default (state = initialState, action) => {
@@ -13,6 +14,7 @@ export default (state = initialState, action) => {
                 user: action.payload,
                 isLoggedIn: true,
                 isError: false,
+                role: action.payload.role,
             };
         case LOGIN_ERROR:
             return {

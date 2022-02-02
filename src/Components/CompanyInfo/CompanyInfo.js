@@ -11,7 +11,7 @@ import React, { useState, useEffect } from 'react';
 import Header from '../Header/Header';
 import { useSelector } from 'react-redux';
 import axiosInstance from '../../helpers/axiosInstance';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 
 const fetchCompanyName = async () => {
     const res = await axiosInstance.get('/companies/2');
@@ -25,36 +25,28 @@ const CompanyInfo = () => {
     const [companyName, setCompanyName] = useState(' ');
     const [files, setFiles] = useState([]);
 
-    const { data, status, refetch } = useQuery(['companyName'], () =>
-        fetchCompanyName()
-    );
-
-    useEffect(() => {
-        axiosInstance
-            .get('/companies/2')
-            .then((data) => {
-                setCompanyName(data.data.data.attributes.name);
-                // console.log(data.data);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    }, []);
-
-    const updateInfo = () => {
-        axiosInstance
-            .put('/companies/2', {
-                data: { name: companyName },
-            })
-            .then((data) => {
-                console.log(data);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+    const updateInfo = async () => {
+        await axiosInstance.put('/companies/2', {
+            data: { name: companyName },
+        });
 
         if (files.length > 0) {
-            uploadImage();
+            const formData = new FormData();
+
+            formData.append('files', files[0]);
+
+            axiosInstance
+                .post('/upload', formData)
+                .then((response) => {
+                    axiosInstance.put('/companies/2', {
+                        data: {
+                            logo: response.data,
+                        },
+                    });
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
         }
     };
 
@@ -76,6 +68,24 @@ const CompanyInfo = () => {
                 console.log(error);
             });
     };
+
+    const { data, status, refetch } = useQuery(['companyName'], () =>
+        fetchCompanyName()
+    );
+
+    const { mutate: updateCompany } = useMutation(updateInfo);
+
+    // useEffect(() => {
+    //     axiosInstance
+    //         .get('/companies/2')
+    //         .then((data) => {
+    //             setCompanyName(data.data.data.attributes.name);
+    //             // console.log(data.data);
+    //         })
+    //         .catch((err) => {
+    //             console.log(err);
+    //         });
+    // }, []);
 
     return (
         <>
@@ -137,7 +147,7 @@ const CompanyInfo = () => {
                             alignSelf: 'flex-end',
                             cursor: 'pointer',
                         }}
-                        onClick={updateInfo}
+                        onClick={() => updateCompany()}
                     >
                         Save
                     </div>
