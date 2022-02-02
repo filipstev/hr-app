@@ -22,7 +22,6 @@ export const useMutateProfile = (mutation) => {
                     },
                 };
             });
-            console.log('bla', queryClient.getQueryData(['profile', data.id]));
 
             return previousValue;
         },

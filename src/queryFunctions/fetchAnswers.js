@@ -5,6 +5,7 @@ const fetchAnswers = async (id) => {
     const answers = await axiosInstance
         .get(`/answers/?filters[profile][id][$eq]=${id}&populate=*`)
         .then((res) => res.data.data);
+
     return answers;
 };
 

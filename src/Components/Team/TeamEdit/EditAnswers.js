@@ -6,15 +6,20 @@ import { useGetQuestions } from '../../../queryFunctions/fetchQuestions';
 import { useMutateAnswers } from '../../../hooks/use-mutate-answers';
 import { useGetAnswersOfProfile } from '../../../queryFunctions/fetchAnswers';
 import { useEffect, useState } from 'react';
+import { useQuery, useQueryClient } from 'react-query';
+import { AssignmentReturnedSharp } from '@mui/icons-material';
+import Answers from './Answers';
 
 const EditAnswers = () => {
     const { id } = useParams();
+
+    const [a, setA] = useState(null);
 
     const {
         data: answers,
         status: answerStatus,
         isLoading: answersIsLoading,
-    } = useGetAnswersOfProfile(id);
+    } = useGetAnswersOfProfile(id, setA);
 
     const {
         data: questions,
@@ -22,74 +27,18 @@ const EditAnswers = () => {
         isLoading: questionsIsLoading,
     } = useGetQuestions();
 
-    const [answerArray, setAnswerArray] = useState([]);
-
-    const newAnswer = useMutateAnswers((data) => {
-        return axiosInstance.post(`/answers`, data);
-    });
-
-    const editAnswer = useMutateAnswers((data) => {
-        return axiosInstance.put(`/answers/${data.id}`, data);
-    });
-
-    const handleAnswerChange = (value, i) => {
-        // setAnswerArray(
-        //     (answerArray) => [...answerArray],
-        //     (answerArray[i].answer = value)
-        // );
-        answerArray[i].answer = '123';
-        console.log(answerArray[i]);
+    const handleAChange = (value, i) => {
+        setA([...a], (a[i].attributes.answer = value));
+        console.log(a[i]);
     };
 
-    console.log(answerArray[0]);
+    useEffect(() => {
+        !answersIsLoading && setA([...answers]);
+    }, [answersIsLoading, answers]);
+
     if (questionsIsLoading || answersIsLoading) {
         return <p>Q&A is loading</p>;
     }
-    const Questions = () => {
-        return questions.data.data.map((question, i) => {
-            // If there are no answers, or answers are not connected to question
-            // if (!answers.data.data.question || !answers.data.data) {
-            //     setAnswerArray(...answerArray, {});
-            // }
-            // If there is answer
-
-            if (answers.length) {
-                const asd = answers.find(
-                    (item) => item.attributes.question.data.id === question.id
-                );
-
-                // setAnswerArray(
-                //     (answerArray) => [...answerArray],
-                //     (answerArray[i] = {
-                //         id: asd.id,
-                //         answer: asd.attributes.answer,
-                //     })
-                // );
-                answerArray[i] = { id: asd.id, answer: asd.attributes.answer };
-                console.log(answerArray);
-            }
-            return (
-                <div key={question.id}>
-                    <label>
-                        {`Question ${i + 1} - `}
-                        {question.attributes.text}
-                    </label>
-
-                    <TextField
-                        type={question.attributes.type}
-                        sx={{ margin: '0 0 10px 0' }}
-                        value={answerArray[i].answer}
-                        onInput={(e) => {
-                            handleAnswerChange(e.target.value, i);
-                        }}
-                    />
-
-                    <Divider />
-                </div>
-            );
-        });
-    };
-
     return (
         <>
             <FormControl
@@ -97,19 +46,13 @@ const EditAnswers = () => {
                 style={{ display: 'flex', flexDirection: 'column' }}
                 onSubmit={(e) => {
                     e.preventDefault();
-                    // handleAnswerSubmit();
-                    // answerArray.forEach((answer) => {
-                    //     editAnswer.mutate({
-                    //         data: {
-                    //             answer: answer.answer,
-                    //         },
-                    //         id: answer.id,
-                    //     });
-                    // });
-                    console.log(answerArray);
                 }}
             >
-                <Questions />
+                <Answers
+                    questions={questions}
+                    answers={a}
+                    handleAChange={handleAChange}
+                />
                 <Button
                     variant="outlined"
                     type="submit"

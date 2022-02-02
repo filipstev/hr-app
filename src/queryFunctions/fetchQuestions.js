@@ -5,7 +5,7 @@ const fetchQuestions = async () => {
     const questions = await axiosInstance.get(
         `/questions?populate=*&sort[order]=asc&filters[company][name][$eq]=Tesla`
     );
-    return questions;
+    return questions.data.data;
 };
 
 export const useGetQuestions = () => {
