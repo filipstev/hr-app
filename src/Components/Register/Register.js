@@ -18,20 +18,23 @@ import {
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+
 import { FormControl } from '@mui/material';
 // dodati user role, i kompaniju
 const Register = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const { slug } = useParams();
-    console.log(slug);
     const [companies, setCompanies] = useState([]);
     const [company, setCompany] = useState('');
     const [companyId, setCompanyId] = useState('');
-
+    const [userRole, setUserRole] = useState('');
     const registerError = useSelector((state) => state.register.isError);
     const image = new FormData();
-
+    console.log(companyId);
     const nameRegEx = /^[a-zA-Z]+(?:[\s.]+[a-zA-Z]+)*$/g;
     const emailRegEx =
         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -45,10 +48,6 @@ const Register = () => {
             }
             setCompany(data.data[0].attributes.slug);
         });
-
-        return () => {
-            'cleanup';
-        };
     }, [slug]);
 
     const {
@@ -89,6 +88,7 @@ const Register = () => {
                     enteredName,
                     enteredEmail,
                     enteredPassword,
+                    userRole,
                     companyId,
                     image
                 )
@@ -202,6 +202,37 @@ const Register = () => {
                     />
                 </Grid>
 
+                <Grid
+                    item
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'center',
+                        width: '100%',
+                    }}
+                >
+                    <RadioGroup
+                        aria-labelledby="demo-radio-buttons-group-label"
+                        defaultValue="female"
+                        name="radio-buttons-group"
+                    >
+                        <FormControlLabel
+                            value="company_admin"
+                            control={<Radio />}
+                            label="Admin"
+                            onInput={() => {
+                                setUserRole('company_admin');
+                            }}
+                        />
+                        <FormControlLabel
+                            value="company_user"
+                            control={<Radio />}
+                            label="User"
+                            onInput={() => setUserRole('company_user')}
+                        />
+                    </RadioGroup>
+                </Grid>
+
                 <Grid item style={{ width: '100%' }}>
                     <TextField
                         type="file"
@@ -213,7 +244,6 @@ const Register = () => {
                             image.append('files', e.target.files[0]);
                         }}
                     />
-                    <div id="img"></div>
                 </Grid>
                 <div>
                     {registerError && (

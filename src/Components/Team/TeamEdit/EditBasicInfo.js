@@ -3,7 +3,6 @@ import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 // React Query
 import { useMutation } from 'react-query';
-import { ReactQueryDevtools } from 'react-query/devtools';
 // Custom React Query
 import { useGetProfile } from '../../../queryFunctions/fetchSingleProfile';
 import { useMutateProfile } from '../../../hooks/use-mutate-profile';
@@ -71,12 +70,6 @@ const BasicInfo = ({ edit }) => {
             border="1px solid black"
             padding="10px"
         >
-            <div>
-                {!editProfile.isSuccess
-                    ? 'Chaning Username'
-                    : 'Username Changed'}
-            </div>
-            <div>{username}</div>
             <FormControl
                 sx={{ display: 'flex', flexDirection: 'column' }}
                 component="form"
@@ -94,7 +87,11 @@ const BasicInfo = ({ edit }) => {
                 >
                     Basic Info
                 </Typography>
-
+                <div>
+                    {!editProfile.isSuccess
+                        ? 'Chaning Username'
+                        : 'Username Changed'}
+                </div>
                 <label>Name</label>
                 <TextField
                     type="text"
@@ -121,7 +118,6 @@ const BasicInfo = ({ edit }) => {
                     Save
                 </Button>
             </FormControl>
-            <ReactQueryDevtools />
         </Grid>
     );
 };

@@ -1,28 +1,27 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
 import Pagination from '@mui/material/Pagination';
-import DeleteProfile from './DeleteProfile';
+
+import ShowProfiles from './ShowProfiles';
+
 import { useProfiles } from '../../queryFunctions/fetchProfiles';
 import { useCompany } from '../../queryFunctions/fetchCompany';
-import { useSelector } from 'react-redux';
+import axiosInstance from '../../helpers/axiosInstance';
+import { ReactQueryDevtools } from 'react-query/devtools';
+import { useMutation } from 'react-query';
 
 const Team = ({ status }) => {
-    const navigate = useNavigate();
     const userId = useSelector((state) => state.user.user.user.id);
 
     const [page, setPage] = useState(1);
     const [pageCount, setPageCount] = useState(1);
-
     const [link, setLink] = useState(false);
-
+    const [email, setEmail] = useState('');
     const [companyName, setCompanyName] = useState('');
     // Get User Company so we can filter profiles by Company Name
     const { data: company, isFetched } = useCompany(userId);
@@ -32,10 +31,19 @@ const Team = ({ status }) => {
         isFetching,
     } = useProfiles(status, page, companyName);
 
+    const inviteNewMember = useMutation((data) => {
+        return axiosInstance.post(`/invite`, data);
+    });
+
+    const handlePageChange = (event, value) => {
+        setPage(value);
+    };
+    // Set company name on fetch
     useEffect(() => {
-        isFetched && setCompanyName(company.data[0].attributes.name);
+        isFetched && setCompanyName(company[0].attributes.name);
     }, [company, isFetched]);
 
+    // Set page count when profiles are fetched
     useEffect(() => {
         !isLoading && setPageCount(profiles.meta.pagination.pageCount);
     }, [profiles, isLoading]);
@@ -44,139 +52,7 @@ const Team = ({ status }) => {
         setPage(1);
     }, []);
 
-    const month = [
-        'Jan',
-        'Feb',
-        'Mar',
-        'Apr',
-        'May',
-        'Jun',
-        'Jul',
-        'Aug',
-        'Sep',
-        'Oct',
-        'Nov',
-        'Dec',
-    ];
-
-    const handleFormatDate = (date) => {
-        const day = date.getDate();
-        const monthInLetters = month[date.getMonth()];
-        const year = date.getFullYear();
-
-        const fullDate = `${day}/${monthInLetters}/${year}`;
-        return `Joined: ${fullDate}`;
-    };
-
-    const ShowProfiles = () => {
-        return profiles.data.map(({ id, attributes }) => {
-            return (
-                <>
-                    <Grid item key={id}>
-                        <Card sx={{ minWidth: 275 }}>
-                            <CardContent>
-                                <Typography
-                                    sx={{ fontSize: 14 }}
-                                    color="text.secondary"
-                                    gutterBottom
-                                >
-                                    ID: {id}
-                                </Typography>
-
-                                {!attributes.profilePhoto.data ? (
-                                    <Typography
-                                        variant="h5"
-                                        component="div"
-                                        sx={{
-                                            width: '200px',
-                                            height: '200px',
-                                            margin: '0 auto',
-                                            lineHeight: '200px',
-                                        }}
-                                    >
-                                        Image Goes Here
-                                    </Typography>
-                                ) : (
-                                    <div
-                                        style={{
-                                            width: '200px',
-                                            height: '200px',
-                                            margin: '0 auto',
-                                        }}
-                                    >
-                                        <img
-                                            style={{
-                                                width: '100%',
-                                                height: '100%',
-                                            }}
-                                            src={
-                                                attributes.profilePhoto.data
-                                                    .attributes.formats
-                                                    .thumbnail.url
-                                            }
-                                            alt="profiles"
-                                        />
-                                    </div>
-                                )}
-
-                                <Typography
-                                    variant="h5"
-                                    component="div"
-                                    sx={{ textTransform: 'capitalize' }}
-                                >
-                                    Name: {attributes.name}
-                                </Typography>
-                                <Typography
-                                    sx={{ mb: 1.5 }}
-                                    color="text.secondary"
-                                >
-                                    Status: {attributes.status}
-                                </Typography>
-                                <Typography variant="body2">
-                                    {handleFormatDate(
-                                        new Date(attributes.createdAt)
-                                    )}
-                                </Typography>
-                            </CardContent>
-                            <CardActions
-                                sx={{
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                }}
-                            >
-                                <Button
-                                    size="small"
-                                    onClick={() => {
-                                        if (status === 'pending') {
-                                            navigate(
-                                                `/team/pending/${id}/edit`
-                                            );
-                                        }
-                                        if (status === 'published') {
-                                            navigate(`/team/${id}/edit`);
-                                        }
-                                    }}
-                                >
-                                    {status === 'published'
-                                        ? 'EDIT'
-                                        : 'DETAILS'}
-                                </Button>
-                                <Button
-                                    size="small"
-                                    onClick={(e) => {
-                                        DeleteProfile(id);
-                                    }}
-                                >
-                                    DELETE
-                                </Button>
-                            </CardActions>
-                        </Card>
-                    </Grid>
-                </>
-            );
-        });
-    };
-    if (isFetching) {
+    if (isFetching || !isFetched) {
         return <p style={{ marginTop: '150px' }}>Is Loading...</p>;
     }
 
@@ -194,13 +70,44 @@ const Team = ({ status }) => {
                     <Button
                         onClick={() => {
                             setLink(!link);
-                            // console.log(slug);
                         }}
                     >
                         + Add New Team Member
                     </Button>
                 )}
             </Grid>
+            {link && (
+                <form
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                    }}
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        inviteNewMember.mutate({
+                            data: {
+                                email: email,
+                                companySlug: company[0].attributes.slug,
+                            },
+                        });
+                    }}
+                >
+                    <label>
+                        Input Recipient here:
+                        <input
+                            type="text"
+                            onInput={(e) => {
+                                setEmail(e.target.value);
+                            }}
+                        />
+                    </label>
+                    <button type="submit">Send Invite</button>
+                    {inviteNewMember.isSuccess && (
+                        <p>Invite Sent Successfully</p>
+                    )}
+                </form>
+            )}
 
             <Pagination
                 sx={{
@@ -209,11 +116,15 @@ const Team = ({ status }) => {
                     padding: '20px 0',
                 }}
                 count={pageCount}
-                onChange={(e) => setPage(e.target.innerText)}
+                page={page}
+                showFirstButton
+                showLastButton
+                onChange={handlePageChange}
             />
             <Grid container spacing={2} sx={{ marginLeft: 0 }}>
-                <ShowProfiles />
+                <ShowProfiles status={status} profiles={profiles} />
             </Grid>
+            <ReactQueryDevtools />
         </Container>
     );
 };

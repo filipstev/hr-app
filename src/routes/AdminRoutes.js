@@ -12,11 +12,7 @@ import EditProfile from '../Components/Team/TeamEdit/EditProfile';
 import EditQuestion from '../Components/Questions/EditQuestion/EditQuestion';
 import MyProfile from '../Components/MyProfile/MyProfile';
 import CompanyWall from '../Components/CompanyWall/CompanyWall';
-<<<<<<< HEAD
-=======
-import ReactQueryTeam from '../Components/Team/ReactQueryTeam';
 import NotFound from '../Components/NotFound/NotFound';
->>>>>>> 837ef7c4b778f68ef0434f2778fcd7c360ce2b2c
 
 const AdminRoutes = (props) => {
     return (
@@ -51,11 +47,7 @@ const AdminRoutes = (props) => {
                     />
                     <Route path="/my-profile" element={<MyProfile />} />
                     <Route path="/team/:slug" element={<CompanyWall />} />
-<<<<<<< HEAD
-=======
-                    <Route path="/reactquery" element={<ReactQueryTeam />} />
                     <Route component={NotFound} />
->>>>>>> 837ef7c4b778f68ef0434f2778fcd7c360ce2b2c
                 </Routes>
             </BrowserRouter>
         </>

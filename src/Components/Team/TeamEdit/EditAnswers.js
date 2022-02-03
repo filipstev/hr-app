@@ -1,13 +1,11 @@
 import { useParams } from 'react-router-dom';
 import axiosInstance from '../../../helpers/axiosInstance';
-import { Button, Divider, TextField, FormControl } from '@mui/material';
+import { Button, FormControl } from '@mui/material';
 
 import { useGetQuestions } from '../../../queryFunctions/fetchQuestions';
-import { useMutateAnswers } from '../../../hooks/use-mutate-answers';
 import { useGetAnswersOfProfile } from '../../../queryFunctions/fetchAnswers';
 import { useEffect, useState } from 'react';
-import { useQuery, useQueryClient } from 'react-query';
-import { AssignmentReturnedSharp } from '@mui/icons-material';
+import { useMutation } from 'react-query';
 import Answers from './Answers';
 
 const EditAnswers = () => {
@@ -15,30 +13,65 @@ const EditAnswers = () => {
 
     const [a, setA] = useState(null);
 
-    const {
-        data: answers,
-        status: answerStatus,
-        isLoading: answersIsLoading,
-    } = useGetAnswersOfProfile(id, setA);
+    const { data: answers, isLoading: answersIsLoading } =
+        useGetAnswersOfProfile(id, setA);
 
-    const {
-        data: questions,
-        status: questionStatus,
-        isLoading: questionsIsLoading,
-    } = useGetQuestions();
+    const { data: questions, isLoading: questionsIsLoading } =
+        useGetQuestions();
+
+    const editAnswer = useMutation((data) => {
+        return axiosInstance.put(`/answers/${data.answerID}`, data);
+    });
+
+    const newAnswer = useMutation((data) => {
+        return axiosInstance.post(`/answers`, data);
+    });
 
     const handleAChange = (value, i) => {
         setA([...a], (a[i].attributes.answer = value));
-        console.log(a[i]);
+    };
+
+    const handleSubmit = () => {
+        a.forEach((answer, i) => {
+            if (answer.id) {
+                editAnswer.mutate({
+                    answerID: answer.id,
+                    data: { answer: answer.attributes.answer },
+                });
+            }
+            if (!answer.id) {
+                newAnswer.mutate({
+                    data: {
+                        answer: answer.attributes.answer,
+                        question: questions[i].id,
+                        profile: id,
+                    },
+                });
+            }
+        });
     };
 
     useEffect(() => {
-        !answersIsLoading && setA([...answers]);
-    }, [answersIsLoading, answers]);
+        const conectQA = [];
+
+        if (!questionsIsLoading && !answersIsLoading) {
+            if (answers.length > 0) {
+                questions.forEach((question, i) => {
+                    const answer = answers.find(
+                        (answer) =>
+                            answer.attributes.question.data.id === question.id
+                    );
+                    conectQA.push(answer);
+                });
+            }
+        }
+        setA([...conectQA]);
+    }, [answersIsLoading, answers, questions, questionsIsLoading]);
 
     if (questionsIsLoading || answersIsLoading) {
         return <p>Q&A is loading</p>;
     }
+
     return (
         <>
             <FormControl
@@ -46,6 +79,7 @@ const EditAnswers = () => {
                 style={{ display: 'flex', flexDirection: 'column' }}
                 onSubmit={(e) => {
                     e.preventDefault();
+                    handleSubmit();
                 }}
             >
                 <Answers
@@ -60,6 +94,8 @@ const EditAnswers = () => {
                 >
                     Save
                 </Button>
+                {editAnswer.isSuccess && <p>Answers have been changed</p>}
+                {/* {newAnswer.isSuccess && <p>Answers have been changed</p>} */}
             </FormControl>
         </>
     );

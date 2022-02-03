@@ -6,24 +6,23 @@ export const useMutateAnswers = (mutation) => {
     return useMutation(mutation, {
         onMutate: async (data) => {
             console.log('data: ', data);
+            console.log('Data ID: ', data.answerID);
+            console.log('Data DATA: ', data.data);
             await queryClient.cancelQueries(['answers', data.id]);
-            const previousValue = queryClient.getQueryData([
-                'answers',
-                data.id,
-            ]);
+            const previousValue = queryClient.getQueryData(['answers', '91']);
             console.log('PrevValue: ', previousValue);
-            queryClient.setQueryData(['answers', data.id], (old) => {
-                console.log('old', old);
-                // return {
-                //     ...old,
-                //     data: {
-                //         ...old.data,
-                //         attributes: {
-                //             answer: data.answer,
-                //         },
-                //     },
-                // };
-            });
+            // queryClient.setQueryData(['answers', data.id], (old) => {
+            //     console.log('old', old);
+            // return {
+            //     ...old,
+            //     data: {
+            //         ...old.data,
+            //         attributes: {
+            //             answer: data.answer,
+            //         },
+            //     },
+            // };
+            // });
 
             // console.log('bla', queryClient.getQueryData(['answers', data.id]));
 
