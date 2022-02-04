@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { useMutation } from 'react-query';
+import axiosInstance from '../../helpers/axiosInstance';
+import { ReactQueryDevtools } from 'react-query/devtools';
 
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -11,9 +14,6 @@ import ShowProfiles from './ShowProfiles';
 
 import { useProfiles } from '../../queryFunctions/fetchProfiles';
 import { useCompany } from '../../queryFunctions/fetchCompany';
-import axiosInstance from '../../helpers/axiosInstance';
-import { ReactQueryDevtools } from 'react-query/devtools';
-import { useMutation } from 'react-query';
 
 const Team = ({ status }) => {
     const userId = useSelector((state) => state.user.user.user.id);

@@ -58,7 +58,7 @@ const BasicInfo = ({ edit }) => {
 
     useEffect(() => {
         !isLoading && setUsername(profile.data.attributes.name);
-    }, [isLoading]);
+    }, [isLoading, profile]);
 
     if (isLoading) {
         return <p>Profile is Loading</p>;

@@ -6,8 +6,8 @@ import { useMutateProfile } from '../../../hooks/use-mutate-profile';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import DeleteProfile from '../DeleteProfile';
-// MUI
 
+// MUI
 import Button from '@mui/material/Button';
 import FormControl from '@mui/material/FormControl';
 import Grid from '@mui/material/Grid';
