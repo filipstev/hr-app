@@ -1,4 +1,11 @@
 import axiosInstance from '../../../helpers/axiosInstance';
+
+import { useGetProfile } from '../../../queryFunctions/fetchSingleProfile';
+import { useMutateProfile } from '../../../hooks/use-mutate-profile';
+
+import { useNavigate, useParams } from 'react-router-dom';
+
+import DeleteProfile from '../DeleteProfile';
 // MUI
 
 import Button from '@mui/material/Button';
@@ -8,29 +15,17 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import Typography from '@mui/material/Typography';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import DeleteProfile from '../DeleteProfile';
 
 const TeamHeader = ({ edit }) => {
-    const [userStatus, setUserStatus] = useState('');
-
-    const params = useParams();
-    const { id } = params;
-    console.log(edit);
+    const { id } = useParams();
+    const { data, isLoading } = useGetProfile(id);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        axiosInstance.get(`/profiles/${id}`).then(({ data }) => {
-            const status = data.data.attributes.status;
-            setUserStatus(status);
-        });
-        return () => {
-            console.log('cleanup');
-        };
-    }, [id]);
+    const editProfile = useMutateProfile((data) => {
+        return axiosInstance.put(`/profiles/${id}`, data);
+    });
 
-    const handleStatusChange = () => {
+    const StatusChange = () => {
         return (
             <>
                 <InputLabel id="selectStatus">Status</InputLabel>
@@ -39,20 +34,14 @@ const TeamHeader = ({ edit }) => {
                     labelId="selectStatus"
                     id="selectStatus"
                     label="Status"
-                    value={userStatus}
+                    value={data.data.attributes.status}
                     onChange={(e) => {
-                        axiosInstance
-                            .put(`/profiles/${id}`, {
-                                data: {
-                                    status: e.target.value,
-                                },
-                            })
-                            .then(() => {
-                                setUserStatus(e.target.value);
-                            })
-                            .catch((err) => {
-                                console.error(err);
-                            });
+                        editProfile.mutate({
+                            data: {
+                                status: e.target.value,
+                            },
+                            id,
+                        });
                     }}
                 >
                     <MenuItem value={'published'}>Published</MenuItem>
@@ -61,6 +50,9 @@ const TeamHeader = ({ edit }) => {
             </>
         );
     };
+    if (isLoading) {
+        return <p>Loading</p>;
+    }
     return (
         <Grid
             container
@@ -78,24 +70,18 @@ const TeamHeader = ({ edit }) => {
             <Grid item display="flex" justifyContent="flex-end">
                 <FormControl style={{ display: 'flex', flexDirection: 'row' }}>
                     {edit === 'editPublished' ? (
-                        handleStatusChange()
+                        <StatusChange />
                     ) : (
                         <Button
                             variant="outlined"
                             sx={{ marginRight: '10px' }}
                             onClick={() => {
-                                axiosInstance
-                                    .put(`/profiles/${id}`, {
-                                        data: {
-                                            status: 'published',
-                                        },
-                                    })
-                                    .then(() => {
-                                        setUserStatus('published');
-                                    })
-                                    .catch((err) => {
-                                        console.error(err);
-                                    });
+                                editProfile.mutate({
+                                    data: {
+                                        status: 'published',
+                                    },
+                                    id,
+                                });
                             }}
                         >
                             approve
@@ -103,8 +89,9 @@ const TeamHeader = ({ edit }) => {
                     )}
                     <Button
                         variant="outlined"
-                        onClick={(e) => {
+                        onClick={() => {
                             DeleteProfile(id);
+
                             if (edit === 'editPublished') {
                                 navigate('/team');
                                 return;

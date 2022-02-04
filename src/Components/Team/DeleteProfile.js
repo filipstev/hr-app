@@ -9,7 +9,7 @@ const DeleteProfile = async (id) => {
     const imgId = profile.data.data.attributes.profilePhoto.data;
     const userId = profile.data.data.attributes.user.data;
     const answers = profile.data.data.attributes.answers.data;
-    // Log, because console.log is fun;
+    // Console Logs, because console.log is fun;
     console.log('Profile ID: ', profileId);
     console.log('Img ID: ', imgId);
     console.log('User ID: ', userId);

@@ -1,6 +1,12 @@
 import axiosInstance from '../../../helpers/axiosInstance';
 import { useParams } from 'react-router-dom';
-import React, { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
+// React Query
+import { useMutation } from 'react-query';
+// Custom React Query
+import { useGetProfile } from '../../../queryFunctions/fetchSingleProfile';
+import { useMutateProfile } from '../../../hooks/use-mutate-profile';
+
 import {
     Button,
     FormControl,
@@ -9,49 +15,54 @@ import {
     Typography,
 } from '@mui/material';
 
-const BasicInfo = () => {
+const BasicInfo = ({ edit }) => {
     const { id } = useParams();
-
+    const { data: profile, isLoading } = useGetProfile(id);
     const [username, setUsername] = useState('');
-    const [image, setImage] = useState('');
+
+    const image = !isLoading && profile.data.attributes.profilePhoto.data;
     const [newImage, setNewImage] = useState('');
-    /* Profile */
-    useEffect(() => {
-        axiosInstance
-            .get(`/profiles/${id}?populate=*`)
-            .then(({ data }) => {
-                const name = data.data.attributes.name;
-                const imageID = data.data.attributes.profilePhoto.data;
-                setUsername(name);
-                setImage(imageID);
-            })
-            .catch((err) => console.error(new Error(err)));
 
-        return () => {
-            console.log('cleanup');
-        };
-    }, [id]);
+    const deleteImageMutation = useMutation(() => {
+        return axiosInstance.delete(`/upload/files/${image.id}`);
+    });
 
-    const handleChangeImage = async () => {
-        if (image !== null) {
-            axiosInstance.delete(`/upload/files/${image.id}`);
-        }
-        const uploadAndConnectNewImage = await axiosInstance.post(
-            `/upload`,
-            newImage
-        );
+    const uploadImageMutation = useMutation((imgFile) => {
+        return axiosInstance.post(`/upload`, imgFile.newImage);
+    });
 
-        if (uploadAndConnectNewImage.status === 200) {
-            const imgid = uploadAndConnectNewImage.data[0].id;
-            console.log(imgid);
-            axiosInstance.put(`/profiles/${id}`, {
+    const editProfile = useMutateProfile((data) => {
+        return axiosInstance.put(`/profiles/${id}`, data);
+    });
+
+    const handleSubmit = async () => {
+        editProfile.mutate({
+            data: {
+                name: username,
+            },
+            id,
+        });
+
+        const asd = await uploadImageMutation.mutateAsync({ newImage });
+
+        if (asd.status) {
+            deleteImageMutation.mutate({});
+            editProfile.mutate({
                 data: {
-                    profilePhoto: `${imgid}`,
+                    profilePhoto: `${asd.data[0].id}`,
                 },
+                id,
             });
         }
     };
 
+    useEffect(() => {
+        !isLoading && setUsername(profile.data.attributes.name);
+    }, [isLoading]);
+
+    if (isLoading) {
+        return <p>Profile is Loading</p>;
+    }
     return (
         <Grid
             item
@@ -64,7 +75,7 @@ const BasicInfo = () => {
                 component="form"
                 onSubmit={(e) => {
                     e.preventDefault();
-                    handleChangeImage();
+                    handleSubmit();
                 }}
             >
                 <Typography
@@ -76,7 +87,11 @@ const BasicInfo = () => {
                 >
                     Basic Info
                 </Typography>
-
+                <div>
+                    {!editProfile.isSuccess
+                        ? 'Chaning Username'
+                        : 'Username Changed'}
+                </div>
                 <label>Name</label>
                 <TextField
                     type="text"
@@ -99,17 +114,6 @@ const BasicInfo = () => {
                     variant="outlined"
                     type="submit"
                     sx={{ marginTop: '15px' }}
-                    onClick={(e) => {
-                        axiosInstance
-                            .put(`/profiles/${id}`, {
-                                data: {
-                                    name: username,
-                                },
-                            })
-                            .catch((err) => {
-                                console.error(new Error(err));
-                            });
-                    }}
                 >
                     Save
                 </Button>

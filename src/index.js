@@ -6,7 +6,15 @@ import reportWebVitals from './reportWebVitals';
 import { store } from './store/store';
 import { Provider } from 'react-redux';
 import { QueryClient, QueryClientProvider } from 'react-query';
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+    defaultOptions: {
+        queries: {
+            refetchOnWindowFocus: false,
+            retry: false,
+            staleTime: 30000,
+        },
+    },
+});
 ReactDOM.render(
     <React.StrictMode>
         <Provider store={store}>
