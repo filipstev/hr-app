@@ -34,11 +34,10 @@ export function* handleRegisterUser(action) {
                 };
 
                 localStorage.setItem('user', JSON.stringify(user));
-                console.log(action);
                 console.log('UserID: ', user.user.id);
-                yield call(() =>
-                    uploadAndConnectImage(action.file)
-                        .then((res) => {
+                yield call(() => {
+                    if (action.file.entries('files').next().value) {
+                        uploadAndConnectImage(action.file).then((res) => {
                             createNewProfile({
                                 name: action.name,
                                 id: user.user.id,
@@ -46,17 +45,17 @@ export function* handleRegisterUser(action) {
                                 photoId: res.data[0].id,
                                 userRole: action.userRole,
                             });
-                        })
-                        .catch((err) => {
-                            createNewProfile({
-                                name: action.name,
-                                id: user.user.id,
-                                companyId: action.companyId,
-                                userRole: action.userRole,
-                            });
-                        })
-                );
-
+                        });
+                    }
+                    if (!action.file.entries('files').next().value) {
+                        createNewProfile({
+                            name: action.name,
+                            id: user.user.id,
+                            companyId: action.companyId,
+                            userRole: action.userRole,
+                        });
+                    }
+                });
                 yield put(setUser(user));
             }
         }

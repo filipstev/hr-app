@@ -28,13 +28,16 @@ const Register = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const { slug } = useParams();
+
     const [companies, setCompanies] = useState([]);
     const [company, setCompany] = useState('');
     const [companyId, setCompanyId] = useState('');
     const [userRole, setUserRole] = useState('');
+
     const registerError = useSelector((state) => state.register.isError);
+
     const image = new FormData();
-    console.log(companyId);
+
     const nameRegEx = /^[a-zA-Z]+(?:[\s.]+[a-zA-Z]+)*$/g;
     const emailRegEx =
         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
