@@ -13,23 +13,27 @@ const Answers = ({ questions, answers, handleAChange }) => {
             }
 
             return (
-                <div key={i}>
+                <>
                     <label>
                         {`Question ${i + 1} - `}
                         {question.attributes.text}
                     </label>
 
                     <TextField
-                        type={question.attributes.type}
+                        type={
+                            question.attributes.type === 'image'
+                                ? 'file'
+                                : ' text'
+                        }
                         sx={{ margin: '0 0 10px 0' }}
                         label={question.attributes.text}
                         name={`answer${i}`}
                         value={answers[i].attributes.answer}
-                        onChange={(e) => handleAChange(e.target.value, i)}
+                        onInput={(e) => handleAChange(e.target.value, i)}
                     />
 
                     <Divider />
-                </div>
+                </>
             );
         })
     );

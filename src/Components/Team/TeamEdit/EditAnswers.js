@@ -28,6 +28,7 @@ const EditAnswers = () => {
     });
 
     const handleAChange = (value, i) => {
+        console.log(value);
         setA([...a], (a[i].attributes.answer = value));
     };
 
