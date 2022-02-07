@@ -1,44 +1,65 @@
-import axiosInstance from '../../helpers/axiosInstance';
-
-const DeleteProfile = async (id) => {
+const DeleteProfile = async ({
+    profiles,
+    id,
+    deleteAnswers,
+    deleteImage,
+    deleteProfile,
+    deleteUser,
+    queryClient,
+}) => {
     // Get Profile info;
-    const profile = await axiosInstance.get(`/profiles/${id}?populate=*`);
-    console.log('Profile Respone: ', profile);
-    // Make const for id's for easier use;
-    const profileId = profile.data.data;
-    const imgId = profile.data.data.attributes.profilePhoto.data;
-    const userId = profile.data.data.attributes.user.data;
-    const answers = profile.data.data.attributes.answers.data;
+    const profile = profiles.data.find((profile) => profile.id === id);
+    // // Make const for id's for easier use;
+    const img = profile.attributes.profilePhoto.data;
+    const user = profile.attributes.user.data;
+    const answers = profile.attributes.answers.data;
     // Console Logs, because console.log is fun;
-    console.log('Profile ID: ', profileId);
-    console.log('Img ID: ', imgId);
-    console.log('User ID: ', userId);
+    console.log('Profile ID: ', profile);
+    console.log('Img ID: ', img);
+    console.log('User ID: ', user);
+    console.log('Answers: ', answers);
     // Check if we have imgId, so we don't get error;
-    if (imgId) {
-        const imageDelete = await axiosInstance.delete(
-            `/upload/files/${imgId.id}`
-        );
-        console.log('Image Delete: ', imageDelete);
+    if (img) {
+        deleteImage.mutate(img.id, {
+            onSuccess: () => {
+                return console.log('123');
+            },
+            onError: (err) => {
+                console.log('123', err);
+            },
+            onSettled: () => {
+                console.log('settled');
+            },
+        });
     }
-    // Check if we have userId, so we don't get error;
-    if (userId) {
-        const userDelete = await axiosInstance.delete(`/users/${userId.id}`);
-        // Don't know why user delete returns undefined,
-        // It's deleting user anyway, no need to fret;
-        console.log('User Delete: ', userDelete);
+    // // Check if we have userId, so we don't get error;
+    if (user) {
+        deleteUser.mutate(user.id, {
+            onSuccess: () => {
+                console.log('success');
+            },
+            onError: (err) => {
+                console.log(err);
+            },
+            onSettled: () => {
+                console.log('settled');
+            },
+        });
+        // Check if we have answers, so we don't get error;
     }
-
-    // Check if we have answers, so we don't get error;
-
-    const answerDelete = await answers.forEach((answer) => {
-        axiosInstance.delete(`/answers/${answer.id}`);
-    });
-    console.log(answerDelete);
+    if (answers.length > 0) {
+        answers.forEach((answer) => {
+            deleteAnswers.mutate(answer.id);
+        });
+    }
     // Finaly, delete profile
-    const profileDelete = await axiosInstance.delete(
-        `/profiles/${profileId.id}`
-    );
-    console.log('Profile Delete: ', profileDelete);
+    deleteProfile.mutate(profile.id, {
+        onSuccess: () => {
+            return queryClient.invalidateQueries('profiles');
+        },
+        onSettled: () => {
+            console.log('settled');
+        },
+    });
 };
-
 export default DeleteProfile;

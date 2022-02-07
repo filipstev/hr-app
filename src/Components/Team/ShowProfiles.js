@@ -8,9 +8,26 @@ import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
+import { useMutation } from 'react-query';
+import axiosInstance from '../../helpers/axiosInstance';
+import { useQueryClient } from 'react-query';
 
 const ShowProfiles = ({ status, profiles }) => {
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
+
+    const deleteImage = useMutation((imgId) => {
+        return axiosInstance.delete(`/upload/files/${imgId}`);
+    });
+    const deleteUser = useMutation((userId) => {
+        return axiosInstance.delete(`/users/${userId}`);
+    });
+    const deleteAnswers = useMutation((answerId) => {
+        return axiosInstance.delete(`/answers/${answerId}`);
+    });
+    const deleteProfile = useMutation((profileId) => {
+        return axiosInstance.delete(`/profiles/${profileId}`);
+    });
     const month = [
         'Jan',
         'Feb',
@@ -127,7 +144,15 @@ const ShowProfiles = ({ status, profiles }) => {
                               <Button
                                   size="small"
                                   onClick={(e) => {
-                                      DeleteProfile(id);
+                                      DeleteProfile({
+                                          profiles,
+                                          id,
+                                          deleteProfile,
+                                          deleteUser,
+                                          deleteAnswers,
+                                          deleteImage,
+                                          queryClient,
+                                      });
                                   }}
                               >
                                   DELETE
