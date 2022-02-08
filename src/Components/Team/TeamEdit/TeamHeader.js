@@ -17,39 +17,15 @@ import Select from '@mui/material/Select';
 import Typography from '@mui/material/Typography';
 
 const TeamHeader = ({ edit }) => {
+    const navigate = useNavigate();
+
     const { id } = useParams();
     const { data, isLoading } = useGetProfile(id);
-    const navigate = useNavigate();
 
     const editProfile = useMutateProfile((data) => {
         return axiosInstance.put(`/profiles/${id}`, data);
     });
 
-    const StatusChange = () => {
-        return (
-            <>
-                <InputLabel id="selectStatus">Status</InputLabel>
-                <Select
-                    style={{ paddingLeft: '16px' }}
-                    labelId="selectStatus"
-                    id="selectStatus"
-                    label="Status"
-                    value={data.data.attributes.status}
-                    onChange={(e) => {
-                        editProfile.mutate({
-                            data: {
-                                status: e.target.value,
-                            },
-                            id,
-                        });
-                    }}
-                >
-                    <MenuItem value={'published'}>Published</MenuItem>
-                    <MenuItem value={'pending'}>Pending</MenuItem>
-                </Select>
-            </>
-        );
-    };
     if (isLoading) {
         return <p>Loading</p>;
     }
@@ -70,7 +46,29 @@ const TeamHeader = ({ edit }) => {
             <Grid item display="flex" justifyContent="flex-end">
                 <FormControl style={{ display: 'flex', flexDirection: 'row' }}>
                     {edit === 'editPublished' ? (
-                        <StatusChange />
+                        <>
+                            <InputLabel id="selectStatus">Status</InputLabel>
+                            <Select
+                                style={{ paddingLeft: '16px' }}
+                                labelId="selectStatus"
+                                id="selectStatus"
+                                label="Status"
+                                value={data.data.attributes.status}
+                                onChange={(e) => {
+                                    editProfile.mutate({
+                                        data: {
+                                            status: e.target.value,
+                                        },
+                                        id,
+                                    });
+                                }}
+                            >
+                                <MenuItem value={'published'}>
+                                    Published
+                                </MenuItem>
+                                <MenuItem value={'pending'}>Pending</MenuItem>
+                            </Select>
+                        </>
                     ) : (
                         <Button
                             variant="outlined"

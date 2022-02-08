@@ -1,8 +1,8 @@
 import axiosInstance from '../../../helpers/axiosInstance';
-import { useParams } from 'react-router-dom';
+
 import { useState, useEffect } from 'react';
-// React Query
 import { useMutation } from 'react-query';
+import { useParams } from 'react-router-dom';
 // Custom React Query
 import { useGetProfile } from '../../../queryFunctions/fetchSingleProfile';
 import { useMutateProfile } from '../../../hooks/use-mutate-profile';
@@ -18,6 +18,7 @@ import {
 const BasicInfo = ({ edit }) => {
     const { id } = useParams();
     const { data: profile, isLoading } = useGetProfile(id);
+
     const [username, setUsername] = useState('');
 
     const image = !isLoading && profile.data.attributes.profilePhoto.data;

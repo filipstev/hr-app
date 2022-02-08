@@ -45,8 +45,8 @@ const DeleteProfile = async ({
                 console.log('settled');
             },
         });
-        // Check if we have answers, so we don't get error;
     }
+    // Check if we have answers, so we don't get error;
     if (answers.length > 0) {
         answers.forEach((answer) => {
             deleteAnswers.mutate(answer.id);

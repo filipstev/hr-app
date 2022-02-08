@@ -1,8 +1,8 @@
+import axiosInstance from '../../helpers/axiosInstance';
+
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useMutation } from 'react-query';
-import axiosInstance from '../../helpers/axiosInstance';
-import { ReactQueryDevtools } from 'react-query/devtools';
 
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -124,7 +124,6 @@ const Team = ({ status }) => {
             <Grid container spacing={2} sx={{ marginLeft: 0 }}>
                 <ShowProfiles status={status} profiles={profiles} />
             </Grid>
-            <ReactQueryDevtools />
         </Container>
     );
 };
