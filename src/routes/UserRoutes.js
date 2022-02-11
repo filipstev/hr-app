@@ -12,6 +12,7 @@ import CompanyWall from '../Components/CompanyWall/CompanyWall';
 
 import NotFound from '../Components/NotFound/NotFound';
 import UserMenu from '../Components/Menu/UserMenu';
+import UserQuestions from '../Components/UserQuestions/UserQuestions';
 
 const UserRoutes = (props) => {
     return (
@@ -20,12 +21,9 @@ const UserRoutes = (props) => {
                 <Header />
                 <UserMenu />
                 <Routes>
-                    <Route path="/" element={<Questions />} />
-                    <Route
-                        path="/team/"
-                        element={<Team status="published" />}
-                    />
+                    <Route path="/" element={<UserQuestions />} />
                     <Route path="/my-profile" element={<MyProfile />} />
+                    <Route path="/team" element={<CompanyWall />} />
                     <Route path="/team/:slug" element={<CompanyWall />} />
                     <Route component={NotFound} />
                 </Routes>
