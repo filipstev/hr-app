@@ -5,32 +5,48 @@ import classes from './UserQuestion.module.css';
 
 const UserQuestion = (props) => {
     const [currentAnswer, setCurrentAnswer] = useState('');
-    useEffect(() => {
-        setCurrentAnswer(props.answer);
-        console.log(props.answer);
-    }, [props.answer]);
 
     const changeAnswer = (e) => {
         console.log(e.target.value);
         setCurrentAnswer(e.target.value);
     };
 
+    useEffect(() => {
+        setCurrentAnswer(props.answer);
+        console.log(props.answerId);
+    }, [props.answer]);
+
     const saveAnswer = () => {
         console.log(currentAnswer, props.question.id, props.userId);
-        axiosInstance
-            .post(`/answers`, {
-                data: {
-                    answer: currentAnswer,
-                    question: props.question.id,
-                    profile: props.userId,
-                },
-            })
-            .then((data) => {
-                console.log(data);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+        props.answerId
+            ? axiosInstance
+                  .put(`/answers/` + props.answerId, {
+                      data: {
+                          answer: currentAnswer,
+                          question: props.question.id,
+                          profile: props.profileId,
+                      },
+                  })
+                  .then((data) => {
+                      console.log(data);
+                  })
+                  .catch((err) => {
+                      console.log(err);
+                  })
+            : axiosInstance
+                  .post(`/answers/`, {
+                      data: {
+                          answer: currentAnswer,
+                          question: props.question.id,
+                          profile: props.profileId,
+                      },
+                  })
+                  .then((data) => {
+                      console.log(data);
+                  })
+                  .catch((err) => {
+                      console.log(err);
+                  });
     };
 
     return (
@@ -59,7 +75,7 @@ const UserQuestion = (props) => {
                     <input
                         className={classes.Input}
                         value={currentAnswer}
-                        onChange={(e) => changeAnswer(e)}
+                        onChange={(e) => setCurrentAnswer(e.target.value)}
                     ></input>
                 </div>
             </div>

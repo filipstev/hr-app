@@ -80,6 +80,7 @@ const Modal = (props) => {
                             : 'translateY(-100vh)',
                         opacity: props.show ? '1' : '0',
                         fontFamily: 'Comic Neue',
+                        maxWidth: '91vw',
                     }}
                 >
                     <div
@@ -116,7 +117,15 @@ const Modal = (props) => {
                                 : null}
                         </div>
                     </div>
-                    <div style={{ marginTop: '30px' }}>
+                    <div
+                        style={{
+                            marginTop: '30px',
+                            maxHeight: '40vh',
+                            overflow: 'scroll',
+                            maxWidth: '80vw',
+                            overflowX: 'hidden',
+                        }}
+                    >
                         {questions.length > 0
                             ? questions.map((question, i) => {
                                   //   console.log(

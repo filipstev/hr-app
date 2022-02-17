@@ -18,8 +18,9 @@ const fetchQuestions = async (
     setQuestions,
     currentQuestion,
     setCurrentQuestion,
-
-    setAnswers
+    setAnswers,
+    setCurrentAnswer,
+    setAnswerId
 ) => {
     //TODO: DINAMICKI ID ZA KOMPANIJE
     const res = await axiosInstance.get(
@@ -33,6 +34,19 @@ const fetchQuestions = async (
 
     if (currentQuestion === null) {
         setCurrentQuestion(sortedQuestions[0]);
+        const foundAnswer = await axiosInstance.get(
+            `/answers?filters[question][id][$eq]=${
+                sortedQuestions[0].id
+            }&filters[profile][id][$eq]=${41}&populate=*`
+        );
+        if (foundAnswer.data.data) {
+            if (foundAnswer.data.data[0]) {
+                setCurrentAnswer(foundAnswer.data.data[0].attributes.answer);
+                setAnswerId(foundAnswer.data.data[0].id);
+            } else {
+                setCurrentAnswer('');
+            }
+        }
     }
 
     return sortedQuestions;
@@ -56,11 +70,13 @@ const UserQuestions = () => {
     const [answers, setAnswers] = useState([]);
     const [currentAnswer, setCurrentAnswer] = useState();
     const [profileId, setProfileId] = useState();
+    const [answerId, setAnswerId] = useState();
+
     const user = JSON.parse(localStorage.getItem('user'));
     const getUserProfile = async () => {
         // console.log(userId);
         const profileId = await axiosInstance.get(
-            `https://internship-hr-app.herokuapp.com/api/profiles?filters[user][id][$eq]=${user.user.id}&populate=*`
+            `/profiles?filters[user][id][$eq]=${user.user.id}&populate=*`
         );
         return profileId;
     };
@@ -69,9 +85,8 @@ const UserQuestions = () => {
         const profile = await axiosInstance.get(
             `/profiles?filters[user][id][$eq]=${user.user.id}&populate=*`
         );
-        setProfileId(profile.data.data[0].id);
         console.log(profile.data.data[0].id);
-        // console.log(userId.user.id);
+        setProfileId(profile.data.data[0].id);
     }, []);
 
     const { data, status, refetch } = useQuery(
@@ -81,19 +96,24 @@ const UserQuestions = () => {
             currentQuestion,
             setCurrentQuestion,
             setAnswers,
+            setCurrentAnswer,
+            setAnswerId,
         ],
         () =>
             fetchQuestions(
                 setQuestions,
                 currentQuestion,
                 setCurrentQuestion,
-                setAnswers
+                setAnswers,
+                setCurrentAnswer,
+                setAnswerId
             )
     );
 
     const nextQuestion = () => {
         console.log(currentQuestion.attributes.order);
-
+        setAnswerId();
+        setCurrentAnswer('');
         let newQ = data.find(
             (question, index) =>
                 question.attributes.order ===
@@ -101,11 +121,15 @@ const UserQuestions = () => {
         );
         if (newQ) {
             setCurrentQuestion(newQ);
+            getAnswer(newQ);
         }
         console.log(newQ);
     };
 
     const prevQuestion = () => {
+        //blocked mechanism
+        setAnswerId();
+        setCurrentAnswer('');
         console.log(currentQuestion.attributes.order);
         let newQ = data.find(
             (question, index) =>
@@ -114,36 +138,63 @@ const UserQuestions = () => {
         );
         if (newQ) {
             setCurrentQuestion(newQ);
+            getAnswer(newQ);
         }
         console.log(newQ);
     };
 
-    const getAnswer = () => {
-        let retAnswer;
-        if (currentQuestion) {
-            currentQuestion.attributes.answers.data.map((answerQ) => {
-                let foundAnswer;
-                foundAnswer = answers.find((answer) => {
-                    return answer.id === answerQ.id;
-                });
-                if (foundAnswer) {
-                    setCurrentAnswer(foundAnswer);
-                    console.log(foundAnswer);
-                    retAnswer = foundAnswer.attributes.answer;
-                    return foundAnswer.attributes.answer;
-                }
-            });
+    const getAnswer = async (questionFor) => {
+        console.log('USAOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO');
+
+        const foundAnswer = await axiosInstance.get(
+            `/answers?filters[question][id][$eq]=${
+                questionFor.id
+            }&filters[profile][id][$eq]=${41}&populate=*`
+        );
+        if (foundAnswer.data.data) {
+            if (foundAnswer.data.data[0]) {
+                setCurrentAnswer(foundAnswer.data.data[0].attributes.answer);
+                setAnswerId(foundAnswer.data.data[0].id);
+            } else {
+                setCurrentAnswer('');
+            }
         }
-        return retAnswer;
+        // if (questionFor) {
+        //     questionFor.attributes.answers.data.map((answerQ) => {
+        //         let foundAnswer;
+        //         foundAnswer = answers.find((answer) => {
+        //             return answer.id === answerQ.id;
+        //         });
+        //         if (foundAnswer) {
+        //             console.log(foundAnswer, 'AJDE BRE');
+        //             setCurrentAnswer(foundAnswer);
+        //             retAnswer = foundAnswer.attributes.answer;
+        //             return foundAnswer.attributes.answer;
+        //         }
+        //     });
+        // }
+        // if (!retAnswer) {
+        //     setCurrentAnswer(null);
+        // }
+
+        // console.log(retAnswer, 'OVDE');
+        // return retAnswer;
     };
+
+    // useEffect(() => {
+    //     if (data) {
+    //         setCurrentQuestion(data[0]);
+    //     }
+    // }, []);
 
     useEffect(() => {
         if (data) {
             setCurrentQuestion(data[0]);
 
-            console.log(data[0]);
+            getAnswer(data[0]);
         }
     }, []);
+
     return (
         <div style={{ marginTop: '80px' }}>
             <div>
@@ -151,15 +202,42 @@ const UserQuestions = () => {
                     <UserQuestion
                         question={currentQuestion}
                         max={data.length}
-                        answer={getAnswer()}
+                        profileId={profileId}
+                        answerId={currentAnswer ? answerId : null}
+                        answer={currentAnswer ? currentAnswer : ''}
                         nextQuestion={nextQuestion}
                         prevQuestion={prevQuestion}
-                        userId={profileId}
+                        // userId={profileId}
+                        onChange={(e) => setCurrentAnswer(e.target.value)}
                         // changeAnswer={changeAnswer}
                     />
                 ) : (
                     <div>Loading...</div>
                 )}
+                {/* {data
+                    ? data.map((question, i) => {
+                          let foundAnswer;
+                          if (question) {
+                              question.attributes.answers.data.map(
+                                  (answerQ) => {
+                                      foundAnswer = answers.find((answer) => {
+                                          return answer.id === answerQ.id;
+                                      });
+                                  }
+                              );
+                              return (
+                                  <UserQuestion
+                                      question={currentQuestion}
+                                      max={data.length}
+                                      answer={foundAnswer}
+                                      nextQuestion={nextQuestion}
+                                      prevQuestion={prevQuestion}
+                                      userId={profileId}
+                                  />
+                              );
+                          }
+                      })
+                    : null} */}
             </div>
         </div>
     );
