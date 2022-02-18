@@ -30,29 +30,32 @@ export function* handleRegisterUser(action) {
                 const user = {
                     jwt: response.data.jwt,
                     user: response.data.user,
+                    role: action.userRole,
                 };
 
                 localStorage.setItem('user', JSON.stringify(user));
-
+                console.log('UserID: ', user.user.id);
                 yield call(() => {
-                    uploadAndConnectImage(action.file).then((res) => {
-                        if (res.status === 200) {
-                            createNewProfile(
-                                action.name,
-                                user.user.id,
-                                action.companyId,
-                                res.data[0].id
-                            );
-                            return;
-                        }
-                        createNewProfile(
-                            action.name,
-                            user.user.id,
-                            action.companyId
-                        );
-                    });
+                    if (action.file.entries('files').next().value) {
+                        uploadAndConnectImage(action.file).then((res) => {
+                            createNewProfile({
+                                name: action.name,
+                                id: user.user.id,
+                                companyId: action.companyId,
+                                photoId: res.data[0].id,
+                                userRole: action.userRole,
+                            });
+                        });
+                    }
+                    if (!action.file.entries('files').next().value) {
+                        createNewProfile({
+                            name: action.name,
+                            id: user.user.id,
+                            companyId: action.companyId,
+                            userRole: action.userRole,
+                        });
+                    }
                 });
-
                 yield put(setUser(user));
             }
         }

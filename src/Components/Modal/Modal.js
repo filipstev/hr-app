@@ -155,7 +155,7 @@ const Modal = (props) => {
                                               }}
                                           >
                                               <i
-                                                  class="fas fa-chevron-right"
+                                                  className="fas fa-chevron-right"
                                                   style={{
                                                       marginRight: '8px',
                                                       fontSize: '12px',

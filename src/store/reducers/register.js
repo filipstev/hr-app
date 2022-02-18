@@ -16,6 +16,7 @@ export default (state = initialState, action) => {
                 email: action.email,
                 password: action.password,
                 companyId: action.companyId,
+                userRole: action.userRole,
                 file: action.file,
                 isError: false,
             };
