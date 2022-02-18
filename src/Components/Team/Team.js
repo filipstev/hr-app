@@ -17,19 +17,17 @@ import { useCompany } from '../../queryFunctions/fetchCompany';
 
 const Team = ({ status }) => {
     const userId = useSelector((state) => state.user.user.user.id);
-
     const [page, setPage] = useState(1);
-    const [pageCount, setPageCount] = useState(1);
-    const [link, setLink] = useState(false);
-    const [email, setEmail] = useState('');
-    const [companyName, setCompanyName] = useState('');
+
     // Get User Company so we can filter profiles by Company Name
     const { data: company, isFetched } = useCompany(userId);
-    const {
-        data: profiles,
-        isLoading,
-        isFetching,
-    } = useProfiles(status, page, companyName);
+
+    const { data: profiles, isLoading } = useProfiles(status, page, company);
+
+    const [link, setLink] = useState(false);
+    const [email, setEmail] = useState('');
+
+    const pageCount = profiles?.meta.pagination.pageCount;
 
     const inviteNewMember = useMutation((data) => {
         return axiosInstance.post(`/invite`, data);
@@ -38,21 +36,12 @@ const Team = ({ status }) => {
     const handlePageChange = (event, value) => {
         setPage(value);
     };
-    // Set company name on fetch
-    useEffect(() => {
-        isFetched && setCompanyName(company[0].attributes.name);
-    }, [company, isFetched]);
-
-    // Set page count when profiles are fetched
-    useEffect(() => {
-        !isLoading && setPageCount(profiles.meta.pagination.pageCount);
-    }, [profiles, isLoading]);
 
     useEffect(() => {
         setPage(1);
     }, []);
 
-    if (isFetching || !isFetched) {
+    if (isLoading) {
         return <p style={{ marginTop: '150px' }}>Is Loading...</p>;
     }
 

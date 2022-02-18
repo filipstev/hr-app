@@ -21,7 +21,7 @@ const TeamHeader = ({ edit }) => {
 
     const { id } = useParams();
     const { data, isLoading } = useGetProfile(id);
-
+    console.log(data);
     const editProfile = useMutateProfile((data) => {
         return axiosInstance.put(`/profiles/${id}`, data);
     });
@@ -53,7 +53,7 @@ const TeamHeader = ({ edit }) => {
                                 labelId="selectStatus"
                                 id="selectStatus"
                                 label="Status"
-                                value={data.data.attributes.status}
+                                value={data.attributes.status}
                                 onChange={(e) => {
                                     editProfile.mutate({
                                         data: {

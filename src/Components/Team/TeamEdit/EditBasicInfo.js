@@ -18,10 +18,10 @@ import {
 const BasicInfo = ({ edit }) => {
     const { id } = useParams();
     const { data: profile, isLoading } = useGetProfile(id);
-
+    console.log(profile);
     const [username, setUsername] = useState('');
 
-    const image = !isLoading && profile.data.attributes.profilePhoto.data;
+    const image = profile?.attributes.profilePhoto.data;
     const [newImage, setNewImage] = useState('');
 
     const deleteImageMutation = useMutation(() => {
@@ -44,13 +44,13 @@ const BasicInfo = ({ edit }) => {
             id,
         });
 
-        const asd = await uploadImageMutation.mutateAsync({ newImage });
+        const upload = await uploadImageMutation.mutateAsync({ newImage });
 
-        if (asd.status) {
+        if (upload.status) {
             deleteImageMutation.mutate({});
             editProfile.mutate({
                 data: {
-                    profilePhoto: `${asd.data[0].id}`,
+                    profilePhoto: `${upload.data[0].id}`,
                 },
                 id,
             });
@@ -58,7 +58,7 @@ const BasicInfo = ({ edit }) => {
     };
 
     useEffect(() => {
-        !isLoading && setUsername(profile.data.attributes.name);
+        !isLoading && setUsername(profile.attributes.name);
     }, [isLoading, profile]);
 
     if (isLoading) {

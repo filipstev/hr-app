@@ -9,5 +9,7 @@ const getImage = async (imageUrl) => {
 };
 
 export const useFetchImage = (imageUrl) => {
-    return useQuery(['image', imageUrl], () => getImage(imageUrl));
+    return useQuery(['image', imageUrl], () => getImage(imageUrl), {
+        enabled: !!imageUrl,
+    });
 };

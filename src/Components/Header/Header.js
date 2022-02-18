@@ -50,8 +50,8 @@ const ResponsiveAppBar = (props) => {
                 //             .small.url
                 // );
                 setLogo(
-                    data.data.data.attributes.logo.data.attributes.formats.small
-                        .url
+                    data.data.data.attributes.logo.data.attributes.formats
+                        .thumbnail.url
                 );
             })
             .catch((err) => {

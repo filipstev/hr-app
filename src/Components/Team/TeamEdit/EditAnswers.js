@@ -19,7 +19,7 @@ const EditAnswers = () => {
     const [url, setUrl] = useState('');
     // Get answers
     const { data: answers, isLoading: answersIsLoading } =
-        useGetAnswersOfProfile(id, setA);
+        useGetAnswersOfProfile(id);
     // Get questions
     const { data: questions, isLoading: questionsIsLoading } =
         useGetQuestions();
