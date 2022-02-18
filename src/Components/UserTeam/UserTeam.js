@@ -57,6 +57,14 @@ const UserTeam = () => {
     const [sort, setSort] = useState('first');
     const [nameFilter, setNameFilter] = useState('');
     const [emptyFilter, setEmptyFilter] = useState(false);
+    const user = JSON.parse(localStorage.getItem('user'));
+    const getUserProfile = async () => {
+        // console.log(userId);
+        const profileId = await axiosInstance.get(
+            `/profiles?filters[user][id][$eq]=${user.user.id}&populate=*`
+        );
+        return profileId;
+    };
 
     const fetchProfiles = async () => {
         const res = await axiosInstance.get(
@@ -122,11 +130,17 @@ const UserTeam = () => {
         }
     }, [sort]);
 
-    useEffect(() => {
+    useEffect(async () => {
+        const profileData = await getUserProfile();
+        const slugData = await axiosInstance.get(
+            '/companies?filters[profiles][id][$eq]=' +
+                profileData.data.data[0].id
+        );
+
         axiosInstance
             .get(
                 '/profiles?filters[company][slug][$eq]=' +
-                    'tesla' +
+                    slugData.data.data[0].attributes.slug +
                     '&populate=*'
             )
             .then((data) => {

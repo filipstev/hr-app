@@ -20,7 +20,8 @@ const fetchQuestions = async (
     setCurrentQuestion,
     setAnswers,
     setCurrentAnswer,
-    setAnswerId
+    setAnswerId,
+    setIsImage
 ) => {
     //TODO: DINAMICKI ID ZA KOMPANIJE
     const res = await axiosInstance.get(
@@ -34,6 +35,11 @@ const fetchQuestions = async (
 
     if (currentQuestion === null) {
         setCurrentQuestion(sortedQuestions[0]);
+        if (sortedQuestions[0].attributes.type === 'image') {
+            setIsImage(true);
+        } else {
+            setIsImage(false);
+        }
         const foundAnswer = await axiosInstance.get(
             `/answers?filters[question][id][$eq]=${
                 sortedQuestions[0].id
@@ -71,6 +77,7 @@ const UserQuestions = () => {
     const [currentAnswer, setCurrentAnswer] = useState();
     const [profileId, setProfileId] = useState();
     const [answerId, setAnswerId] = useState();
+    const [isImage, setIsImage] = useState(false);
 
     const user = JSON.parse(localStorage.getItem('user'));
     const getUserProfile = async () => {
@@ -98,6 +105,7 @@ const UserQuestions = () => {
             setAnswers,
             setCurrentAnswer,
             setAnswerId,
+            setIsImage,
         ],
         () =>
             fetchQuestions(
@@ -106,7 +114,8 @@ const UserQuestions = () => {
                 setCurrentQuestion,
                 setAnswers,
                 setCurrentAnswer,
-                setAnswerId
+                setAnswerId,
+                setIsImage
             )
     );
 
@@ -119,7 +128,13 @@ const UserQuestions = () => {
                 question.attributes.order ===
                 currentQuestion.attributes.order + 1
         );
+
         if (newQ) {
+            if (newQ.attributes.type === 'image') {
+                setIsImage(true);
+            } else {
+                setIsImage(false);
+            }
             setCurrentQuestion(newQ);
             getAnswer(newQ);
         }
@@ -130,13 +145,17 @@ const UserQuestions = () => {
         //blocked mechanism
         setAnswerId();
         setCurrentAnswer('');
-        console.log(currentQuestion.attributes.order);
         let newQ = data.find(
             (question, index) =>
                 question.attributes.order ===
                 currentQuestion.attributes.order - 1
         );
         if (newQ) {
+            if (newQ.attributes.type === 'image') {
+                setIsImage(true);
+            } else {
+                setIsImage(false);
+            }
             setCurrentQuestion(newQ);
             getAnswer(newQ);
         }
@@ -144,13 +163,12 @@ const UserQuestions = () => {
     };
 
     const getAnswer = async (questionFor) => {
-        console.log('USAOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO');
-
         const foundAnswer = await axiosInstance.get(
             `/answers?filters[question][id][$eq]=${
                 questionFor.id
             }&filters[profile][id][$eq]=${41}&populate=*`
         );
+        console.log(foundAnswer);
         if (foundAnswer.data.data) {
             if (foundAnswer.data.data[0]) {
                 setCurrentAnswer(foundAnswer.data.data[0].attributes.answer);
@@ -207,6 +225,7 @@ const UserQuestions = () => {
                         answer={currentAnswer ? currentAnswer : ''}
                         nextQuestion={nextQuestion}
                         prevQuestion={prevQuestion}
+                        isImage={isImage}
                         // userId={profileId}
                         onChange={(e) => setCurrentAnswer(e.target.value)}
                         // changeAnswer={changeAnswer}
