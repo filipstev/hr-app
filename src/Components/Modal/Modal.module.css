@@ -2,10 +2,9 @@
     position: fixed;
     z-index: 2100;
     background-color: white;
-    width: 70%;
     padding: 40px;
     left: 15%;
-    top: 20%;
+    top: 10%;
     box-sizing: border-box;
     transition: all 0.3s ease-out;
 }

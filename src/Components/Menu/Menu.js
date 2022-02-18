@@ -24,8 +24,6 @@ function MainMenu(props) {
     const { window } = props;
     const [mobileOpen, setMobileOpen] = React.useState(false);
 
-    const user = JSON.parse(localStorage.getItem('user'));
-
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
     };
