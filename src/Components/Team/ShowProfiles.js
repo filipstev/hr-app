@@ -1,4 +1,7 @@
+import axiosInstance from '../../helpers/axiosInstance';
+
 import { useNavigate } from 'react-router-dom';
+import { useMutation, useQueryClient } from 'react-query';
 
 import DeleteProfile from './DeleteProfile';
 
@@ -8,12 +11,10 @@ import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
-import { useMutation } from 'react-query';
-import axiosInstance from '../../helpers/axiosInstance';
-import { useQueryClient } from 'react-query';
 
 const ShowProfiles = ({ status, profiles }) => {
     const navigate = useNavigate();
+
     const queryClient = useQueryClient();
 
     const deleteImage = useMutation((imgId) => {

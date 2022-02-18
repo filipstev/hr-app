@@ -1,8 +1,9 @@
-import Grid from '@mui/material/Grid';
-import Container from '@mui/material/Container';
 import TeamHeader from './TeamHeader';
 import BasicInfo from './EditBasicInfo';
 import ShowAnswers from './ShowAnswers';
+
+import Grid from '@mui/material/Grid';
+import Container from '@mui/material/Container';
 
 const EditProfile = ({ edit }) => {
     return (
