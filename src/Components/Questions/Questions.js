@@ -201,6 +201,10 @@ const Questions = () => {
         setQuestions(newQuestions);
     };
 
+    useEffect(() => {
+        refetch();
+    }, []);
+
     return (
         <>
             <div

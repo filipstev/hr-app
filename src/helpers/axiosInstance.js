@@ -25,6 +25,7 @@ axiosInstance.interceptors.response.use(
 
         if (err.response.status === 401) {
             localStorage.removeItem('user');
+            console.log('Kada refreshuje login');
             return (window.location.href = '/');
             // console.log(err.response.status);
         } else {
