@@ -80,7 +80,7 @@ function MainMenu(props) {
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
             <AppBar
-                position="fixed"
+                position="absolute"
                 sx={{
                     width: { sm: `calc(100% - ${drawerWidth}px)` },
                     ml: { sm: `${drawerWidth}px` },
@@ -125,6 +125,7 @@ function MainMenu(props) {
                     sx={{
                         display: { xs: 'none', sm: 'block' },
                         '& .MuiDrawer-paper': {
+                            position: 'absolute',
                             boxSizing: 'border-box',
                             width: drawerWidth,
                             marginTop: '64px',

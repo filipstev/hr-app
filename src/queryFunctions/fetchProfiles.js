@@ -9,7 +9,6 @@ const getProfilesByStatus = async (status, page, company) => {
 };
 
 export const useProfiles = (status, page, company) => {
-    console.log(status, page, company);
     return useQuery(
         ['profiles', status, page, company],
         () => getProfilesByStatus(status, page, company.name),

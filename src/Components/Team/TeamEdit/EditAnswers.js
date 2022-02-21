@@ -12,9 +12,9 @@ import { ReactQueryDevtools } from 'react-query/devtools';
 import { useSelector } from 'react-redux';
 
 const EditAnswers = () => {
+    const queryClient = useQueryClient();
     const userId = useSelector((state) => state.user.user.user.id);
     const { id } = useParams();
-    const queryClient = useQueryClient();
     const [a, setA] = useState(null);
     const [image, setImage] = useState('');
     const [url, setUrl] = useState('');

@@ -22,7 +22,11 @@ const Team = ({ status }) => {
     // Get User Company so we can filter profiles by Company Name
     const { data: company } = useCompany(userId);
 
-    const { data: profiles, isLoading } = useProfiles(status, page, company);
+    const { data: profiles, status: profileStatus } = useProfiles(
+        status,
+        page,
+        company
+    );
 
     const [link, setLink] = useState(false);
     const [email, setEmail] = useState('');
@@ -39,9 +43,9 @@ const Team = ({ status }) => {
 
     useEffect(() => {
         setPage(1);
-    }, []);
+    }, [status]);
 
-    if (isLoading) {
+    if (profileStatus !== 'success') {
         return <p style={{ marginTop: '150px' }}>Is Loading...</p>;
     }
 
@@ -110,7 +114,14 @@ const Team = ({ status }) => {
                 showLastButton
                 onChange={handlePageChange}
             />
-            <Grid container spacing={2} sx={{ marginLeft: 0 }}>
+            <Grid
+                container
+                spacing={{ sm: 0, md: 2 }}
+                sx={{
+                    marginLeft: 0,
+                    justifyContent: { xs: 'center', sm: 'start' },
+                }}
+            >
                 <ShowProfiles status={status} profiles={profiles} />
             </Grid>
         </Container>
