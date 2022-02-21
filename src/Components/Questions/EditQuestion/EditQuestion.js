@@ -14,7 +14,9 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 import { useMutation, useQuery } from 'react-query';
 const fetchQuestion = async (setText, setType, setId, id) => {
-    const res = await axiosInstance.get(`/questions/${id}`);
+
+    const res = await axiosInstance.get(`/questions/${id}?populate=*`);
+
 
     setText(res.data.data.attributes.text);
     setType(res.data.data.attributes.type);
@@ -31,23 +33,30 @@ const EditQuestion = (props) => {
     const [id, setId] = useState(null);
 
     const submitQuestion = async () => {
+
+        console.log(data?.attributes.answers.data);
+
         if (
             type === 'image' &&
             (data.attributes.type === 'text' ||
                 data.attributes.type === 'long_text')
         ) {
-            await axiosInstance.delete(
-                'questions/' + location.state.id + '/answers'
-            );
+
+            data?.attributes.answers.data.map((answer) => {
+                axiosInstance.delete('answers/' + answer.id);
+            });
+
         }
 
         if (
             (type === 'text' || type === 'long_text') &&
             data.attributes.type === 'image'
         ) {
-            await axiosInstance.delete(
-                'questions/' + location.state.id + '/answers'
-            );
+
+            data?.attributes.answers.data.map((answer) => {
+                axiosInstance.delete('answers/' + answer.id);
+            });
+
         }
 
         if (text !== '' && type && id) {

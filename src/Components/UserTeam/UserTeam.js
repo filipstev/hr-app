@@ -220,6 +220,9 @@ const UserTeam = () => {
                                                 margin: '15px 0',
                                                 alignSelf: 'center',
                                                 justifySelf: 'center',
+
+                                                objectFit: 'cover',
+
                                             }}
                                         />
                                     ) : (
@@ -231,6 +234,9 @@ const UserTeam = () => {
                                                 margin: '15px 0',
                                                 alignSelf: 'center',
                                                 justifySelf: 'center',
+
+                                                objectFit: 'cover',
+
                                             }}
                                         />
                                     )}

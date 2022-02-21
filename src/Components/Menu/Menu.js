@@ -91,7 +91,7 @@ function MainMenu(props) {
                     aria-label="open drawer"
                     edge="start"
                     onClick={handleDrawerToggle}
-                    sx={{ mr: 2, display: { sm: 'none' } }}
+                    sx={{ mr: 2, display: { xs: 'none', sm: 'none' } }}
                 >
                     <p style={{ fontSize: '1rem' }}>Menu</p>
                 </IconButton>
@@ -110,7 +110,7 @@ function MainMenu(props) {
                         keepMounted: true,
                     }}
                     sx={{
-                        display: { xs: 'block', sm: 'none' },
+                        display: { xs: 'none', sm: 'none' },
 
                         '& .MuiDrawer-paper': {
                             boxSizing: 'border-box',
@@ -123,7 +123,7 @@ function MainMenu(props) {
                 <Drawer
                     variant="permanent"
                     sx={{
-                        display: { xs: 'none', sm: 'block' },
+                        display: { xs: 'none', sm: 'none', md: 'block' },
                         '& .MuiDrawer-paper': {
                             position: 'absolute',
                             boxSizing: 'border-box',
