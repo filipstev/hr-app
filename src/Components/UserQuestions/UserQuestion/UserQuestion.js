@@ -118,7 +118,7 @@ const UserQuestion = (props) => {
             <div className={classes.Left}>
                 <div className={classes.UpDown}>
                     <i
-                        onClick={props.nextQuestion}
+                        onClick={!props.blocked ? props.nextQuestion : null}
                         className="fas fa-angle-up"
                     ></i>
                     <div>
@@ -128,7 +128,7 @@ const UserQuestion = (props) => {
                         /{props.max}
                     </div>
                     <i
-                        onClick={props.prevQuestion}
+                        onClick={!props.blocked ? props.prevQuestion : null}
                         className="fas fa-angle-down"
                     ></i>
                 </div>

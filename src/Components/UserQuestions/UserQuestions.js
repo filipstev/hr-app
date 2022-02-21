@@ -21,17 +21,17 @@ const fetchQuestions = async (
     setAnswers,
     setCurrentAnswer,
     setAnswerId,
-    setIsImage
+    setIsImage,
+    setTotal
 ) => {
     //TODO: DINAMICKI ID ZA KOMPANIJE
     const res = await axiosInstance.get(
         `/questions?filters[company][id][$eq]=2&populate=*`
     );
-    const ans = await axiosInstance.get(`/profiles/41?populate=*`);
-    setAnswers(ans.data.data.attributes.answers.data);
 
     const sortedQuestions = res.data.data.sort(compare);
     setQuestions(sortedQuestions);
+    setTotal(sortedQuestions.length);
 
     if (currentQuestion === null) {
         setCurrentQuestion(sortedQuestions[0]);
@@ -78,6 +78,8 @@ const UserQuestions = () => {
     const [profileId, setProfileId] = useState();
     const [answerId, setAnswerId] = useState();
     const [isImage, setIsImage] = useState(false);
+    const [blocked, setBlocked] = useState(false);
+    const [total, setTotal] = useState(0);
 
     const user = JSON.parse(localStorage.getItem('user'));
     const getUserProfile = async () => {
@@ -106,6 +108,7 @@ const UserQuestions = () => {
             setCurrentAnswer,
             setAnswerId,
             setIsImage,
+            setTotal,
         ],
         () =>
             fetchQuestions(
@@ -115,14 +118,13 @@ const UserQuestions = () => {
                 setAnswers,
                 setCurrentAnswer,
                 setAnswerId,
-                setIsImage
-            )
+                setIsImage,
+                setTotal
+            ),
+        { keepPreviousData: true }
     );
 
     const nextQuestion = () => {
-        console.log(currentQuestion.attributes.order);
-        setAnswerId();
-        setCurrentAnswer('');
         let newQ = data.find(
             (question, index) =>
                 question.attributes.order ===
@@ -130,6 +132,9 @@ const UserQuestions = () => {
         );
 
         if (newQ) {
+            setBlocked(true);
+            setAnswerId();
+            setCurrentAnswer('');
             if (newQ.attributes.type === 'image') {
                 setIsImage(true);
             } else {
@@ -138,19 +143,22 @@ const UserQuestions = () => {
             setCurrentQuestion(newQ);
             getAnswer(newQ);
         }
-        console.log(newQ);
+
+        setBlocked(false);
     };
 
     const prevQuestion = () => {
         //blocked mechanism
-        setAnswerId();
-        setCurrentAnswer('');
         let newQ = data.find(
             (question, index) =>
                 question.attributes.order ===
                 currentQuestion.attributes.order - 1
         );
         if (newQ) {
+            setBlocked(true);
+            setAnswerId();
+            setCurrentAnswer('');
+
             if (newQ.attributes.type === 'image') {
                 setIsImage(true);
             } else {
@@ -159,7 +167,8 @@ const UserQuestions = () => {
             setCurrentQuestion(newQ);
             getAnswer(newQ);
         }
-        console.log(newQ);
+
+        setBlocked(false);
     };
 
     const getAnswer = async (questionFor) => {
@@ -213,26 +222,28 @@ const UserQuestions = () => {
         }
     }, []);
 
+    if (status === 'loading') {
+        return <div style={{ marginTop: '80px' }}>Loading...</div>;
+    }
+
     return (
         <div style={{ marginTop: '80px' }}>
             <div>
-                {data ? (
-                    <UserQuestion
-                        question={currentQuestion}
-                        max={data.length}
-                        profileId={profileId}
-                        answerId={currentAnswer ? answerId : null}
-                        answer={currentAnswer ? currentAnswer : ''}
-                        nextQuestion={nextQuestion}
-                        prevQuestion={prevQuestion}
-                        isImage={isImage}
-                        // userId={profileId}
-                        onChange={(e) => setCurrentAnswer(e.target.value)}
-                        // changeAnswer={changeAnswer}
-                    />
-                ) : (
-                    <div>Loading...</div>
-                )}
+                <UserQuestion
+                    question={currentQuestion}
+                    max={data ? data.length : total}
+                    profileId={profileId}
+                    answerId={currentAnswer ? answerId : null}
+                    answer={currentAnswer ? currentAnswer : ''}
+                    nextQuestion={nextQuestion}
+                    prevQuestion={prevQuestion}
+                    blocked={blocked}
+                    isImage={isImage}
+                    // userId={profileId}
+                    onChange={(e) => setCurrentAnswer(e.target.value)}
+                    // changeAnswer={changeAnswer}
+                />
+
                 {/* {data
                     ? data.map((question, i) => {
                           let foundAnswer;

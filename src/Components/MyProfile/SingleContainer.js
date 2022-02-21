@@ -3,6 +3,7 @@ import { Button, TextField } from '@material-ui/core';
 import axios from 'axios';
 import axiosInstance from '../../helpers/axiosInstance';
 import { useMutation } from 'react-query';
+import Avatar from '../../assets/avatar.png';
 
 const SingleContainer = (props) => {
     const [name, setName] = useState('');
@@ -40,6 +41,7 @@ const SingleContainer = (props) => {
 
     useEffect(() => {
         const userStorage = JSON.parse(localStorage.getItem('user'));
+        console.log(props.user);
         // KAD NADJEMO PASSWORD
         // if (props.user.id) {
         //     axiosInstance
@@ -89,6 +91,10 @@ const SingleContainer = (props) => {
             });
     };
 
+    if (!props.user) {
+        return props.info ? <div>Loading...</div> : null;
+    }
+
     return props.info ? (
         <div
             style={{
@@ -118,6 +124,32 @@ const SingleContainer = (props) => {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                 />
+                {props.user?.attributes.profilePhoto.data.attributes.url ? (
+                    <img
+                        src={
+                            files.length > 0
+                                ? URL.createObjectURL(files[0])
+                                : props.user?.attributes.profilePhoto.data
+                                      .attributes.url
+                        }
+                        style={{
+                            height: '200px',
+                            width: '200px',
+                            objectFit: 'cover',
+                            marginBottom: '16px',
+                        }}
+                    />
+                ) : (
+                    <img
+                        src={Avatar}
+                        style={{
+                            height: '200px',
+                            width: '200px',
+                            objectFit: 'cover',
+                            marginBottom: '16px',
+                        }}
+                    />
+                )}
                 <input type="file" onChange={(e) => setFiles(e.target.files)} />
 
                 <div

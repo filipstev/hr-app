@@ -16,6 +16,7 @@ import FormHelperText from '@mui/material/FormHelperText';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { useQuery } from 'react-query';
+import Avatar from '../../assets/avatar.png';
 
 function compareLast(a, b) {
     if (a.attributes.createdAt > b.attributes.createdAt) {
@@ -54,17 +55,42 @@ const CompanyWall = () => {
     const location = useLocation();
     const [modalOpen, setModalOpen] = useState(false);
     const [modalInfo, setModalInfo] = useState([]);
-    const [sort, setSort] = useState('first');
+    const [sort, setSort] = useState('DESC');
     const [nameFilter, setNameFilter] = useState('');
     const [emptyFilter, setEmptyFilter] = useState(false);
+    const [order, setOrder] = useState('DESC');
+    const [searching, setSearching] = useState(false);
 
-    const fetchProfiles = async () => {
-        const res = await axiosInstance.get(
-            '/profiles?filters[company][slug][$eq]=' +
-                location.pathname.split('/')[2] +
-                '&populate=*'
-        );
+    const compare = (a, b) => {
+        if (order === 'DESC') {
+            compareLast(a, b);
+        } else if (order === 'ASC') {
+            compareFirst(a, b);
+        } else if (order === 'name') {
+            compareName(a, b);
+        } else {
+            console.log('nothing');
+        }
+    };
 
+    const fetchProfiles = async (slug, order) => {
+        let res;
+        if (order === 'name') {
+            res = await axiosInstance.get(
+                '/profiles?filters[company][slug][$eq]=' +
+                    slug +
+                    '&populate=*&sort=name:ASC'
+            );
+        } else {
+            res = await axiosInstance.get(
+                '/profiles?filters[company][slug][$eq]=' +
+                    slug +
+                    '&populate=*&sort=createdAt:' +
+                    order
+            );
+        }
+
+        console.log(res);
         let publishedProfiles = [];
 
         res.data.data.map((profile) => {
@@ -81,22 +107,33 @@ const CompanyWall = () => {
 
     const handleChange = (e) => {
         setSort(e.target.value);
+        setOrder(e.target.value);
     };
 
     const onNameFilterChange = (e) => {
+        if (e.target.value === '') {
+            setNameFilter(e.target.value);
+            setSearching(false);
+            return;
+        }
         setNameFilter(e.target.value);
+        setSearching(true);
     };
 
-    const { data, status, refetch } = useQuery(['team-profiles'], () =>
-        fetchProfiles()
+    const { data, status, refetch } = useQuery(
+        ['team-profiles', location.pathname.split('/')[2], order],
+        () => fetchProfiles(location.pathname.split('/')[2], order)
     );
 
     useEffect(() => {
         let newProfiles = [];
         if (nameFilter !== '') {
             allProfiles.map((profile) => {
-                if (profile.attributes.name.includes(nameFilter)) {
-                    console.log(profile);
+                if (
+                    profile.attributes.name
+                        .toLowerCase()
+                        .includes(nameFilter.toLowerCase())
+                ) {
                     newProfiles.push(profile);
                 }
             });
@@ -110,45 +147,45 @@ const CompanyWall = () => {
         }
     }, [nameFilter]);
 
-    useEffect(() => {
-        let newProfiles = [];
-        if (sort === 'last') {
-            let newProfiles = profiles.sort(compareLast);
-            setProfiles([...newProfiles]);
-        } else if (sort === 'first') {
-            let newProfiles = profiles.sort(compareFirst);
-            setProfiles([...newProfiles]);
-        } else if (sort === 'name') {
-            let newProfiles = profiles.sort(compareName);
-            setProfiles([...newProfiles]);
-        }
-    }, [sort]);
+    // useEffect(() => {
+    //     let newProfiles = [];
+    //     if (sort === 'last') {
+    //         let newProfiles = profiles.sort(compareLast);
+    //         setProfiles([...newProfiles]);
+    //     } else if (sort === 'first') {
+    //         let newProfiles = profiles.sort(compareFirst);
+    //         setProfiles([...newProfiles]);
+    //     } else if (sort === 'name') {
+    //         let newProfiles = profiles.sort(compareName);
+    //         setProfiles([...newProfiles]);
+    //     }
+    // }, [sort]);
 
-    useEffect(() => {
-        axiosInstance
-            .get(
-                '/profiles?filters[company][slug][$eq]=' +
-                    location.pathname.split('/')[2] +
-                    '&populate=*'
-            )
-            .then((data) => {
-                let publishedProfiles = [];
+    // useEffect(() => {
+    //     axiosInstance
+    //         .get(
+    //             '/profiles?filters[company][slug][$eq]=' +
+    //                 location.pathname.split('/')[2] +
+    //                 '&populate=*'
+    //         )
+    //         .then((data) => {
+    //             let publishedProfiles = [];
 
-                data.data.data.map((profile) => {
-                    if (profile.attributes.status === 'published') {
-                        publishedProfiles.push(profile);
-                    }
-                });
-                if (publishedProfiles.length === 0) {
-                    setEmptyFilter(true);
-                }
-                setProfiles(publishedProfiles);
-                setAllProfiles(publishedProfiles);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    }, [location.pathname]);
+    //             data.data.data.map((profile) => {
+    //                 if (profile.attributes.status === 'published') {
+    //                     publishedProfiles.push(profile);
+    //                 }
+    //             });
+    //             if (publishedProfiles.length === 0) {
+    //                 setEmptyFilter(true);
+    //             }
+    //             setProfiles(publishedProfiles);
+    //             setAllProfiles(publishedProfiles);
+    //         })
+    //         .catch((err) => {
+    //             console.log(err);
+    //         });
+    // }, [location.pathname]);
 
     const openModal = (id, attributes) => {
         setModalOpen(true);
@@ -160,73 +197,150 @@ const CompanyWall = () => {
     };
 
     //TODO: PROVERITI ZA STATUS, DA LI SVE ILI SAMO PUBLISHED
-    const showProfiles = () => {
-        return profiles.map(({ id, attributes }) => {
-            let image;
-            if (attributes.profilePhoto.data !== null) {
-                image = attributes.profilePhoto.data.attributes.url;
-            }
+    const showProfiles = (shouldFilter) => {
+        if (!shouldFilter) {
+            return data?.map(({ id, attributes }) => {
+                let image;
+                if (attributes.profilePhoto.data !== null) {
+                    image = attributes.profilePhoto.data.attributes.url;
+                }
 
-            if (attributes.status === 'published') {
-                return (
-                    <Grid
-                        item
-                        key={id}
-                        onClick={() => openModal(id, attributes)}
-                        style={{ cursor: 'pointer' }}
-                    >
-                        <Card sx={{ minWidth: 275 }}>
-                            <CardContent
-                                style={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                }}
+                if (attributes.status === 'published') {
+                    return (
+                        <Grid
+                            item
+                            key={id}
+                            onClick={() => openModal(id, attributes)}
+                            style={{ cursor: 'pointer' }}
+                        >
+                            <Card sx={{ minWidth: 275 }}>
+                                <CardContent
+                                    style={{
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                    }}
+                                >
+                                    {image ? (
+                                        <img
+                                            src={image}
+                                            style={{
+                                                width: '200px',
+                                                height: '200px',
+                                                margin: '15px 0',
+                                                alignSelf: 'center',
+                                                justifySelf: 'center',
+                                                objectFit: 'cover',
+                                            }}
+                                        />
+                                    ) : (
+                                        <img
+                                            src={Avatar}
+                                            style={{
+                                                width: '200px',
+                                                height: '200px',
+                                                margin: '15px 0',
+                                                alignSelf: 'center',
+                                                justifySelf: 'center',
+                                                backgroundColor: 'white',
+                                                objectFit: 'cover',
+                                            }}
+                                        />
+                                    )}
+
+                                    <Typography
+                                        sx={{ mb: 1.5 }}
+                                        color="text.secondary"
+                                    >
+                                        Name: {attributes.name}
+                                    </Typography>
+                                    <Typography variant="body2">
+                                        Joined:{' '}
+                                        {new Date(attributes.createdAt)
+                                            .toDateString()
+                                            .split(' ')
+                                            .splice(1, 4)
+                                            .join(' ')}
+                                    </Typography>
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                    );
+                }
+            });
+        } else {
+            return profiles
+                ?.sort((a, b) => compare(a, b))
+                .map(({ id, attributes }) => {
+                    let image;
+                    if (attributes.profilePhoto.data !== null) {
+                        image = attributes.profilePhoto.data.attributes.url;
+                    }
+
+                    if (attributes.status === 'published') {
+                        return (
+                            <Grid
+                                item
+                                key={id}
+                                onClick={() => openModal(id, attributes)}
+                                style={{ cursor: 'pointer' }}
                             >
-                                {image ? (
-                                    <img
-                                        src={image}
+                                <Card sx={{ minWidth: 275 }}>
+                                    <CardContent
                                         style={{
-                                            width: '200px',
-                                            height: '200px',
-                                            margin: '15px 0',
-                                            alignSelf: 'center',
-                                            justifySelf: 'center',
-                                        }}
-                                    />
-                                ) : (
-                                    <div
-                                        style={{
-                                            width: '200px',
-                                            height: '200px',
-                                            margin: 'auto',
+                                            display: 'flex',
+                                            flexDirection: 'column',
                                         }}
                                     >
-                                        {' '}
-                                        x
-                                    </div>
-                                )}
+                                        {image ? (
+                                            <img
+                                                src={image}
+                                                style={{
+                                                    width: '200px',
+                                                    height: '200px',
+                                                    margin: '15px 0',
+                                                    alignSelf: 'center',
+                                                    justifySelf: 'center',
+                                                }}
+                                            />
+                                        ) : (
+                                            <img
+                                                src={Avatar}
+                                                style={{
+                                                    width: '200px',
+                                                    height: '200px',
+                                                    margin: '15px 0',
+                                                    alignSelf: 'center',
+                                                    justifySelf: 'center',
+                                                }}
+                                            />
+                                        )}
 
-                                <Typography
-                                    sx={{ mb: 1.5 }}
-                                    color="text.secondary"
-                                >
-                                    Name: {attributes.name}
-                                </Typography>
-                                <Typography variant="body2">
-                                    Joined:{' '}
-                                    {new Date(attributes.createdAt)
-                                        .toDateString()
-                                        .split(' ')
-                                        .splice(1, 4)
-                                        .join(' ')}
-                                </Typography>
-                            </CardContent>
-                        </Card>
-                    </Grid>
-                );
-            }
-        });
+                                        <Typography
+                                            sx={{ mb: 1.5 }}
+                                            color="text.secondary"
+                                        >
+                                            Name: {attributes.name}
+                                        </Typography>
+                                        <Typography variant="body2">
+                                            Joined:{' '}
+                                            {new Date(attributes.createdAt)
+                                                .toDateString()
+                                                .split(' ')
+                                                .splice(1, 4)
+                                                .join(' ')}
+                                        </Typography>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+                        );
+                    }
+                });
+        }
     };
+
+    if (status === 'loading') {
+        return <div style={{ marginTop: '80px' }}>Loading...</div>;
+    }
 
     return (
         // TODO: NOVI HEADER
@@ -273,8 +387,8 @@ const CompanyWall = () => {
                             label="Sort by"
                             onChange={handleChange}
                         >
-                            <MenuItem value={'last'}>Last Joined</MenuItem>
-                            <MenuItem value={'first'}>First Joined</MenuItem>
+                            <MenuItem value={'DESC'}>Last Joined</MenuItem>
+                            <MenuItem value={'ASC'}>First Joined</MenuItem>
                             <MenuItem value={'name'}>Name (A-Z) </MenuItem>
                             {/* TODO: Mozda ubaciti obrnuto sortiranje po imenu */}
                             {/* <MenuItem value={'name'}>Name (Z-A) </MenuItem> */}
@@ -283,10 +397,12 @@ const CompanyWall = () => {
                 </div>
             </Grid>
             <Grid container spacing={2} sx={{ marginLeft: 0 }}>
-                {profiles.length !== 0 ? (
-                    showProfiles()
+                {data?.length !== 0 && !searching ? (
+                    showProfiles(false)
                 ) : emptyFilter ? (
                     <div>No profiles found</div>
+                ) : searching ? (
+                    showProfiles(true)
                 ) : (
                     <p>Loading...</p>
                 )}

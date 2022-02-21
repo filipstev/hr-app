@@ -7,6 +7,7 @@
     top: 10%;
     box-sizing: border-box;
     transition: all 0.3s ease-out;
+    word-break: break-all;
 }
 
 @media (min-width: 600px) {
