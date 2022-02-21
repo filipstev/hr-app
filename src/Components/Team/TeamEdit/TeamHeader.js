@@ -21,7 +21,7 @@ const TeamHeader = ({ edit }) => {
 
     const { id } = useParams();
     const { data, isLoading } = useGetProfile(id);
-    console.log(data);
+
     const editProfile = useMutateProfile((data) => {
         return axiosInstance.put(`/profiles/${id}`, data);
     });
