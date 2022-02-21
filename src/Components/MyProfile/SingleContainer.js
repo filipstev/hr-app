@@ -6,6 +6,7 @@ import { useMutation } from 'react-query';
 import Avatar from '../../assets/avatar.png';
 import classes from './MyProfile.module.css';
 
+
 const SingleContainer = (props) => {
     const [name, setName] = useState('');
     const [files, setFiles] = useState([]);
