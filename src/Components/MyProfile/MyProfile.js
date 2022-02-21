@@ -3,6 +3,7 @@ import SingleContainer from './SingleContainer';
 
 import axiosInstance from '../../helpers/axiosInstance';
 import { useQuery } from 'react-query';
+import classes from './MyProfile.module.css';
 
 const MyProfile = () => {
     const userStorage = JSON.parse(localStorage.getItem('user'));
@@ -39,7 +40,7 @@ const MyProfile = () => {
                 My Profile
             </h1>
 
-            <div style={{ display: 'flex' }}>
+            <div style={{ display: 'flex' }} className={classes.ContainerWrap}>
                 <SingleContainer info user={data} />
                 <SingleContainer
                     security

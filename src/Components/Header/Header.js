@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -17,6 +17,13 @@ import axiosInstance from '../../helpers/axiosInstance';
 const pages = ['Tesla', 'Ghetto', 'Page Three'];
 
 const ResponsiveAppBar = (props) => {
+    const [width, setWidth] = useState(window.innerWidth);
+
+    function handleWindowSizeChange() {
+        setWidth(window.innerWidth);
+    }
+
+    const isMobile = width <= 900;
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
     const [logo, setLogo] = React.useState(null);
@@ -36,9 +43,38 @@ const ResponsiveAppBar = (props) => {
         setAnchorElUser(null);
     };
 
+    useEffect(() => {
+        window.addEventListener('resize', handleWindowSizeChange);
+        return () => {
+            window.removeEventListener('resize', handleWindowSizeChange);
+        };
+    }, []);
     const navigatePage = (page) => {
         handleCloseNavMenu();
     };
+
+    const drawerList = [
+        {
+            text: 'Pending for approval',
+            navigateTo: 'team/pending',
+        },
+        {
+            text: 'Team',
+            navigateTo: 'team',
+        },
+        {
+            text: 'Questions',
+            navigateTo: 'questions',
+        },
+        {
+            text: 'Company Info',
+            navigateTo: '',
+        },
+        {
+            text: 'My Profile',
+            navigateTo: 'my-profile',
+        },
+    ];
 
     useEffect(() => {
         axiosInstance
@@ -118,26 +154,49 @@ const ResponsiveAppBar = (props) => {
                                 flexDirection: 'column',
                             }}
                         >
-                            {pages.map((page) => (
-                                <MenuItem
-                                    key={page}
-                                    onClick={() => navigatePage(page)}
-                                >
-                                    <Link
-                                        to={`/team/${page
-                                            .toLowerCase()
-                                            .replace(' ', '')}`}
-                                        onClick={handleCloseNavMenu}
-                                        style={{
-                                            color: 'black',
-                                            textDecoration: 'none',
-                                            padding: '5px 12px',
-                                        }}
-                                    >
-                                        {page}
-                                    </Link>
-                                </MenuItem>
-                            ))}
+                            {!isMobile
+                                ? pages.map((page) => (
+                                      <MenuItem
+                                          key={page}
+                                          onClick={() => navigatePage(page)}
+                                      >
+                                          <Link
+                                              to={`/team/${page
+                                                  .toLowerCase()
+                                                  .replace(' ', '')}`}
+                                              onClick={handleCloseNavMenu}
+                                              style={{
+                                                  color: 'black',
+                                                  textDecoration: 'none',
+                                                  padding: '5px 12px',
+                                              }}
+                                          >
+                                              {page}
+                                          </Link>
+                                      </MenuItem>
+                                  ))
+                                : drawerList.map((item) => (
+                                      <MenuItem
+                                          key={item.navigateTo}
+                                          onClick={() =>
+                                              navigatePage(item.navigateTo)
+                                          }
+                                      >
+                                          <Link
+                                              to={`/${item.navigateTo
+                                                  .toLowerCase()
+                                                  .replace(' ', '')}`}
+                                              onClick={handleCloseNavMenu}
+                                              style={{
+                                                  color: 'black',
+                                                  textDecoration: 'none',
+                                                  padding: '5px 12px',
+                                              }}
+                                          >
+                                              {item.text}
+                                          </Link>
+                                      </MenuItem>
+                                  ))}
                         </Menu>
                     </Box>
 
@@ -147,20 +206,35 @@ const ResponsiveAppBar = (props) => {
                             display: { xs: 'none', md: 'flex' },
                         }}
                     >
-                        {pages.map((page) => (
-                            <Link
-                                to={`/team/${page
-                                    .toLowerCase()
-                                    .replace(' ', '')}`}
-                                style={{
-                                    textDecoration: 'none',
-                                    color: 'black',
-                                    marginRight: '32px',
-                                }}
-                            >
-                                {page}
-                            </Link>
-                        ))}
+                        {!isMobile
+                            ? pages.map((page) => (
+                                  <Link
+                                      to={`/team/${page
+                                          .toLowerCase()
+                                          .replace(' ', '')}`}
+                                      style={{
+                                          textDecoration: 'none',
+                                          color: 'black',
+                                          marginRight: '32px',
+                                      }}
+                                  >
+                                      {page}
+                                  </Link>
+                              ))
+                            : drawerList.map((item) => (
+                                  <Link
+                                      to={`/team/${item.navigateTo
+                                          .toLowerCase()
+                                          .replace(' ', '')}`}
+                                      style={{
+                                          textDecoration: 'none',
+                                          color: 'black',
+                                          marginRight: '32px',
+                                      }}
+                                  >
+                                      {item.text}
+                                  </Link>
+                              ))}
                     </Box>
                 </Toolbar>
             </Container>
