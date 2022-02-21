@@ -20,7 +20,7 @@ const Team = ({ status }) => {
     const [page, setPage] = useState(1);
 
     // Get User Company so we can filter profiles by Company Name
-    const { data: company, isFetched } = useCompany(userId);
+    const { data: company } = useCompany(userId);
 
     const { data: profiles, isLoading } = useProfiles(status, page, company);
 

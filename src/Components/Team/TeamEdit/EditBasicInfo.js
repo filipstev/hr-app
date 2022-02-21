@@ -15,10 +15,10 @@ import {
     Typography,
 } from '@mui/material';
 
-const BasicInfo = ({ edit }) => {
+const BasicInfo = () => {
     const { id } = useParams();
     const { data: profile, isLoading } = useGetProfile(id);
-    console.log(profile);
+
     const [username, setUsername] = useState('');
 
     const image = profile?.attributes.profilePhoto.data;
