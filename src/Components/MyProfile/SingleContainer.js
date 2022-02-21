@@ -4,6 +4,8 @@ import axios from 'axios';
 import axiosInstance from '../../helpers/axiosInstance';
 import { useMutation } from 'react-query';
 import Avatar from '../../assets/avatar.png';
+import classes from './MyProfile.module.css';
+
 
 const SingleContainer = (props) => {
     const [name, setName] = useState('');
@@ -106,7 +108,9 @@ const SingleContainer = (props) => {
                 fontWeight: '600',
                 marginRight: '40px',
                 width: '370px',
+                marginBottom: '14px',
             }}
+            className={classes.SingleContainer}
         >
             <div style={{ padding: '10px 20px' }}>Basic Info</div>
             <div
@@ -180,6 +184,7 @@ const SingleContainer = (props) => {
                 marginRight: '40px',
                 width: '370px',
             }}
+            className={classes.SingleContainer}
         >
             <div style={{ padding: '10px 20px' }}>Security</div>
             <div
