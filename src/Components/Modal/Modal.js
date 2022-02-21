@@ -3,33 +3,68 @@ import React, { Component, useEffect, useState } from 'react';
 import classes from './Modal.module.css';
 import Backdrop from '../Backdrop/Backdrop';
 import axiosInstance from '../../helpers/axiosInstance';
+import Avatar from '../../assets/avatar.png';
+import { useQuery } from 'react-query';
+
+const fetchAnwers = async (id) => {
+    const answersRes = await axiosInstance.get(`/profiles/${id}?populate=*`);
+    return answersRes.data.data.attributes.answers.data;
+};
+
+const fetchQuestions = async () => {
+    const res = await axiosInstance.get(
+        '/questions?filters[company][id][$eq]=2&populate=*'
+    );
+
+    return res.data.data;
+};
 
 const Modal = (props) => {
     const [questions, setQuestions] = useState([]);
     const [answers, setAnswers] = useState([]);
 
-    useEffect(() => {
-        if (props.show === true) {
-            if (props.modalInfo[0]) {
-                axiosInstance
-                    .get(`/profiles/${props.modalInfo[0]}?populate=*`)
-                    .then((data) => {
-                        setAnswers([...data.data.data.attributes.answers.data]);
-                        // console.log(data.data.data.attributes.answers.data);
-                    })
-                    .catch((err) => {
-                        console.log(err);
-                    });
-            }
+    const {
+        data: answersQuery,
+        refetch,
+        status,
+    } = useQuery(
+        ['modal-answers', props.modalInfo[0]],
+        () => fetchAnwers(props.modalInfo[0]),
+        {
+            enabled: false,
+        }
+    );
 
-            axiosInstance
-                .get('/questions?populate=*')
-                .then((data) => {
-                    setQuestions(data.data.data);
-                })
-                .catch((err) => {
-                    console.log(err);
-                });
+    const { data: questionsQuery, status: qStatus } = useQuery(
+        'modal-questions',
+        fetchQuestions
+    );
+
+    useEffect(() => {
+        // if (props.show === true) {
+        //     if (props.modalInfo[0]) {
+        //         axiosInstance
+        //             .get(`/profiles/${props.modalInfo[0]}?populate=*`)
+        //             .then((data) => {
+        //                 setAnswers([...data.data.data.attributes.answers.data]);
+        //                 // console.log(data.data.data.attributes.answers.data);
+        //             })
+        //             .catch((err) => {
+        //                 console.log(err);
+        //             });
+        //     }
+
+        //     axiosInstance
+        //         .get('/questions?populate=*')
+        //         .then((data) => {
+        //             setQuestions(data.data.data);
+        //         })
+        //         .catch((err) => {
+        //             console.log(err);
+        //         });
+        // }
+        if (props.show) {
+            refetch();
         }
     }, [props.show]);
 
@@ -53,21 +88,9 @@ const Modal = (props) => {
     //     return axiosInstance.get(`/profiles/${params.id}?populate=*`);
     // };
 
-    const getAnswer = (i) => {
-        let answerRet;
-        questions.map((question) => {
-            question.attributes.answers.data.find((answer) => {
-                console.log(answer.id, answers[i].id);
-                if (answer.id === answers[i].id) {
-                    answerRet = answer;
-                    return answer;
-                }
-            });
-        });
-
-        console.log(answerRet);
-        return answerRet;
-    };
+    if (status === 'loading' || qStatus === 'loading') {
+        return <div>Loading...</div>;
+    }
     return (
         <>
             <Backdrop show={props.show} clicked={props.modalClosed} />
@@ -98,10 +121,18 @@ const Modal = (props) => {
                                     width: '200px',
                                     height: '200px',
                                     marginRight: '30px',
+                                    objectFit: 'cover',
                                 }}
                             />
                         ) : (
-                            <div>X</div>
+                            <img
+                                src={Avatar}
+                                style={{
+                                    width: '200px',
+                                    height: '200px',
+                                    marginRight: '30px',
+                                }}
+                            />
                         )}
                         <div
                             style={{
@@ -126,65 +157,62 @@ const Modal = (props) => {
                             overflowX: 'hidden',
                         }}
                     >
-                        {questions.length > 0
-                            ? questions.map((question, i) => {
-                                  //   console.log(
-                                  //       question.attributes.answers.data[0]
-                                  //   );
+                        {questionsQuery?.map((question, i) => {
+                            //   console.log(
+                            //       question.attributes.answers.data[0]
+                            //   );
 
-                                  //   console.log(
-                                  //       answers[i].id ===
-                                  //           question.attributes.answers.data[i].id
-                                  //   );
-                                  return (
-                                      <div>
-                                          <div
-                                              style={{
-                                                  marginTop: '12px',
-                                                  fontSize: '24px',
-                                                  lineHeight: '28px',
-                                              }}
-                                          >
-                                              {question.attributes.text}
-                                          </div>
-                                          <div
-                                              style={{
-                                                  fontSize: '20px',
-                                                  display: 'flex',
-                                                  alignItems: 'center',
-                                              }}
-                                          >
-                                              <i
-                                                  className="fas fa-chevron-right"
-                                                  style={{
-                                                      marginRight: '8px',
-                                                      fontSize: '12px',
-                                                  }}
-                                              ></i>
-                                              {question.attributes.answers.data.map(
-                                                  (answerQ) => {
-                                                      let foundAnswer;
-                                                      foundAnswer =
-                                                          answers.find(
-                                                              (answer) => {
-                                                                  return (
-                                                                      answer.id ===
-                                                                      answerQ.id
-                                                                  );
-                                                              }
-                                                          );
-                                                      if (foundAnswer) {
-                                                          return foundAnswer
-                                                              .attributes
-                                                              .answer;
-                                                      }
-                                                  }
-                                              )}
-                                          </div>
-                                      </div>
-                                  );
-                              })
-                            : null}
+                            //   console.log(
+                            //       answers[i].id ===
+                            //           question.attributes.answers.data[i].id
+                            //   );
+                            return (
+                                <div>
+                                    <div
+                                        style={{
+                                            marginTop: '12px',
+                                            fontSize: '24px',
+                                            lineHeight: '28px',
+                                        }}
+                                    >
+                                        {question.attributes.text}
+                                    </div>
+                                    <div
+                                        style={{
+                                            fontSize: '20px',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                        }}
+                                    >
+                                        <i
+                                            className="fas fa-chevron-right"
+                                            style={{
+                                                marginRight: '8px',
+                                                fontSize: '12px',
+                                            }}
+                                        ></i>
+                                        {question.attributes.answers.data.map(
+                                            (answerQ) => {
+                                                let foundAnswer;
+                                                foundAnswer =
+                                                    answersQuery?.find(
+                                                        (answer) => {
+                                                            return (
+                                                                answer.id ===
+                                                                answerQ.id
+                                                            );
+                                                        }
+                                                    );
+                                                if (foundAnswer) {
+                                                    return foundAnswer
+                                                        .attributes.answer;
+                                                }
+                                            }
+                                        )}
+                                    </div>
+                                </div>
+                            );
+                        })}
                     </div>
                 </div>
             ) : null}

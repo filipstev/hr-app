@@ -13,6 +13,15 @@ import axiosInstance from '../../../helpers/axiosInstance';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { useMutation, useQuery } from 'react-query';
+const fetchQuestion = async (setText, setType, setId, id) => {
+    const res = await axiosInstance.get(`/questions/${id}`);
+
+    setText(res.data.data.attributes.text);
+    setType(res.data.data.attributes.type);
+    setId(res.data.data.id);
+
+    return res.data.data;
+};
 
 const EditQuestion = (props) => {
     const navigate = useNavigate();
@@ -22,6 +31,25 @@ const EditQuestion = (props) => {
     const [id, setId] = useState(null);
 
     const submitQuestion = async () => {
+        if (
+            type === 'image' &&
+            (data.attributes.type === 'text' ||
+                data.attributes.type === 'long_text')
+        ) {
+            await axiosInstance.delete(
+                'questions/' + location.state.id + '/answers'
+            );
+        }
+
+        if (
+            (type === 'text' || type === 'long_text') &&
+            data.attributes.type === 'image'
+        ) {
+            await axiosInstance.delete(
+                'questions/' + location.state.id + '/answers'
+            );
+        }
+
         if (text !== '' && type && id) {
             await axiosInstance
                 .put('/questions/' + location.state.id, {
@@ -41,20 +69,13 @@ const EditQuestion = (props) => {
         }
     };
 
-    const fetchQuestion = async (setText, setType, setId) => {
-        const res = await axiosInstance.get(`/questions/${location.state.id}`);
-
-        setText(res.data.data.attributes.text);
-        setType(res.data.data.attributes.type);
-        setId(res.data.data.id);
-
-        return res.data.data;
-    };
-
     const { data, status, refetch } = useQuery(
         ['questions', setText, setType, setId],
-        () => fetchQuestion(setText, setType, setId)
+        () => fetchQuestion(setText, setType, setId, location.state.id)
     );
+    useEffect(() => {
+        refetch();
+    }, []);
 
     // useEffect(() => {
     //     axiosInstance
@@ -72,6 +93,9 @@ const EditQuestion = (props) => {
 
     const { mutate: editQuestion } = useMutation(submitQuestion);
 
+    if (status === 'loading') {
+        return <div>Loading...</div>;
+    }
     return (
         <>
             <div
@@ -95,8 +119,6 @@ const EditQuestion = (props) => {
                     Edit Question
                 </h2>
                 <TextField
-                    defaultValue=" "
-                    autoFocus
                     label="Question text"
                     variant="outlined"
                     fullWidth="true"
@@ -115,7 +137,7 @@ const EditQuestion = (props) => {
                         onChange={(e) => setType(e.target.value)}
                     >
                         <MenuItem value={'text'}>Text</MenuItem>
-                        <MenuItem value={'long'}>Long text</MenuItem>
+                        <MenuItem value={'long_text'}>Long text</MenuItem>
                         <MenuItem value={'image'}>Image</MenuItem>
                     </Select>
                 </FormControl>

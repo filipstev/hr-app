@@ -14,11 +14,11 @@ import axiosInstance from '../../helpers/axiosInstance';
 import { useMutation, useQuery } from 'react-query';
 
 const fetchCompanyName = async () => {
-    const res = await axiosInstance.get('/companies/2');
+    const res = await axiosInstance.get('/companies/2?populate=*');
 
     // console.log(res.data.data.attributes.name);
 
-    return res.data.data.attributes.name;
+    return res.data.data.attributes;
 };
 
 const CompanyInfo = () => {
@@ -26,9 +26,12 @@ const CompanyInfo = () => {
     const [files, setFiles] = useState([]);
 
     const updateInfo = async () => {
-        await axiosInstance.put('/companies/2', {
-            data: { name: companyName },
-        });
+        if (companyName !== '' && companyName !== ' ') {
+            const res = await axiosInstance.put('/companies/2', {
+                data: { name: companyName },
+            });
+            console.log(res);
+        }
 
         if (files.length > 0) {
             const formData = new FormData();
@@ -75,17 +78,13 @@ const CompanyInfo = () => {
 
     const { mutate: updateCompany } = useMutation(updateInfo);
 
-    // useEffect(() => {
-    //     axiosInstance
-    //         .get('/companies/2')
-    //         .then((data) => {
-    //             setCompanyName(data.data.data.attributes.name);
-    //             // console.log(data.data);
-    //         })
-    //         .catch((err) => {
-    //             console.log(err);
-    //         });
-    // }, []);
+    useEffect(() => {
+        setCompanyName(data?.name);
+    }, [data]);
+
+    if (status === 'loading') {
+        return <div>Loading...</div>;
+    }
 
     return (
         <>
@@ -111,13 +110,23 @@ const CompanyInfo = () => {
                         }}
                     >
                         <TextField
-                            autoFocus
-                            defaultValue=" "
                             label="Company Name"
                             variant="outlined"
                             fullWidth="true"
-                            value={companyName !== ' ' ? companyName : data}
+                            value={companyName}
                             onChange={(e) => setCompanyName(e.target.value)}
+                        />
+                        <img
+                            src={
+                                files.length > 0
+                                    ? URL.createObjectURL(files[0])
+                                    : data?.logo.data.attributes.url
+                            }
+                            style={{
+                                margin: '10px 0',
+                                width: '200px',
+                                height: 'auto',
+                            }}
                         />
                     </Grid>
                     {/* TODO: DODATI UPLOAD INPUT UMESTO OVOG */}

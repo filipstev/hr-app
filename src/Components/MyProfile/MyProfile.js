@@ -9,7 +9,9 @@ const MyProfile = () => {
 
     const fetchUserData = async () => {
         const res = await axiosInstance.get(
-            '/profiles?filters[user][id][$eq]=' + userStorage.user.id
+            '/profiles?filters[user][id][$eq]=' +
+                userStorage.user.id +
+                '&populate=*'
         );
 
         return res.data.data[0];
