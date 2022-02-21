@@ -11,7 +11,7 @@ const EditProfile = ({ edit }) => {
             <Container sx={{ marginTop: '150px', padding: '0 200px 0 40px' }}>
                 <TeamHeader edit={edit} />
                 <Grid container direction="row" justifyContent="space-between">
-                    <BasicInfo edit={edit} />
+                    <BasicInfo />
                     <ShowAnswers edit={edit} />
                 </Grid>
             </Container>

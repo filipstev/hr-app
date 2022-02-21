@@ -9,22 +9,30 @@ import { useMutation, useQueryClient } from 'react-query';
 import Answers from './Answers';
 import { useFetchImage } from '../../../queryFunctions/fetchImage';
 import { ReactQueryDevtools } from 'react-query/devtools';
+import { useSelector } from 'react-redux';
 
 const EditAnswers = () => {
-    const { id } = useParams();
     const queryClient = useQueryClient();
+    const userId = useSelector((state) => state.user.user.user.id);
+    const { id } = useParams();
     const [a, setA] = useState(null);
     const [image, setImage] = useState('');
-
     const [url, setUrl] = useState('');
+
+    const companyName = queryClient.getQueryData(['Company', userId]).data
+        .data[0].attributes.name;
+
     // Get answers
     const { data: answers, isLoading: answersIsLoading } =
         useGetAnswersOfProfile(id);
+
     // Get questions
     const { data: questions, isLoading: questionsIsLoading } =
-        useGetQuestions();
+        useGetQuestions(companyName);
+
     // Get id of image if it exists, to delete later if new image is uploaded
     const { data: imageId } = useFetchImage(url);
+
     // Mutations
     const editAnswer = useMutation((data) => {
         return axiosInstance.put(`/answers/${data.answerID}`, data);
