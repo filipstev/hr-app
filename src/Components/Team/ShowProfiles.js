@@ -58,7 +58,7 @@ const ShowProfiles = ({ status, profiles }) => {
         : profiles.data.map(({ id, attributes }) => {
               return (
                   <Grid item key={id}>
-                      <Card sx={{ minWidth: 275 }}>
+                      <Card sx={{ width: 300 }}>
                           <CardContent>
                               <Typography
                                   sx={{ fontSize: 14 }}

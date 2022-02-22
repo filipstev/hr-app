@@ -116,7 +116,7 @@ const EditAnswers = () => {
         <>
             <FormControl
                 component="form"
-                style={{ display: 'flex', flexDirection: 'column' }}
+                // style={{ display: 'flex', flexDirection: 'column' }}
                 onSubmit={(e) => {
                     e.preventDefault();
                     handleSubmit();
