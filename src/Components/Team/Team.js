@@ -116,10 +116,15 @@ const Team = ({ status }) => {
             />
             <Grid
                 container
-                spacing={{ sm: 0, md: 2 }}
+                rowSpacing={{ xs: 2 }}
+                columnSpacing={{ md: 2 }}
                 sx={{
                     marginLeft: 0,
-                    justifyContent: { xs: 'center', sm: 'start' },
+                    justifyContent: {
+                        xs: 'center',
+                        sm: 'space-between',
+                        md: 'unset',
+                    },
                 }}
             >
                 <ShowProfiles status={status} profiles={profiles} />

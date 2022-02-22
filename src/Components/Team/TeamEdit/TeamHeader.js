@@ -32,18 +32,27 @@ const TeamHeader = ({ edit }) => {
     return (
         <Grid
             container
-            direction="row"
-            justifyContent="space-between"
-            paddingBottom="25px"
+            sx={{
+                flexDirection: { xs: 'column', md: 'row' },
+                alignContent: { xs: 'center', md: 'space-between' },
+                justifyContent: { md: 'space-between' },
+                textAlign: 'center',
+                paddingBottom: '25px',
+            }}
         >
-            <Grid item alignItems="center" display="flex">
+            <Grid
+                item
+                alignItems="center"
+                display="flex"
+                sx={{ alignSelf: 'center' }}
+            >
                 <Typography sx={{ fontWeight: 'bold' }}>
                     {edit === 'editPublished'
                         ? 'Edit Team Member'
                         : 'Moderate Team Member Entry'}
                 </Typography>
             </Grid>
-            <Grid item display="flex" justifyContent="flex-end">
+            <Grid item display="flex" sx={{ justifyContent: 'space-between' }}>
                 <FormControl style={{ display: 'flex', flexDirection: 'row' }}>
                     {edit === 'editPublished' ? (
                         <>

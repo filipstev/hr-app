@@ -5,7 +5,13 @@ import EditAnswers from './EditAnswers';
 const EditAnswersSection = () => {
     return (
         <>
-            <Grid item width="40%" border="1px solid black" padding="10px">
+            <Grid
+                item
+                sx={{
+                    border: '1px solid black',
+                    padding: '10px',
+                }}
+            >
                 <Typography
                     variant="body2"
                     sx={{

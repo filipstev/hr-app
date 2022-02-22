@@ -8,9 +8,14 @@ import Container from '@mui/material/Container';
 const EditProfile = ({ edit }) => {
     return (
         <>
-            <Container sx={{ marginTop: '150px', padding: '0 200px 0 40px' }}>
+            <Container sx={{ marginTop: '150px', padding: '0 40px 0 40px' }}>
                 <TeamHeader edit={edit} />
-                <Grid container direction="row" justifyContent="space-between">
+                <Grid
+                    container
+                    direction="row"
+                    justifyContent="space-around"
+                    rowGap={2}
+                >
                     <BasicInfo />
                     <ShowAnswers edit={edit} />
                 </Grid>
