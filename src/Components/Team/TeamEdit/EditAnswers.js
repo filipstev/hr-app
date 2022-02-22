@@ -8,7 +8,6 @@ import { useEffect, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import Answers from './Answers';
 import { useFetchImage } from '../../../queryFunctions/fetchImage';
-import { ReactQueryDevtools } from 'react-query/devtools';
 import { useSelector } from 'react-redux';
 
 const EditAnswers = () => {
@@ -138,7 +137,6 @@ const EditAnswers = () => {
                 </Button>
                 {editAnswer.isSuccess && <p>Answers have been changed</p>}
             </FormControl>
-            <ReactQueryDevtools />
         </>
     );
 };
