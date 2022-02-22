@@ -2,8 +2,31 @@
     .ContainerWrap {
         flex-direction: column;
         align-items: center;
+        margin: auto;
     }
     .SingleContainer {
         margin-right: 0 !important;
+    }
+}
+
+@media screen and (max-width: 400px) {
+    .SingleContainer {
+        width: 300px !important;
+    }
+}
+
+@media screen and (max-width: 350px) {
+    .SingleContainer {
+        width: 265px !important;
+    }
+}
+
+@media screen and (max-width: 300px) {
+    .SingleContainer {
+        width: 225px !important;
+    }
+
+    .SingleContainer img {
+        width: 180px !important;
     }
 }

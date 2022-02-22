@@ -22,6 +22,7 @@ const SingleQuestion = (props) => {
                 boxSizing: 'border-box',
                 fontFamily: 'Comic Neue',
             }}
+            className={classes.QuestionWrap}
         >
             <div className={classes.Left}>
                 <div className={classes.Arrows}>
