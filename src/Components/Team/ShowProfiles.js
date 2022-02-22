@@ -12,7 +12,6 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 
-import classes from './ShowProfiles.module.css';
 const ShowProfiles = ({ status, profiles }) => {
     const navigate = useNavigate();
 
@@ -58,7 +57,7 @@ const ShowProfiles = ({ status, profiles }) => {
         ? null
         : profiles.data.map(({ id, attributes }) => {
               return (
-                  <Grid item key={id} justifyContent="center">
+                  <Grid item key={id}>
                       <Card sx={{ width: 300 }}>
                           <CardContent>
                               <Typography

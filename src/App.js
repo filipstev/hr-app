@@ -8,6 +8,7 @@ import { useDispatch } from 'react-redux';
 import * as userActions from './store/actions/user';
 import axiosInstance from './helpers/axiosInstance';
 import UserRoutes from './routes/UserRoutes';
+import { ReactQueryDevtools } from 'react-query/devtools';
 
 function App() {
     const dispatch = useDispatch();
@@ -50,6 +51,7 @@ function App() {
             ) : (
                 <div>loading...</div>
             )}
+            <ReactQueryDevtools />
         </div>
     );
 }

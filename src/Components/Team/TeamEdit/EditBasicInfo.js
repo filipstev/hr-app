@@ -72,7 +72,7 @@ const BasicInfo = () => {
             padding="10px"
         >
             <FormControl
-                sx={{ display: 'flex', flexDirection: 'column' }}
+                // sx={{ display: 'flex', flexDirection: 'column' }}
                 component="form"
                 onSubmit={(e) => {
                     e.preventDefault();

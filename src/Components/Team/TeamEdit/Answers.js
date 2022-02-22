@@ -21,21 +21,13 @@ const Answers = ({ questions, answers, handleAChange, handleAimgChange }) => {
                         <div
                             style={{
                                 display: 'flex',
-                                flexDirection: 'row',
+                                flexDirection: 'column',
                                 gap: '7px',
                             }}
                         >
-                            <div style={{ width: '150px', height: '150px' }}>
-                                <img
-                                    width="150px"
-                                    height="150px"
-                                    src={`${answers[i].attributes.answer}`}
-                                    alt="some alt text"
-                                />
-                            </div>
                             <TextField
                                 type={'file'}
-                                sx={{ margin: '0 0 10px 0', width: '100%' }}
+                                sx={{ margin: '0 0 10px 0' }}
                                 name={`answer${i}`}
                                 onInput={(e) => {
                                     const img = new FormData();
@@ -43,6 +35,14 @@ const Answers = ({ questions, answers, handleAChange, handleAimgChange }) => {
                                     handleAimgChange(img, i);
                                 }}
                             />
+                            <div>
+                                <img
+                                    width="150px"
+                                    height="150px"
+                                    src={`${answers[i].attributes.answer}`}
+                                    alt="ss"
+                                />
+                            </div>
                         </div>
                     ) : (
                         <TextField
