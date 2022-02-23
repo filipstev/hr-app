@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import axiosInstance from '../../helpers/axiosInstance';
 import SingleQuestion from '../Questions/SingleQuestion/SingleQuestion';
+import Spinner from '../Spinner.js/Spinner';
 import UserQuestion from './UserQuestion/UserQuestion';
 
 function compare(a, b) {
@@ -229,7 +230,7 @@ const UserQuestions = () => {
     }, []);
 
     if (status === 'loading') {
-        return <div style={{ marginTop: '80px' }}>Loading...</div>;
+        return <Spinner />;
     }
 
     return (

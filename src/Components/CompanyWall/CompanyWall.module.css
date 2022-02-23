@@ -1,3 +1,7 @@
+.FilterName {
+    margin-left: 10px !important;
+}
+
 @media screen and (max-width: 650px) {
     .Grid {
         margin: 0 auto !important;
@@ -8,6 +12,7 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        margin-top: 10px !important;
     }
 
     .Container {
@@ -20,5 +25,10 @@
         display: flex;
         flex-direction: column;
         margin-top: 0 !important;
+    }
+
+    .FilterName {
+        margin-left: 0 !important;
+        margin-top: 10px !important;
     }
 }

@@ -5,6 +5,7 @@ import axiosInstance from '../../helpers/axiosInstance';
 import { useMutation } from 'react-query';
 import Avatar from '../../assets/avatar.png';
 import classes from './MyProfile.module.css';
+import Spinner from '../Spinner.js/Spinner';
 
 const SingleContainer = (props) => {
     const [name, setName] = useState('');
@@ -93,7 +94,7 @@ const SingleContainer = (props) => {
     };
 
     if (!props.user) {
-        return props.info ? <div>Loading...</div> : null;
+        return props.info ? <Spinner /> : null;
     }
 
     return props.info ? (
