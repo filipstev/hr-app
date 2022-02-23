@@ -18,6 +18,8 @@ import Select from '@mui/material/Select';
 import { useQuery } from 'react-query';
 import Avatar from '../../assets/avatar.png';
 import classes from './UserTeam.module.css';
+import { TextField } from '@mui/material';
+import Spinner from '../Spinner.js/Spinner';
 
 function compareLast(a, b) {
     if (a.attributes.createdAt > b.attributes.createdAt) {
@@ -152,7 +154,7 @@ const UserTeam = () => {
     };
 
     if (status === 'loading') {
-        return <div style={{ marginTop: '80px' }}> Loading...</div>;
+        return <Spinner/>
     }
 
     //TODO: PROVERITI ZA STATUS, DA LI SVE ILI SAMO PUBLISHED
@@ -353,7 +355,14 @@ const UserTeam = () => {
                             {/* <MenuItem value={'name'}>Name (Z-A) </MenuItem> */}
                         </Select>
                     </FormControl>
-                    <input
+                    <TextField
+                        id="filter-by-name-team"
+                        label="Filter by name"
+                        variant="outlined"
+                        value={nameFilter}
+                        onChange={onNameFilterChange}
+                    />
+                    {/* <input
                         placeholder="Filter by name"
                         style={{
                             padding: '18px',
@@ -363,7 +372,7 @@ const UserTeam = () => {
                         }}
                         value={nameFilter}
                         onChange={onNameFilterChange}
-                    />
+                    /> */}
                 </div>
             </div>
             <Grid container spacing={2} sx={{ marginLeft: 0 }}>
@@ -374,7 +383,7 @@ const UserTeam = () => {
                 ) : searching ? (
                     showProfiles(true)
                 ) : (
-                    <p>Loading...</p>
+                    <Spinner/>
                 )}
                 {/* {showProfiles()} */}
             </Grid>

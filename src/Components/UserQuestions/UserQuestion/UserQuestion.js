@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../../helpers/axiosInstance';
 import classes from './UserQuestion.module.css';
 import Default from '../../../assets/defaulty.jpg';
-import { Button, Stack } from '@mui/material';
+import { Button, Stack, TextField } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 const Input = styled('input')({
@@ -73,7 +73,7 @@ const UserQuestion = (props) => {
             imageData = await axiosInstance.get(
                 `/upload/files?filters[url][$eq]=${props.answer}`
             );
-            axiosInstance.delete('/upload/' + imageData.data[0].id);
+            axiosInstance.delete('/upload/files/' + imageData.data[0].id);
         }
 
         axiosInstance
@@ -144,12 +144,20 @@ const UserQuestion = (props) => {
                         {props.question ? props.question.attributes.text : null}
                     </div>
                     {!props.isImage ? (
-                        <input
-                            className={classes.Input}
+                        <TextField
+                            id="user-question"
+                            label="Type your answer"
+                            variant="outlined"
                             value={currentAnswer}
+                            sx={{ marginTop: '6px' }}
                             onChange={(e) => setCurrentAnswer(e.target.value)}
-                        ></input>
+                        />
                     ) : (
+                        // <input
+                        //     className={classes.Input}
+                        //     value={currentAnswer}
+                        //     onChange={(e) => setCurrentAnswer(e.target.value)}
+                        // ></input>
                         <div
                             style={{
                                 display: 'flex',
