@@ -15,12 +15,13 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import Typography from '@mui/material/Typography';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const TeamHeader = ({ edit }) => {
     const navigate = useNavigate();
 
     const { id } = useParams();
-    const { data, isLoading } = useGetProfile(id);
+    const { data, isLoading, refetch } = useGetProfile(id);
 
     const editProfile = useMutateProfile((data) => {
         return axiosInstance.put(`/profiles/${id}`, data);
@@ -29,6 +30,7 @@ const TeamHeader = ({ edit }) => {
     if (isLoading) {
         return <p>Loading</p>;
     }
+
     return (
         <Grid
             container
@@ -70,12 +72,19 @@ const TeamHeader = ({ edit }) => {
                                 label="Status"
                                 value={data.attributes.status}
                                 onChange={(e) => {
-                                    editProfile.mutate({
-                                        data: {
-                                            status: e.target.value,
+                                    editProfile.mutate(
+                                        {
+                                            data: {
+                                                status: e.target.value,
+                                            },
+                                            id,
                                         },
-                                        id,
-                                    });
+                                        {
+                                            onSuccess: () => {
+                                                refetch();
+                                            },
+                                        }
+                                    );
                                 }}
                             >
                                 <MenuItem value={'published'}>
@@ -89,12 +98,20 @@ const TeamHeader = ({ edit }) => {
                             variant="outlined"
                             sx={{ marginRight: '10px' }}
                             onClick={() => {
-                                editProfile.mutate({
-                                    data: {
-                                        status: 'published',
+                                editProfile.mutate(
+                                    {
+                                        data: {
+                                            status: 'published',
+                                        },
+                                        id,
                                     },
-                                    id,
-                                });
+                                    {
+                                        onSuccess: () => {
+                                            refetch();
+                                            navigate(`/team/${id}/edit`);
+                                        },
+                                    }
+                                );
                             }}
                         >
                             approve
@@ -102,6 +119,7 @@ const TeamHeader = ({ edit }) => {
                     )}
                     <Button
                         variant="outlined"
+                        endIcon={<DeleteIcon />}
                         onClick={() => {
                             DeleteProfile(id);
 
