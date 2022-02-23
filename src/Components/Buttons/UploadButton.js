@@ -15,7 +15,6 @@ const UploadButton = ({ onUpload, id }) => {
                 <Input
                     accept="image/*"
                     id={`button-${id}`}
-                    multiple
                     type="file"
                     onInput={(e) => {
                         console.log('123');

@@ -15,13 +15,9 @@ import {
     Button,
 } from '@material-ui/core';
 
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import FormControl from '@mui/material/FormControl';
 
 import UploadButton from '../Buttons/UploadButton';
 import SelectCompany from './SelectCompanyInput';
@@ -34,8 +30,8 @@ const Register = () => {
     const [companies, setCompanies] = useState([]);
     const [company, setCompany] = useState('');
     const [companyId, setCompanyId] = useState('');
-    const [userRole, setUserRole] = useState('');
-
+    const [userRole, setUserRole] = useState('company_user');
+    console.log(userRole);
     const registerError = useSelector((state) => state.register.isError);
 
     const image = new FormData();
@@ -205,7 +201,7 @@ const Register = () => {
 
                 <Grid item style={{ width: '100%' }}>
                     <UploadButton
-                        onInput={handleRegisterImageUpload}
+                        onUpload={handleRegisterImageUpload}
                         id={'register'}
                     />
                 </Grid>

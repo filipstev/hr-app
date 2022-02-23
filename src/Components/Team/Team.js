@@ -14,8 +14,7 @@ import ShowProfiles from './ShowProfiles';
 
 import { useProfiles } from '../../queryFunctions/fetchProfiles';
 import { useCompany } from '../../queryFunctions/fetchCompany';
-import { FormControl, InputLabel, TextField } from '@mui/material';
-import { Label } from '@mui/icons-material';
+import { FormControl, TextField } from '@mui/material';
 
 const Team = ({ status }) => {
     const userId = useSelector((state) => state.user.user.user.id);

@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 import axiosInstance from '../../../helpers/axiosInstance';
-import { Button, FormControl } from '@mui/material';
+import { FormControl } from '@mui/material';
 
 import { useGetQuestions } from '../../../queryFunctions/fetchQuestions';
 import { useGetAnswersOfProfile } from '../../../queryFunctions/fetchAnswers';
@@ -65,7 +65,11 @@ const EditAnswers = () => {
 
     const handleSubmit = async () => {
         if (imageId) {
-            deletePreviousImage.mutate(imageId);
+            deletePreviousImage.mutate(imageId, {
+                onSuccess: () => {
+                    console.log('Success');
+                },
+            });
         }
         console.log(image);
         uploadImage.mutate(image.image, {
