@@ -17,10 +17,22 @@ function compare(a, b) {
     return 0;
 }
 
-const fetchQuestions = async (setQuestions) => {
+const fetchQuestions = async (setQuestions, userStorage) => {
     //TODO: DINAMICKI ID ZA KOMPANIJE
+    const resUser = await axiosInstance.get(
+        '/profiles?filters[user][id][$eq]=' +
+            userStorage.user.id +
+            '&populate=*'
+    );
+
+    const resCompany = await axiosInstance.get(
+        '/companies?filters[profiles][id][$eq]=' +
+            resUser.data.data[0].id +
+            '&populate=*'
+    );
+
     const res = await axiosInstance.get(
-        `/questions?filters[company][id][$eq]=2&populate=*`
+        `/questions?filters[company][id][$eq]=${resCompany.data.data[0].id}&populate=*`
     );
     console.log(res.data.data);
     const sortedQuestions = res.data.data.sort(compare);
@@ -34,6 +46,7 @@ const Questions = () => {
     const [questions, setQuestions] = useState([]);
     const [meta, setMeta] = useState({});
     const [blocked, setBlocked] = useState(false);
+    const userStorage = JSON.parse(localStorage.getItem('user'));
 
     const changeUp = async ({ newOrder, prev, element }) => {
         console.log(newOrder, prev, element);
@@ -85,8 +98,8 @@ const Questions = () => {
     };
 
     const { data, status, refetch } = useQuery(
-        ['questions', setQuestions],
-        () => fetchQuestions(setQuestions)
+        ['questions', setQuestions, userStorage],
+        () => fetchQuestions(setQuestions, userStorage)
     );
 
     const { mutate: moveUp } = useMutation(changeUp);

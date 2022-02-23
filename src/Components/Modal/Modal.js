@@ -13,8 +13,22 @@ const fetchAnwers = async (id) => {
 };
 
 const fetchQuestions = async () => {
+    const userStorage = JSON.parse(localStorage.getItem('user'));
+
+    const resUser = await axiosInstance.get(
+        '/profiles?filters[user][id][$eq]=' +
+            userStorage.user.id +
+            '&populate=*'
+    );
+
+    const resCompany = await axiosInstance.get(
+        '/companies?filters[profiles][id][$eq]=' +
+            resUser.data.data[0].id +
+            '&populate=*'
+    );
+
     const res = await axiosInstance.get(
-        '/questions?filters[company][id][$eq]=2&populate=*'
+        `/questions?filters[company][id][$eq]=${resCompany.data.data[0].id}&populate=*`
     );
 
     return res.data.data;

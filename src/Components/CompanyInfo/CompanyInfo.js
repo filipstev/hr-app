@@ -21,13 +21,33 @@ const fetchCompanyName = async () => {
     return res.data.data.attributes;
 };
 
+const fetchCompany = async (userStorage) => {
+    const resUser = await axiosInstance.get(
+        '/profiles?filters[user][id][$eq]=' +
+            userStorage.user.id +
+            '&populate=*'
+    );
+
+    console.log(resUser);
+
+    // return resUser.data.data[0].id;
+    const res = await axiosInstance.get(
+        '/companies?filters[profiles][id][$eq]=' +
+            resUser.data.data[0].id +
+            '&populate=*'
+    );
+
+    return res.data.data[0];
+};
+
 const CompanyInfo = () => {
     const [companyName, setCompanyName] = useState(' ');
     const [files, setFiles] = useState([]);
+    const userStorage = JSON.parse(localStorage.getItem('user'));
 
     const updateInfo = async () => {
         if (companyName !== '' && companyName !== ' ') {
-            const res = await axiosInstance.put('/companies/2', {
+            const res = await axiosInstance.put('/companies/' + data.id, {
                 data: { name: companyName },
             });
             console.log(res);
@@ -41,7 +61,7 @@ const CompanyInfo = () => {
             axiosInstance
                 .post('/upload', formData)
                 .then((response) => {
-                    axiosInstance.put('/companies/2', {
+                    axiosInstance.put('/companies/' + data.id, {
                         data: {
                             logo: response.data,
                         },
@@ -61,7 +81,7 @@ const CompanyInfo = () => {
         axiosInstance
             .post('/upload', formData)
             .then((response) => {
-                axiosInstance.put('/companies/2', {
+                axiosInstance.put('/companies/' + data.id, {
                     data: {
                         logo: response.data,
                     },
@@ -72,14 +92,15 @@ const CompanyInfo = () => {
             });
     };
 
-    const { data, status, refetch } = useQuery(['companyName'], () =>
-        fetchCompanyName()
+    const { data, status, refetch } = useQuery(
+        ['companyName', userStorage],
+        () => fetchCompany(userStorage)
     );
 
     const { mutate: updateCompany } = useMutation(updateInfo);
 
     useEffect(() => {
-        setCompanyName(data?.name);
+        setCompanyName(data?.attributes.name);
     }, [data]);
 
     if (status === 'loading') {
@@ -141,7 +162,7 @@ const CompanyInfo = () => {
                             src={
                                 files.length > 0
                                     ? URL.createObjectURL(files[0])
-                                    : data?.logo.data.attributes.url
+                                    : data?.attributes.logo.data.attributes.url
                             }
                             style={{
                                 margin: '10px 0',
