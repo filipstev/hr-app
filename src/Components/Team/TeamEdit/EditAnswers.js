@@ -9,6 +9,7 @@ import { useMutation, useQueryClient } from 'react-query';
 import Answers from './Answers';
 import { useFetchImage } from '../../../queryFunctions/fetchImage';
 import { useSelector } from 'react-redux';
+import SaveButton from '../../Buttons/SaveButton';
 
 const EditAnswers = () => {
     const userId = useSelector((state) => state.user.user.user.id);
@@ -48,20 +49,25 @@ const EditAnswers = () => {
     const deletePreviousImage = useMutation((id) => {
         return axiosInstance.delete(`/upload/files/${id}`);
     });
+
     // Handlers
     const handleAChange = (value, i) => {
-        console.log(imageId);
+        console.log(image);
         setA([...a], (a[i].attributes.answer = value));
     };
-    const handleAimgChange = (value, i) => {
-        console.log(imageId);
-        setImage({ image: value, i: i });
+
+    const handleAimgChange = (e, i) => {
+        console.log('123');
+        const img = new FormData();
+        img.append('files', e.target.files[0]);
+        setImage({ image: img, i: i });
     };
 
     const handleSubmit = async () => {
         if (imageId) {
             deletePreviousImage.mutate(imageId);
         }
+        console.log(image);
         uploadImage.mutate(image.image, {
             onSuccess: (data) => {
                 setA([...a], (a[image.i].attributes.answer = data.data[0].url));
@@ -116,7 +122,6 @@ const EditAnswers = () => {
         <>
             <FormControl
                 component="form"
-                // style={{ display: 'flex', flexDirection: 'column' }}
                 onSubmit={(e) => {
                     e.preventDefault();
                     handleSubmit();
@@ -128,13 +133,8 @@ const EditAnswers = () => {
                     handleAChange={handleAChange}
                     handleAimgChange={handleAimgChange}
                 />
-                <Button
-                    variant="outlined"
-                    type="submit"
-                    sx={{ marginTop: '15px' }}
-                >
-                    Save
-                </Button>
+
+                <SaveButton />
                 {editAnswer.isSuccess && <p>Answers have been changed</p>}
             </FormControl>
         </>

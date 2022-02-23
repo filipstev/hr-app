@@ -9,6 +9,8 @@ import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
+import DeleteIcon from '@mui/icons-material/Delete';
+
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 
@@ -105,7 +107,7 @@ const ShowProfiles = ({ status, profiles }) => {
                               )}
 
                               <Typography
-                                  variant="h5"
+                                  variant="p"
                                   component="div"
                                   sx={{ textTransform: 'capitalize' }}
                               >
@@ -143,6 +145,7 @@ const ShowProfiles = ({ status, profiles }) => {
                                   {status === 'published' ? 'EDIT' : 'DETAILS'}
                               </Button>
                               <Button
+                                  endIcon={<DeleteIcon />}
                                   size="small"
                                   onClick={(e) => {
                                       DeleteProfile({

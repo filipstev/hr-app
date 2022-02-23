@@ -21,8 +21,10 @@ import Select from '@mui/material/Select';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
 
-import { FormControl } from '@mui/material';
+import UploadButton from '../Buttons/UploadButton';
+import SelectCompany from './SelectCompanyInput';
 // dodati user role, i kompaniju
 const Register = () => {
     const navigate = useNavigate();
@@ -80,6 +82,10 @@ const Register = () => {
         inputBlurHandler: passwordBlurHandler,
     } = useInput((value) => +value.length > 5);
 
+    const handleRegisterImageUpload = (e) => {
+        image.append('files', e.target.files[0]);
+    };
+
     const onSubmit = async () => {
         if (enteredPassword === '') {
             // setIsError(true);
@@ -97,50 +103,6 @@ const Register = () => {
                 )
             );
         }
-    };
-
-    const SelectCompany = () => {
-        return (
-            <>
-                <FormControl
-                    sx={{
-                        display: 'flex',
-                        flexDirection: 'row',
-                        width: '97%',
-                    }}
-                >
-                    <InputLabel id="selectCompany">Company</InputLabel>
-                    <Select
-                        sx={{ paddingLeft: '16px', width: '100%' }}
-                        labelId="selectCompany"
-                        id="selectCompany"
-                        label="Company"
-                        value={company}
-                        onChange={(e) => {
-                            setCompany(e.target.value);
-                            setCompanyId(
-                                companies.filter(
-                                    (company) =>
-                                        company.attributes.slug ===
-                                        e.target.value
-                                )[0].id
-                            );
-                        }}
-                    >
-                        {companies.map((item) => {
-                            return (
-                                <MenuItem
-                                    value={item.attributes.slug}
-                                    key={item.id}
-                                >
-                                    {item.attributes.name}
-                                </MenuItem>
-                            );
-                        })}
-                    </Select>
-                </FormControl>
-            </>
-        );
     };
 
     return (
@@ -191,7 +153,12 @@ const Register = () => {
                         onBlur={emailBlurHandler}
                     />
                 </Grid>
-                <SelectCompany />
+                <SelectCompany
+                    companies={companies}
+                    company={company}
+                    setCompany={setCompany}
+                    setCompanyId={setCompanyId}
+                />
                 <Grid item style={{ width: '100%' }}>
                     <TextField
                         error={passwordInputHasError ? true : false}
@@ -216,7 +183,7 @@ const Register = () => {
                 >
                     <RadioGroup
                         aria-labelledby="demo-radio-buttons-group-label"
-                        defaultValue="female"
+                        defaultValue="company_user"
                         name="radio-buttons-group"
                     >
                         <FormControlLabel
@@ -237,15 +204,9 @@ const Register = () => {
                 </Grid>
 
                 <Grid item style={{ width: '100%' }}>
-                    <TextField
-                        type="file"
-                        label="Upload file"
-                        variant="outlined"
-                        fullWidth="true"
-                        accept="image/*"
-                        onInput={(e) => {
-                            image.append('files', e.target.files[0]);
-                        }}
+                    <UploadButton
+                        onInput={handleRegisterImageUpload}
+                        id={'register'}
                     />
                 </Grid>
                 <div>
