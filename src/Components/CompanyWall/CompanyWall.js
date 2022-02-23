@@ -18,6 +18,8 @@ import Select from '@mui/material/Select';
 import { useQuery } from 'react-query';
 import Avatar from '../../assets/avatar.png';
 import classes from './CompanyWall.module.css';
+import { TextField } from '@mui/material';
+import Spinner from '../Spinner.js/Spinner';
 
 function compareLast(a, b) {
     if (a.attributes.createdAt > b.attributes.createdAt) {
@@ -91,7 +93,11 @@ const CompanyWall = () => {
             );
         }
 
-        console.log(res);
+        console.log(res.data.data.length === 0);
+
+        if (res.data.data === []) {
+            return [];
+        }
         let publishedProfiles = [];
 
         res.data.data.map((profile) => {
@@ -341,7 +347,21 @@ const CompanyWall = () => {
     };
 
     if (status === 'loading') {
-        return <div style={{ marginTop: '80px' }}>Loading...</div>;
+        return <Spinner />;
+    }
+
+    if (data.length === 0) {
+        return (
+            <div
+                style={{
+                    marginTop: '80px',
+                    margin: '80px auto',
+                    textAlign: 'center',
+                }}
+            >
+                No company found
+            </div>
+        );
     }
 
     return (
@@ -393,7 +413,16 @@ const CompanyWall = () => {
                             {/* <MenuItem value={'name'}>Name (Z-A) </MenuItem> */}
                         </Select>
                     </FormControl>
-                    <input
+                    <TextField
+                        id="filter-by-name"
+                        label="Filter by name"
+                        variant="outlined"
+                        value={nameFilter}
+                        onChange={onNameFilterChange}
+                        className={classes.FilterName}
+                    />
+
+                    {/* <input
                         placeholder="Filter by name"
                         style={{
                             padding: '18px',
@@ -402,7 +431,7 @@ const CompanyWall = () => {
                         }}
                         value={nameFilter}
                         onChange={onNameFilterChange}
-                    />
+                    /> */}
                 </div>
             </div>
             <Grid container spacing={2} sx={{ marginLeft: 0 }}>
@@ -413,7 +442,7 @@ const CompanyWall = () => {
                 ) : searching ? (
                     showProfiles(true)
                 ) : (
-                    <p>Loading...</p>
+                    <Spinner />
                 )}
                 {/* {showProfiles()} */}
             </Grid>

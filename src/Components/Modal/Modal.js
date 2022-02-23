@@ -5,6 +5,7 @@ import Backdrop from '../Backdrop/Backdrop';
 import axiosInstance from '../../helpers/axiosInstance';
 import Avatar from '../../assets/avatar.png';
 import { useQuery } from 'react-query';
+import Spinner from '../Spinner.js/Spinner';
 
 const fetchAnwers = async (id) => {
     const answersRes = await axiosInstance.get(`/profiles/${id}?populate=*`);
@@ -89,7 +90,7 @@ const Modal = (props) => {
     // };
 
     if (status === 'loading' || qStatus === 'loading') {
-        return <div>Loading...</div>;
+        return <Spinner small={true} />;
     }
     return (
         <>
