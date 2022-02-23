@@ -1,0 +1,11 @@
+@media screen and (max-width: 1000px) {
+    .Login {
+        width: 60% !important;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .Login {
+        width: 90% !important;
+    }
+}

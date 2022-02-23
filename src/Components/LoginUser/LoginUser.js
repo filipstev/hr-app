@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import * as userActions from '../../store/actions/user';
 import { useDispatch, useSelector } from 'react-redux';
+import classes from './Login.module.css';
 
 const Login = () => {
     const dispatch = useDispatch();
@@ -41,8 +42,22 @@ const Login = () => {
     };
 
     return (
-        <>
-            <Container maxWidth="sm" style={{ marginTop: '82px' }}>
+        <div
+            style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+            }}
+        >
+            <div
+                style={{
+                    marginTop: '82px',
+                    width: '40%',
+                    marginRight: '0 !important',
+                    marginLeft: '0 !important',
+                }}
+                className={classes.Login}
+            >
                 <Grid
                     container
                     spacing={2}
@@ -118,8 +133,8 @@ const Login = () => {
                         </Grid>
                     </Grid>
                 </Grid>
-            </Container>
-        </>
+            </div>
+        </div>
     );
 };
 

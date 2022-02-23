@@ -17,6 +17,7 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { useQuery } from 'react-query';
 import Avatar from '../../assets/avatar.png';
+import classes from './CompanyWall.module.css';
 
 function compareLast(a, b) {
     if (a.attributes.createdAt > b.attributes.createdAt) {
@@ -212,6 +213,7 @@ const CompanyWall = () => {
                             key={id}
                             onClick={() => openModal(id, attributes)}
                             style={{ cursor: 'pointer' }}
+                            className={classes.Grid}
                         >
                             <Card sx={{ minWidth: 275 }}>
                                 <CardContent
@@ -346,17 +348,21 @@ const CompanyWall = () => {
         // TODO: NOVI HEADER
         <Container
             maxWidth="false"
-            style={{ marginTop: '80px', fontFamily: 'Comic Neue' }}
+            style={{
+                marginTop: '80px',
+                fontFamily: 'Comic Neue',
+            }}
+            className={classes.Container}
         >
-            <Grid
-                container
-                sx={{
+            <div
+                style={{
                     marginTop: '100px',
+                    display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
-                    padding: '16px',
                     marginBottom: '30px',
                 }}
+                className={classes.NewGrid}
             >
                 <div
                     style={{
@@ -369,17 +375,10 @@ const CompanyWall = () => {
                         location.pathname.split('/')[2].slice(1)}
                     's team
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <input
-                        placeholder="Filter by name"
-                        style={{
-                            padding: '18px',
-                            border: '1px solid black',
-                            height: 'fit-content',
-                        }}
-                        value={nameFilter}
-                        onChange={onNameFilterChange}
-                    />
+                <div
+                    style={{ display: 'flex', alignItems: 'center' }}
+                    className={classes.Inputs}
+                >
                     <FormControl sx={{ m: 1, minWidth: 120 }}>
                         <InputLabel>Sort by</InputLabel>
                         <Select
@@ -394,8 +393,18 @@ const CompanyWall = () => {
                             {/* <MenuItem value={'name'}>Name (Z-A) </MenuItem> */}
                         </Select>
                     </FormControl>
+                    <input
+                        placeholder="Filter by name"
+                        style={{
+                            padding: '18px',
+                            border: '1px solid black',
+                            height: 'fit-content',
+                        }}
+                        value={nameFilter}
+                        onChange={onNameFilterChange}
+                    />
                 </div>
-            </Grid>
+            </div>
             <Grid container spacing={2} sx={{ marginLeft: 0 }}>
                 {data?.length !== 0 && !searching ? (
                     showProfiles(false)

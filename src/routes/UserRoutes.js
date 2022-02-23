@@ -6,6 +6,7 @@ import MainMenu from '../Components/Menu/Menu';
 import Questions from '../Components/Questions/Questions';
 import Header from '../Components/Header/Header';
 import Team from '../Components/Team/Team';
+import UserHeader from '../Components/Header/UserHeader';
 
 import MyProfile from '../Components/MyProfile/MyProfile';
 import CompanyWall from '../Components/CompanyWall/CompanyWall';
@@ -23,7 +24,7 @@ const UserRoutes = (props) => {
     return (
         <>
             <BrowserRouter>
-                <Header />
+                <UserHeader />
                 <UserMenu />
                 <Routes>
                     <Route path="/" element={<UserQuestions />} />

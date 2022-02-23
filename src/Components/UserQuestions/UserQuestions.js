@@ -181,6 +181,12 @@ const UserQuestions = () => {
         if (foundAnswer.data.data) {
             if (foundAnswer.data.data[0]) {
                 setCurrentAnswer(foundAnswer.data.data[0].attributes.answer);
+                if (
+                    foundAnswer.data.data[0].attributes.question.data.attributes
+                        .type === 'image'
+                ) {
+                    setIsImage(true);
+                }
                 setAnswerId(foundAnswer.data.data[0].id);
             } else {
                 setCurrentAnswer('');

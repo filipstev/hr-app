@@ -2,6 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../../helpers/axiosInstance';
 import classes from './UserQuestion.module.css';
+import Default from '../../../assets/defaulty.jpg';
+import { Button, Stack } from '@mui/material';
+import { styled } from '@mui/material/styles';
+
+const Input = styled('input')({
+    display: 'none',
+});
 
 const UserQuestion = (props) => {
     const [currentAnswer, setCurrentAnswer] = useState('');
@@ -17,8 +24,8 @@ const UserQuestion = (props) => {
     }, [props.answer]);
 
     useEffect(() => {
-        console.log(props.isImage);
-    }, [props.isImage]);
+        console.log(files.length);
+    }, [files]);
 
     const saveAnswer = () => {
         console.log(currentAnswer, props.question.id, props.userId);
@@ -59,19 +66,19 @@ const UserQuestion = (props) => {
 
     const uploadImage = async () => {
         const formData = new FormData();
+        let imageData;
 
         formData.append('files', files[0]);
-
-        const imageData = await axiosInstance.get(
-            `/upload/files?filters[url][$eq]=${props.answer}`
-        );
-
-        axiosInstance.delete('/upload/' + imageData.data[0].id);
+        if (props.answer) {
+            imageData = await axiosInstance.get(
+                `/upload/files?filters[url][$eq]=${props.answer}`
+            );
+            axiosInstance.delete('/upload/' + imageData.data[0].id);
+        }
 
         axiosInstance
             .post('/upload', formData)
             .then((response) => {
-                // console.log(response);
                 props.answerId
                     ? axiosInstance
                           .put(`/answers/` + props.answerId, {
@@ -143,19 +150,50 @@ const UserQuestion = (props) => {
                             onChange={(e) => setCurrentAnswer(e.target.value)}
                         ></input>
                     ) : (
-                        <>
-                            <input
-                                type="file"
-                                onChange={(e) => setFiles(e.target.files)}
-                            />
-                            <img
-                                style={{
-                                    width: '100px',
-                                    height: '100px',
-                                }}
-                                src={currentAnswer}
-                            />
-                        </>
+                        <div
+                            style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                            }}
+                        >
+                            {currentAnswer ? (
+                                <img
+                                    style={{
+                                        width: '100px',
+                                        height: '100px',
+                                        margin: '10px 0',
+                                    }}
+                                    src={
+                                        files.length > 0
+                                            ? URL.createObjectURL(files[0])
+                                            : currentAnswer
+                                    }
+                                />
+                            ) : (
+                                <img
+                                    style={{
+                                        width: '100px',
+                                        height: '100px',
+                                        margin: '10px 0',
+                                    }}
+                                    src={
+                                        files.length > 0
+                                            ? URL.createObjectURL(files[0])
+                                            : Default
+                                    }
+                                />
+                            )}
+                            <label htmlFor="contained-button-file">
+                                <Input
+                                    id="contained-button-file"
+                                    type="file"
+                                    onChange={(e) => setFiles(e.target.files)}
+                                />
+                                <Button variant="contained" component="span">
+                                    Upload
+                                </Button>
+                            </label>
+                        </div>
                     )}
                 </div>
             </div>
