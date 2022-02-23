@@ -106,7 +106,7 @@ const Login = () => {
                                 variant="link"
                                 underline="hover"
                                 color="black"
-                                onClick={() => navigate('/register')}
+                                onClick={() => navigate('/join')}
                             >
                                 Already have an account?
                             </Link>

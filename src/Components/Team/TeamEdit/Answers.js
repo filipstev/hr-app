@@ -1,5 +1,5 @@
 import { Divider, TextField } from '@mui/material';
-
+import UploadAnswerImgButton from '../../Buttons/UploadAnswerImgButton';
 const Answers = ({ questions, answers, handleAChange, handleAimgChange }) => {
     return (
         answers &&
@@ -12,7 +12,7 @@ const Answers = ({ questions, answers, handleAChange, handleAimgChange }) => {
                 };
             }
             return (
-                <>
+                <div key={question.attributes.text}>
                     <label>
                         {`Question ${i + 1} - `}
                         {question.attributes.text}
@@ -25,15 +25,10 @@ const Answers = ({ questions, answers, handleAChange, handleAimgChange }) => {
                                 gap: '7px',
                             }}
                         >
-                            <TextField
-                                type={'file'}
-                                sx={{ margin: '0 0 10px 0' }}
-                                name={`answer${i}`}
-                                onInput={(e) => {
-                                    const img = new FormData();
-                                    img.append('files', e.target.files[0]);
-                                    handleAimgChange(img, i);
-                                }}
+                            <UploadAnswerImgButton
+                                onInput={handleAimgChange}
+                                id={question.id}
+                                i={i}
                             />
                             <div>
                                 <img
@@ -56,7 +51,7 @@ const Answers = ({ questions, answers, handleAChange, handleAimgChange }) => {
                     )}
 
                     <Divider />
-                </>
+                </div>
             );
         })
     );
