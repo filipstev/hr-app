@@ -110,6 +110,7 @@ const BasicInfo = () => {
                 />
                 <label>Upload Img</label>
                 <img
+                    style={{ height: '150px', width: '150px' }}
                     src={
                         !newImage
                             ? image.attributes.formats.thumbnail.url

@@ -10,6 +10,8 @@ import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import InfoIcon from '@mui/icons-material/Info';
 
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
@@ -133,6 +135,13 @@ const ShowProfiles = ({ status, profiles }) => {
                           >
                               <Button
                                   size="small"
+                                  endIcon={
+                                      status === 'published' ? (
+                                          <EditIcon />
+                                      ) : (
+                                          <InfoIcon />
+                                      )
+                                  }
                                   onClick={() => {
                                       if (status === 'pending') {
                                           navigate(`/team/pending/${id}/edit`);
