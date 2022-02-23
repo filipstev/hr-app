@@ -14,6 +14,8 @@ import ShowProfiles from './ShowProfiles';
 
 import { useProfiles } from '../../queryFunctions/fetchProfiles';
 import { useCompany } from '../../queryFunctions/fetchCompany';
+import { FormControl, InputLabel, TextField } from '@mui/material';
+import { Label } from '@mui/icons-material';
 
 const Team = ({ status }) => {
     const userId = useSelector((state) => state.user.user.user.id);
@@ -70,7 +72,7 @@ const Team = ({ status }) => {
                 )}
             </Grid>
             {link && (
-                <form
+                <FormControl
                     style={{
                         display: 'flex',
                         flexDirection: 'column',
@@ -86,20 +88,19 @@ const Team = ({ status }) => {
                         });
                     }}
                 >
-                    <label>
-                        Input Recipient here:
-                        <input
-                            type="text"
-                            onInput={(e) => {
-                                setEmail(e.target.value);
-                            }}
-                        />
-                    </label>
-                    <button type="submit">Send Invite</button>
+                    <TextField
+                        label="Recipient Email"
+                        id="invite"
+                        type="text"
+                        onInput={(e) => {
+                            setEmail(e.target.value);
+                        }}
+                    />
+                    <Button type="submit">Send Invite</Button>
                     {inviteNewMember.isSuccess && (
                         <p>Invite Sent Successfully</p>
                     )}
-                </form>
+                </FormControl>
             )}
 
             <Pagination

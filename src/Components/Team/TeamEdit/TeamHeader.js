@@ -53,7 +53,13 @@ const TeamHeader = ({ edit }) => {
                 </Typography>
             </Grid>
             <Grid item display="flex" sx={{ justifyContent: 'space-between' }}>
-                <FormControl style={{ display: 'flex', flexDirection: 'row' }}>
+                <FormControl
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'center',
+                    }}
+                >
                     {edit === 'editPublished' ? (
                         <>
                             <InputLabel id="selectStatus">Status</InputLabel>

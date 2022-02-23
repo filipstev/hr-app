@@ -14,6 +14,8 @@ import {
     TextField,
     Typography,
 } from '@mui/material';
+import UploadButton from '../../Buttons/UploadButton';
+import SaveButton from '../../Buttons/SaveButton';
 
 const BasicInfo = () => {
     const { id } = useParams();
@@ -35,6 +37,13 @@ const BasicInfo = () => {
     const editProfile = useMutateProfile((data) => {
         return axiosInstance.put(`/profiles/${id}`, data);
     });
+
+    const handleProfileImageUpload = (e) => {
+        const image = new FormData();
+        image.append('files', e.target.files[0]);
+
+        setNewImage(image);
+    };
 
     const handleSubmit = async () => {
         editProfile.mutate({
@@ -72,7 +81,6 @@ const BasicInfo = () => {
             padding="10px"
         >
             <FormControl
-                // sx={{ display: 'flex', flexDirection: 'column' }}
                 component="form"
                 onSubmit={(e) => {
                     e.preventDefault();
@@ -88,11 +96,7 @@ const BasicInfo = () => {
                 >
                     Basic Info
                 </Typography>
-                <div>
-                    {!editProfile.isSuccess
-                        ? 'Chaning Username'
-                        : 'Username Changed'}
-                </div>
+
                 <label>Name</label>
                 <TextField
                     type="text"
@@ -102,22 +106,8 @@ const BasicInfo = () => {
                     }}
                 />
                 <label>Upload Img</label>
-                <TextField
-                    type="file"
-                    onInput={(e) => {
-                        const image = new FormData();
-                        image.append('files', e.target.files[0]);
-
-                        setNewImage(image);
-                    }}
-                />
-                <Button
-                    variant="outlined"
-                    type="submit"
-                    sx={{ marginTop: '15px' }}
-                >
-                    Save
-                </Button>
+                <UploadButton onUpload={handleProfileImageUpload} id={id} />
+                <SaveButton />
             </FormControl>
         </Grid>
     );
