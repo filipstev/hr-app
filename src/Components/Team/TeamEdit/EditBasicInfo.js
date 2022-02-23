@@ -48,7 +48,7 @@ const BasicInfo = () => {
 
         const image = new FormData();
         image.append('files', newImage[0]);
-        console.log(image.entries().next().value);
+
         const upload = await uploadImageMutation.mutateAsync(
             { image },
             {
@@ -108,17 +108,19 @@ const BasicInfo = () => {
                         setUsername(e.target.value);
                     }}
                 />
-                <label>Upload Img</label>
-                <img
-                    style={{ height: '150px', width: '150px' }}
-                    src={
-                        !newImage
-                            ? image.attributes.formats.thumbnail.url
-                            : URL.createObjectURL(newImage[0])
-                    }
-                    alt="123"
-                />
-                <UploadButton onUpload={handleProfileImageUpload} id={id} />
+                <label>Profile Img</label>
+                <div style={{ display: 'flex', flexDirection: 'row' }}>
+                    <UploadButton onUpload={handleProfileImageUpload} id={id} />
+                    <img
+                        style={{ height: '150px', width: '150px' }}
+                        src={
+                            !newImage
+                                ? image.attributes.formats.thumbnail.url
+                                : URL.createObjectURL(newImage[0])
+                        }
+                        alt="123"
+                    />
+                </div>
                 <SaveButton />
             </FormControl>
         </Grid>

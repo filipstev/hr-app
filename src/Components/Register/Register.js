@@ -31,10 +31,9 @@ const Register = () => {
     const [company, setCompany] = useState('');
     const [companyId, setCompanyId] = useState('');
     const [userRole, setUserRole] = useState('company_user');
-    console.log(userRole);
     const registerError = useSelector((state) => state.register.isError);
 
-    const image = new FormData();
+    const [image, setImage] = useState('');
 
     const nameRegEx = /^[a-zA-Z]+(?:[\s.]+[a-zA-Z]+)*$/g;
     const emailRegEx =
@@ -79,7 +78,8 @@ const Register = () => {
     } = useInput((value) => +value.length > 5);
 
     const handleRegisterImageUpload = (e) => {
-        image.append('files', e.target.files[0]);
+        setImage(e.target.files);
+        // image.append('files', e.target.files[0]);
     };
 
     const onSubmit = async () => {
@@ -87,6 +87,10 @@ const Register = () => {
             // setIsError(true);
             return;
         }
+
+        const img = new FormData();
+        img.append('files', image[0]);
+
         if (enteredPassword !== '') {
             dispatch(
                 registerUser.registerUser(
@@ -95,7 +99,7 @@ const Register = () => {
                     enteredPassword,
                     userRole,
                     companyId,
-                    image
+                    img
                 )
             );
         }
@@ -199,10 +203,15 @@ const Register = () => {
                     </RadioGroup>
                 </Grid>
 
-                <Grid item style={{ width: '100%' }}>
+                <Grid item>
                     <UploadButton
                         onUpload={handleRegisterImageUpload}
                         id={'register'}
+                    />
+                    <img
+                        style={{ height: '150px', width: '150px' }}
+                        src={image ? URL.createObjectURL(image[0]) : null}
+                        alt="profile"
                     />
                 </Grid>
                 <div>

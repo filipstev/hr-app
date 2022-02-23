@@ -41,10 +41,13 @@ const Team = ({ status }) => {
     const handlePageChange = (event, value) => {
         setPage(value);
     };
-
     useEffect(() => {
         setPage(1);
     }, [status]);
+
+    if (status !== 'published' && link === true) {
+        setLink(!link);
+    }
 
     if (profileStatus !== 'success') {
         return <p style={{ marginTop: '150px' }}>Is Loading...</p>;

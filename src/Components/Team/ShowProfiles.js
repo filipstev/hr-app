@@ -64,23 +64,16 @@ const ShowProfiles = ({ status, profiles }) => {
                   <Grid item key={id}>
                       <Card sx={{ width: 300 }}>
                           <CardContent>
-                              <Typography
-                                  sx={{ fontSize: 14 }}
-                                  color="text.secondary"
-                                  gutterBottom
-                              >
-                                  ID: {id}
-                              </Typography>
-
                               {!attributes.profilePhoto.data ? (
                                   <Typography
-                                      variant="h5"
+                                      variant="p"
                                       component="div"
                                       sx={{
                                           width: '200px',
                                           height: '200px',
                                           margin: '0 auto',
                                           lineHeight: '200px',
+                                          textAlign: 'center',
                                       }}
                                   >
                                       Image Goes Here
@@ -109,17 +102,17 @@ const ShowProfiles = ({ status, profiles }) => {
                               )}
 
                               <Typography
+                                  sx={{ mb: 1.5, mt: 1.5 }}
+                                  color="text.secondary"
+                              >
+                                  Status: {attributes.status}
+                              </Typography>
+                              <Typography
                                   variant="p"
                                   component="div"
                                   sx={{ textTransform: 'capitalize' }}
                               >
                                   Name: {attributes.name}
-                              </Typography>
-                              <Typography
-                                  sx={{ mb: 1.5 }}
-                                  color="text.secondary"
-                              >
-                                  Status: {attributes.status}
                               </Typography>
                               <Typography variant="body2">
                                   {handleFormatDate(
