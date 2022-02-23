@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 import axiosInstance from '../../../helpers/axiosInstance';
-import { Button, FormControl } from '@mui/material';
+import { FormControl } from '@mui/material';
 
 import { useGetQuestions } from '../../../queryFunctions/fetchQuestions';
 import { useGetAnswersOfProfile } from '../../../queryFunctions/fetchAnswers';
@@ -8,20 +8,19 @@ import { useEffect, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import Answers from './Answers';
 import { useFetchImage } from '../../../queryFunctions/fetchImage';
-import { useSelector } from 'react-redux';
 import SaveButton from '../../Buttons/SaveButton';
+import { useSelector } from 'react-redux';
 
 const EditAnswers = () => {
     const userId = useSelector((state) => state.user.user.user.id);
+
     const { id } = useParams();
     const queryClient = useQueryClient();
     const [a, setA] = useState(null);
     const [image, setImage] = useState('');
     const [url, setUrl] = useState('');
-
     const companyName = queryClient.getQueryData(['Company', userId]).data
         .data[0].attributes.name;
-
     // Get answers
     const { data: answers, isLoading: answersIsLoading } =
         useGetAnswersOfProfile(id);
@@ -43,6 +42,7 @@ const EditAnswers = () => {
     });
 
     const uploadImage = useMutation((data) => {
+        console.log(data);
         return axiosInstance.post(`/upload`, data);
     });
 
@@ -57,18 +57,21 @@ const EditAnswers = () => {
     };
 
     const handleAimgChange = (e, i) => {
-        console.log('123');
-        const img = new FormData();
-        img.append('files', e.target.files[0]);
-        setImage({ image: img, i: i });
+        setImage({ image: e.target.files, i: i });
     };
 
     const handleSubmit = async () => {
         if (imageId) {
-            deletePreviousImage.mutate(imageId);
+            deletePreviousImage.mutate(imageId, {
+                onSuccess: () => {
+                    console.log('Success');
+                },
+            });
         }
         console.log(image);
-        uploadImage.mutate(image.image, {
+        const img = new FormData();
+        img.append('files', image[0]);
+        uploadImage.mutate(img.image, {
             onSuccess: (data) => {
                 setA([...a], (a[image.i].attributes.answer = data.data[0].url));
                 setUrl(data.data[0].url);
@@ -132,6 +135,7 @@ const EditAnswers = () => {
                     answers={a}
                     handleAChange={handleAChange}
                     handleAimgChange={handleAimgChange}
+                    image={image}
                 />
 
                 <SaveButton />

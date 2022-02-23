@@ -15,13 +15,9 @@ import {
     Button,
 } from '@material-ui/core';
 
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import FormControl from '@mui/material/FormControl';
 
 import UploadButton from '../Buttons/UploadButton';
 import SelectCompany from './SelectCompanyInput';
@@ -34,11 +30,10 @@ const Register = () => {
     const [companies, setCompanies] = useState([]);
     const [company, setCompany] = useState('');
     const [companyId, setCompanyId] = useState('');
-    const [userRole, setUserRole] = useState('');
-
+    const [userRole, setUserRole] = useState('company_user');
     const registerError = useSelector((state) => state.register.isError);
 
-    const image = new FormData();
+    const [image, setImage] = useState('');
 
     const nameRegEx = /^[a-zA-Z]+(?:[\s.]+[a-zA-Z]+)*$/g;
     const emailRegEx =
@@ -83,7 +78,8 @@ const Register = () => {
     } = useInput((value) => +value.length > 5);
 
     const handleRegisterImageUpload = (e) => {
-        image.append('files', e.target.files[0]);
+        setImage(e.target.files);
+        // image.append('files', e.target.files[0]);
     };
 
     const onSubmit = async () => {
@@ -91,6 +87,10 @@ const Register = () => {
             // setIsError(true);
             return;
         }
+
+        const img = new FormData();
+        img.append('files', image[0]);
+
         if (enteredPassword !== '') {
             dispatch(
                 registerUser.registerUser(
@@ -99,7 +99,7 @@ const Register = () => {
                     enteredPassword,
                     userRole,
                     companyId,
-                    image
+                    img
                 )
             );
         }
@@ -203,10 +203,15 @@ const Register = () => {
                     </RadioGroup>
                 </Grid>
 
-                <Grid item style={{ width: '100%' }}>
+                <Grid item>
                     <UploadButton
-                        onInput={handleRegisterImageUpload}
+                        onUpload={handleRegisterImageUpload}
                         id={'register'}
+                    />
+                    <img
+                        style={{ height: '150px', width: '150px' }}
+                        src={image ? URL.createObjectURL(image[0]) : null}
+                        alt="profile"
                     />
                 </Grid>
                 <div>

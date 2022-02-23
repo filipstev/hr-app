@@ -3,7 +3,6 @@ import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import Stack from '@mui/material/Stack';
-import { TextField } from '@mui/material';
 
 const Input = styled('input')({
     display: 'none',
@@ -17,10 +16,9 @@ export default function UploadAnswerImgButton({ onInput, id, i }) {
                     style={{ display: 'none' }}
                     accept="image/*"
                     id={`button-${id}`}
-                    multiple
                     type="file"
-                    onInput={() => {
-                        console.log('OnChange');
+                    onInput={(e) => {
+                        onInput(e, i);
                     }}
                 />
                 <Button variant="contained" component="span">
@@ -33,8 +31,8 @@ export default function UploadAnswerImgButton({ onInput, id, i }) {
                     accept="image/*"
                     id={`icon-${id}`}
                     type="file"
-                    onInput={() => {
-                        console.log('OnChange');
+                    onInput={(e) => {
+                        onInput(e, i);
                     }}
                 />
                 <IconButton

@@ -1,6 +1,12 @@
 import { Divider, TextField } from '@mui/material';
 import UploadAnswerImgButton from '../../Buttons/UploadAnswerImgButton';
-const Answers = ({ questions, answers, handleAChange, handleAimgChange }) => {
+const Answers = ({
+    questions,
+    answers,
+    handleAChange,
+    handleAimgChange,
+    image,
+}) => {
     return (
         answers &&
         questions.map((question, i) => {
@@ -12,7 +18,13 @@ const Answers = ({ questions, answers, handleAChange, handleAimgChange }) => {
                 };
             }
             return (
-                <div key={question.attributes.text}>
+                <div
+                    key={question.attributes.text}
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                    }}
+                >
                     <label>
                         {`Question ${i + 1} - `}
                         {question.attributes.text}
@@ -21,7 +33,7 @@ const Answers = ({ questions, answers, handleAChange, handleAimgChange }) => {
                         <div
                             style={{
                                 display: 'flex',
-                                flexDirection: 'column',
+                                flexDirection: 'row',
                                 gap: '7px',
                             }}
                         >
@@ -34,7 +46,13 @@ const Answers = ({ questions, answers, handleAChange, handleAimgChange }) => {
                                 <img
                                     width="150px"
                                     height="150px"
-                                    src={`${answers[i].attributes.answer}`}
+                                    src={
+                                        !image
+                                            ? `${answers[i].attributes.answer}`
+                                            : URL.createObjectURL(
+                                                  image.image[0]
+                                              )
+                                    }
                                     alt="ss"
                                 />
                             </div>

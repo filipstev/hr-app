@@ -1,23 +1,19 @@
 import axiosInstance from '../../../helpers/axiosInstance';
 
 import { useState, useEffect } from 'react';
-import { useMutation } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import { useParams } from 'react-router-dom';
 // Custom React Query
 import { useGetProfile } from '../../../queryFunctions/fetchSingleProfile';
 import { useMutateProfile } from '../../../hooks/use-mutate-profile';
 
-import {
-    Button,
-    FormControl,
-    Grid,
-    TextField,
-    Typography,
-} from '@mui/material';
+import { FormControl, Grid, TextField, Typography } from '@mui/material';
 import UploadButton from '../../Buttons/UploadButton';
 import SaveButton from '../../Buttons/SaveButton';
 
 const BasicInfo = () => {
+    const queryClient = useQueryClient();
+
     const { id } = useParams();
     const { data: profile, isLoading } = useGetProfile(id);
 
@@ -31,7 +27,7 @@ const BasicInfo = () => {
     });
 
     const uploadImageMutation = useMutation((imgFile) => {
-        return axiosInstance.post(`/upload`, imgFile.newImage);
+        return axiosInstance.post(`/upload`, imgFile.image);
     });
 
     const editProfile = useMutateProfile((data) => {
@@ -39,10 +35,7 @@ const BasicInfo = () => {
     });
 
     const handleProfileImageUpload = (e) => {
-        const image = new FormData();
-        image.append('files', e.target.files[0]);
-
-        setNewImage(image);
+        setNewImage(e.target.files);
     };
 
     const handleSubmit = async () => {
@@ -53,7 +46,17 @@ const BasicInfo = () => {
             id,
         });
 
-        const upload = await uploadImageMutation.mutateAsync({ newImage });
+        const image = new FormData();
+        image.append('files', newImage[0]);
+
+        const upload = await uploadImageMutation.mutateAsync(
+            { image },
+            {
+                onSuccess: () => {
+                    queryClient.invalidateQueries(['profile', id]);
+                },
+            }
+        );
 
         if (upload.status) {
             deleteImageMutation.mutate({});
@@ -105,8 +108,19 @@ const BasicInfo = () => {
                         setUsername(e.target.value);
                     }}
                 />
-                <label>Upload Img</label>
-                <UploadButton onUpload={handleProfileImageUpload} id={id} />
+                <label>Profile Img</label>
+                <div style={{ display: 'flex', flexDirection: 'row' }}>
+                    <UploadButton onUpload={handleProfileImageUpload} id={id} />
+                    <img
+                        style={{ height: '150px', width: '150px' }}
+                        src={
+                            !newImage
+                                ? image.attributes.formats.thumbnail.url
+                                : URL.createObjectURL(newImage[0])
+                        }
+                        alt="123"
+                    />
+                </div>
                 <SaveButton />
             </FormControl>
         </Grid>

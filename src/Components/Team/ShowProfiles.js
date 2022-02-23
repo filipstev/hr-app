@@ -10,6 +10,8 @@ import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import InfoIcon from '@mui/icons-material/Info';
 
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
@@ -62,23 +64,16 @@ const ShowProfiles = ({ status, profiles }) => {
                   <Grid item key={id}>
                       <Card sx={{ width: 300 }}>
                           <CardContent>
-                              <Typography
-                                  sx={{ fontSize: 14 }}
-                                  color="text.secondary"
-                                  gutterBottom
-                              >
-                                  ID: {id}
-                              </Typography>
-
                               {!attributes.profilePhoto.data ? (
                                   <Typography
-                                      variant="h5"
+                                      variant="p"
                                       component="div"
                                       sx={{
                                           width: '200px',
                                           height: '200px',
                                           margin: '0 auto',
                                           lineHeight: '200px',
+                                          textAlign: 'center',
                                       }}
                                   >
                                       Image Goes Here
@@ -107,17 +102,17 @@ const ShowProfiles = ({ status, profiles }) => {
                               )}
 
                               <Typography
+                                  sx={{ mb: 1.5, mt: 1.5 }}
+                                  color="text.secondary"
+                              >
+                                  Status: {attributes.status}
+                              </Typography>
+                              <Typography
                                   variant="p"
                                   component="div"
                                   sx={{ textTransform: 'capitalize' }}
                               >
                                   Name: {attributes.name}
-                              </Typography>
-                              <Typography
-                                  sx={{ mb: 1.5 }}
-                                  color="text.secondary"
-                              >
-                                  Status: {attributes.status}
                               </Typography>
                               <Typography variant="body2">
                                   {handleFormatDate(
@@ -133,6 +128,13 @@ const ShowProfiles = ({ status, profiles }) => {
                           >
                               <Button
                                   size="small"
+                                  endIcon={
+                                      status === 'published' ? (
+                                          <EditIcon />
+                                      ) : (
+                                          <InfoIcon />
+                                      )
+                                  }
                                   onClick={() => {
                                       if (status === 'pending') {
                                           navigate(`/team/pending/${id}/edit`);
