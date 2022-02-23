@@ -11,6 +11,7 @@ import {
 } from '@mui/material';
 import axiosInstance from '../../../helpers/axiosInstance';
 import { useNavigate } from 'react-router-dom';
+import classes from './AddQuestion.module.css';
 
 const AddQuestion = (props) => {
     const [text, setText] = useState('');
@@ -69,6 +70,7 @@ const AddQuestion = (props) => {
                     flexDirection: 'column',
                     alignItems: 'flex-start',
                 }}
+                className={classes.QuestionWrap}
             >
                 <h2
                     style={{
@@ -85,7 +87,9 @@ const AddQuestion = (props) => {
                     label="Question text"
                     variant="outlined"
                     fullWidth="true"
-                    style={{ marginBottom: '40px' }}
+                    style={{
+                        marginBottom: '40px',
+                    }}
                     value={text}
                     onChange={(e) => setText(e.target.value)}
                 />

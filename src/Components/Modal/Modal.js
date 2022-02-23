@@ -110,6 +110,7 @@ const Modal = (props) => {
                         style={{
                             display: 'flex',
                         }}
+                        className={classes.ImgName}
                     >
                         {props.modalInfo[1].profilePhoto.data ? (
                             <img
@@ -123,6 +124,7 @@ const Modal = (props) => {
                                     marginRight: '30px',
                                     objectFit: 'cover',
                                 }}
+                                className={classes.Image}
                             />
                         ) : (
                             <img
@@ -131,7 +133,9 @@ const Modal = (props) => {
                                     width: '200px',
                                     height: '200px',
                                     marginRight: '30px',
+                                    objectFit: 'cover',
                                 }}
+                                className={classes.Image}
                             />
                         )}
                         <div
@@ -142,6 +146,7 @@ const Modal = (props) => {
                                 lineHeight: '32px',
                                 letterSpacing: '0.04em',
                             }}
+                            className={classes.Name}
                         >
                             {props.modalInfo[1].name
                                 ? props.modalInfo[1].name
@@ -167,12 +172,13 @@ const Modal = (props) => {
                             //           question.attributes.answers.data[i].id
                             //   );
                             return (
-                                <div>
+                                <div key={Math.random()}>
                                     <div
                                         style={{
                                             marginTop: '12px',
                                             fontSize: '24px',
                                             lineHeight: '28px',
+                                            fontWeight: 'bold',
                                         }}
                                     >
                                         {question.attributes.text}
@@ -204,6 +210,27 @@ const Modal = (props) => {
                                                         }
                                                     );
                                                 if (foundAnswer) {
+                                                    if (
+                                                        foundAnswer.attributes.answer.includes(
+                                                            '/image/upload'
+                                                        )
+                                                    ) {
+                                                        return (
+                                                            <img
+                                                                src={
+                                                                    foundAnswer
+                                                                        .attributes
+                                                                        .answer
+                                                                }
+                                                                style={{
+                                                                    width: '100px',
+                                                                    height: '100px',
+                                                                    objectFit:
+                                                                        'cover',
+                                                                }}
+                                                            />
+                                                        );
+                                                    }
                                                     return foundAnswer
                                                         .attributes.answer;
                                                 }

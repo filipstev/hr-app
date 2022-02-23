@@ -11,12 +11,11 @@ import {
 } from '@mui/material';
 import axiosInstance from '../../../helpers/axiosInstance';
 import { useLocation, useNavigate } from 'react-router-dom';
+import classes from '../AddQuestion/AddQuestion.module.css';
 
 import { useMutation, useQuery } from 'react-query';
 const fetchQuestion = async (setText, setType, setId, id) => {
-
     const res = await axiosInstance.get(`/questions/${id}?populate=*`);
-
 
     setText(res.data.data.attributes.text);
     setType(res.data.data.attributes.type);
@@ -33,7 +32,6 @@ const EditQuestion = (props) => {
     const [id, setId] = useState(null);
 
     const submitQuestion = async () => {
-
         console.log(data?.attributes.answers.data);
 
         if (
@@ -41,22 +39,18 @@ const EditQuestion = (props) => {
             (data.attributes.type === 'text' ||
                 data.attributes.type === 'long_text')
         ) {
-
             data?.attributes.answers.data.map((answer) => {
                 axiosInstance.delete('answers/' + answer.id);
             });
-
         }
 
         if (
             (type === 'text' || type === 'long_text') &&
             data.attributes.type === 'image'
         ) {
-
             data?.attributes.answers.data.map((answer) => {
                 axiosInstance.delete('answers/' + answer.id);
             });
-
         }
 
         if (text !== '' && type && id) {
@@ -115,6 +109,7 @@ const EditQuestion = (props) => {
                     flexDirection: 'column',
                     alignItems: 'flex-start',
                 }}
+                className={classes.QuestionWrap}
             >
                 <h2
                     style={{

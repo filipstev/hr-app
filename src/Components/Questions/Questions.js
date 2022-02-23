@@ -213,6 +213,7 @@ const Questions = () => {
                     margin: '80px auto',
                     fontFamily: 'Comic Neue',
                 }}
+                className={classes.AllQuestions}
             >
                 <div
                     style={{
@@ -221,6 +222,7 @@ const Questions = () => {
                         alignItems: 'center',
                         width: '100%',
                     }}
+                    className={classes.NaslovWrap}
                 >
                     <h1
                         style={{

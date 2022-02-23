@@ -43,3 +43,31 @@
     font-size: 20px;
     cursor: pointer;
 }
+
+@media screen and (max-width: 450px) {
+    .Right {
+        transform: translateX(-20px);
+    }
+}
+
+@media screen and (max-width: 400px) {
+    .Right {
+        transform: none;
+    }
+
+    .Wrapper {
+        flex-direction: column;
+    }
+}
+
+@media screen and (max-width: 355px) {
+    .Right {
+        transform: none;
+    }
+    .Input {
+        width: 150%;
+    }
+    .Text {
+        width: 150%;
+    }
+}

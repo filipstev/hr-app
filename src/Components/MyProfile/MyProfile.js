@@ -35,12 +35,16 @@ const MyProfile = () => {
                     fontSize: '28px',
                     lineHeight: '32px',
                     letterSpacing: '0.04em',
+                    fontFamily: 'Comic Neue',
                 }}
             >
                 My Profile
             </h1>
 
-            <div style={{ display: 'flex' }} className={classes.ContainerWrap}>
+            <div
+                style={{ display: 'flex', alignItems: 'flex-start' }}
+                className={classes.ContainerWrap}
+            >
                 <SingleContainer info user={data} />
                 <SingleContainer
                     security

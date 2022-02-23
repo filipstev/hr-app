@@ -17,6 +17,7 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { useQuery } from 'react-query';
 import Avatar from '../../assets/avatar.png';
+import classes from './UserTeam.module.css';
 
 function compareLast(a, b) {
     if (a.attributes.createdAt > b.attributes.createdAt) {
@@ -62,7 +63,6 @@ const UserTeam = () => {
     const [searching, setSearching] = useState(false);
     const user = JSON.parse(localStorage.getItem('user'));
     const getUserProfile = async () => {
-        // console.log(userId);
         const profileId = await axiosInstance.get(
             `/profiles?filters[user][id][$eq]=${user.user.id}&populate=*`
         );
@@ -142,38 +142,6 @@ const UserTeam = () => {
         }
     }, [nameFilter]);
 
-    // useEffect(async () => {
-    //     const profileData = await getUserProfile();
-    //     const slugData = await axiosInstance.get(
-    //         '/companies?filters[profiles][id][$eq]=' +
-    //             profileData.data.data[0].id
-    //     );
-
-    //     axiosInstance
-    //         .get(
-    //             '/profiles?filters[company][slug][$eq]=' +
-    //                 slugData.data.data[0].attributes.slug +
-    //                 '&populate=*'
-    //         )
-    //         .then((data) => {
-    //             let publishedProfiles = [];
-
-    //             data.data.data.map((profile) => {
-    //                 if (profile.attributes.status === 'published') {
-    //                     publishedProfiles.push(profile);
-    //                 }
-    //             });
-    //             if (publishedProfiles.length === 0) {
-    //                 setEmptyFilter(true);
-    //             }
-    //             setProfiles(publishedProfiles);
-    //             setAllProfiles(publishedProfiles);
-    //         })
-    //         .catch((err) => {
-    //             console.log(err);
-    //         });
-    // }, []);
-
     const openModal = (id, attributes) => {
         setModalOpen(true);
         setModalInfo([id, attributes]);
@@ -202,7 +170,11 @@ const UserTeam = () => {
                             item
                             key={id}
                             onClick={() => openModal(id, attributes)}
-                            style={{ cursor: 'pointer' }}
+                            sx={{
+                                cursor: 'pointer',
+                                alignItems: 'center',
+                            }}
+                            className={classes.Grid}
                         >
                             <Card sx={{ minWidth: 275 }}>
                                 <CardContent
@@ -222,7 +194,6 @@ const UserTeam = () => {
                                                 justifySelf: 'center',
 
                                                 objectFit: 'cover',
-
                                             }}
                                         />
                                     ) : (
@@ -236,7 +207,6 @@ const UserTeam = () => {
                                                 justifySelf: 'center',
 
                                                 objectFit: 'cover',
-
                                             }}
                                         />
                                     )}
@@ -275,6 +245,7 @@ const UserTeam = () => {
                             key={id}
                             onClick={() => openModal(id, attributes)}
                             style={{ cursor: 'pointer' }}
+                            className={classes.Grid}
                         >
                             <Card sx={{ minWidth: 275 }}>
                                 <CardContent
@@ -334,40 +305,40 @@ const UserTeam = () => {
         // TODO: NOVI HEADER
         <Container
             maxWidth="false"
-            style={{ marginTop: '80px', fontFamily: 'Comic Neue' }}
+            style={{
+                marginTop: '80px',
+                fontFamily: 'Comic Neue',
+                paddingBottom: '16px',
+            }}
+            className={classes.Container}
         >
-            <Grid
-                container
-                sx={{
+            <div
+                style={{
                     marginTop: '100px',
+                    display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
-                    padding: '16px',
                     marginBottom: '30px',
                 }}
+                className={classes.NewGrid}
             >
                 <div
                     style={{
                         fontSize: '28px',
                         lineHeight: '32px',
                         fontWeight: 'bold',
+                        textAlign: 'center',
+                        margin: '12px 0',
                     }}
                 >
                     {/* {location.pathname.split('/')[2].charAt(0).toUpperCase() +
                         location.pathname.split('/')[2].slice(1)} */}
-                    Tesla 's team
+                    Tesla's team
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <input
-                        placeholder="Filter by name"
-                        style={{
-                            padding: '18px',
-                            border: '1px solid black',
-                            height: 'fit-content',
-                        }}
-                        value={nameFilter}
-                        onChange={onNameFilterChange}
-                    />
+                <div
+                    style={{ display: 'flex', alignItems: 'center' }}
+                    className={classes.Inputs}
+                >
                     <FormControl sx={{ m: 1, minWidth: 120 }}>
                         <InputLabel>Sort by</InputLabel>
                         <Select
@@ -382,8 +353,19 @@ const UserTeam = () => {
                             {/* <MenuItem value={'name'}>Name (Z-A) </MenuItem> */}
                         </Select>
                     </FormControl>
+                    <input
+                        placeholder="Filter by name"
+                        style={{
+                            padding: '18px',
+                            border: '1px solid black',
+                            height: 'fit-content',
+                            margin: '10px 0',
+                        }}
+                        value={nameFilter}
+                        onChange={onNameFilterChange}
+                    />
                 </div>
-            </Grid>
+            </div>
             <Grid container spacing={2} sx={{ marginLeft: 0 }}>
                 {data?.length !== 0 && !searching ? (
                     showProfiles(false)

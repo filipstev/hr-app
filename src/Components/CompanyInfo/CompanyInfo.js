@@ -88,7 +88,13 @@ const CompanyInfo = () => {
 
     return (
         <>
-            <Container maxWidth="sm" style={{ marginTop: '82px' }}>
+            <Container
+                maxWidth="sm"
+                style={{
+                    marginTop: '82px',
+                    padding: '0 30px',
+                }}
+            >
                 <Grid
                     container
                     spacing={2}
@@ -96,10 +102,25 @@ const CompanyInfo = () => {
                     justifyContent="center"
                     alignItems="flex-end"
                     textAlign="left"
-                    fullWidth="true"
                 >
-                    <Grid item style={{ width: '100%' }}>
-                        <Typography align="left">Company Info</Typography>
+                    <Grid
+                        item
+                        style={{
+                            width: '100%',
+                            fontFamily: 'Comic Neue',
+                        }}
+                    >
+                        <div
+                            align="left"
+                            style={{
+                                fontFamily: 'Comic Neue !important',
+                                marginBottom: '16px',
+                                fontSize: '1.3rem',
+                                fontWeight: 'bold',
+                            }}
+                        >
+                            Company Info
+                        </div>
                     </Grid>
                     <Grid
                         item
