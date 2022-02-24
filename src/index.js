@@ -7,6 +7,7 @@ import { store } from './store/store';
 import { Provider } from 'react-redux';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import ThemeContextProvider from './context/theme-context';
+
 const queryClient = new QueryClient({
     defaultOptions: {
         queries: {
