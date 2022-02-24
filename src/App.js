@@ -2,7 +2,7 @@ import './App.css';
 import JoinRoutes from './routes/JoinRoutes';
 import AdminRoutes from './routes/AdminRoutes';
 import { useSelector } from 'react-redux';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect } from 'react';
 import jwtDecode from 'jwt-decode';
 import { useDispatch } from 'react-redux';
 import * as userActions from './store/actions/user';
@@ -16,7 +16,6 @@ function App() {
     const { theme } = useContext(ThemeContext);
 
     const dispatch = useDispatch();
-    // const user = useSelector((state) => state.user.user);
     const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
     const userRole = useSelector((state) => state.user.role);
 
@@ -46,7 +45,6 @@ function App() {
     return (
         <>
             <ThemeProvider theme={theme === 'light' ? LightTheme : DarkTheme}>
-                {/* <ThemeProvider theme={DarkTheme}> */}
                 <div className="App">
                     {!isLoggedIn ? (
                         <JoinRoutes />
