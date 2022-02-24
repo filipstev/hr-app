@@ -36,6 +36,7 @@ export function* handleRegisterUser(action) {
                 localStorage.setItem('user', JSON.stringify(user));
                 console.log(action.file);
                 console.log('UserID: ', user.user.id);
+                action.navigate(`/`);
                 yield call(() => {
                     if (!action.file.entries('files').next().value) {
                         createNewProfile({
