@@ -190,9 +190,7 @@ const UserQuestions = () => {
 
     const getAnswer = async (questionFor) => {
         const foundAnswer = await axiosInstance.get(
-            `/answers?filters[question][id][$eq]=${
-                questionFor.id
-            }&filters[profile][id][$eq]=${41}&populate=*`
+            `/answers?filters[question][id][$eq]=${questionFor.id}&filters[profile][id][$eq]=${profileId}&populate=*`
         );
         console.log(foundAnswer);
         if (foundAnswer.data.data) {

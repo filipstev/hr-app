@@ -13,6 +13,13 @@ import { useSelector } from 'react-redux';
 import axiosInstance from '../../helpers/axiosInstance';
 import { useMutation, useQuery } from 'react-query';
 
+import { styled } from '@mui/material/styles';
+import IconButton from '@mui/material/IconButton';
+import PhotoCamera from '@mui/icons-material/PhotoCamera';
+import Spinner from '../Spinner.js/Spinner';
+const Input = styled('input')({
+    display: 'none',
+});
 const fetchCompanyName = async () => {
     const res = await axiosInstance.get('/companies/2?populate=*');
 
@@ -104,7 +111,7 @@ const CompanyInfo = () => {
     }, [data]);
 
     if (status === 'loading') {
-        return <div>Loading...</div>;
+        return <Spinner />;
     }
 
     return (
@@ -173,10 +180,36 @@ const CompanyInfo = () => {
                     </Grid>
                     {/* TODO: DODATI UPLOAD INPUT UMESTO OVOG */}
                     <Grid item style={{ width: '100%', padding: 0 }}>
-                        <input
+                        <label
+                            htmlFor="icon-button-file"
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                width: 'fit-content',
+                                cursor: 'pointer',
+                                fontFamily: 'Comic Neue',
+                                fontWeight: 'bold',
+                            }}
+                        >
+                            <Input
+                                accept="image/*"
+                                id="icon-button-file"
+                                type="file"
+                                onChange={(e) => setFiles(e.target.files)}
+                            />
+                            <IconButton
+                                color="primary"
+                                aria-label="upload picture"
+                                component="span"
+                            >
+                                <PhotoCamera />
+                            </IconButton>
+                            <span style={{ marginLeft: '2px' }}>Upload</span>
+                        </label>
+                        {/* <input
                             type="file"
                             onChange={(e) => setFiles(e.target.files)}
-                        />
+                        /> */}
                     </Grid>
 
                     {/* Ovo dugme je bilo problem :o */}

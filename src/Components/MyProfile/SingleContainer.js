@@ -6,7 +6,12 @@ import { useMutation } from 'react-query';
 import Avatar from '../../assets/avatar.png';
 import classes from './MyProfile.module.css';
 import Spinner from '../Spinner.js/Spinner';
-
+import { styled } from '@mui/material/styles';
+import IconButton from '@mui/material/IconButton';
+import PhotoCamera from '@mui/icons-material/PhotoCamera';
+const Input = styled('input')({
+    display: 'none',
+});
 const SingleContainer = (props) => {
     const [name, setName] = useState('');
     const [files, setFiles] = useState([]);
@@ -57,7 +62,7 @@ const SingleContainer = (props) => {
         // }
 
         if (props.user) {
-            setName(props.user.attributes ? props.user.attributes.name : '');
+            setName(props.user?.attributes ? props.user?.attributes.name : '');
         }
     }, [props.user]);
 
@@ -128,7 +133,7 @@ const SingleContainer = (props) => {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                 />
-                {props.user?.attributes.profilePhoto.data.attributes.url ? (
+                {props.user?.attributes.profilePhoto?.data?.attributes.url ? (
                     <img
                         src={
                             files.length > 0
@@ -154,7 +159,26 @@ const SingleContainer = (props) => {
                         }}
                     />
                 )}
-                <input type="file" onChange={(e) => setFiles(e.target.files)} />
+                <label
+                    htmlFor="icon-button-file"
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        width: 'fit-content',
+                        cursor: 'pointer',
+                    }}
+                >
+                    <Input accept="image/*" id="icon-button-file" type="file" />
+                    <IconButton
+                        color="primary"
+                        aria-label="upload picture"
+                        component="span"
+                    >
+                        <PhotoCamera />
+                    </IconButton>
+                    <span style={{ marginLeft: '2px' }}>Upload</span>
+                </label>
+                {/* <input type="file" onChange={(e) => setFiles(e.target.files)} /> */}
 
                 <div
                     style={{
