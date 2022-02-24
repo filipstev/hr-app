@@ -15,7 +15,7 @@ import { Link } from 'react-router-dom';
 import axiosInstance from '../../helpers/axiosInstance';
 import { useQuery } from 'react-query';
 
-const pages = ['Tesla', 'Ghetto', 'Page Three'];
+const pages = ['Tesla', 'Ghetto', 'Logout'];
 
 const fetchLogo = async (userStorage) => {
     const resUser = await axiosInstance.get(

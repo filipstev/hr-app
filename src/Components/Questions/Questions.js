@@ -6,6 +6,7 @@ import Header from '../Header/Header';
 import classes from './Questions.module.css';
 import SingleQuestion from './SingleQuestion/SingleQuestion';
 import { useMutation, useQuery } from 'react-query';
+import Spinner from '../Spinner.js/Spinner';
 
 function compare(a, b) {
     if (a.attributes.order < b.attributes.order) {
@@ -281,7 +282,7 @@ const Questions = () => {
                         );
                     })
                 ) : (
-                    <div>Loading...</div>
+                    <Spinner />
                 )}
             </div>
         </>
