@@ -41,18 +41,20 @@ function App() {
     }, []);
 
     return (
-        <div className="App">
-            {!isLoggedIn ? (
-                <JoinRoutes />
-            ) : isLoggedIn && userRole === 'company_admin' ? (
-                <AdminRoutes role={userRole} />
-            ) : isLoggedIn && userRole === 'company_user' ? (
-                <UserRoutes role={userRole} />
-            ) : (
-                <div>loading...</div>
-            )}
-            <ReactQueryDevtools />
-        </div>
+        <>
+            <div className="App">
+                {!isLoggedIn ? (
+                    <JoinRoutes />
+                ) : isLoggedIn && userRole === 'company_admin' ? (
+                    <AdminRoutes role={userRole} />
+                ) : isLoggedIn && userRole === 'company_user' ? (
+                    <UserRoutes role={userRole} />
+                ) : (
+                    <div>loading...</div>
+                )}
+                <ReactQueryDevtools />
+            </div>
+        </>
     );
 }
 
