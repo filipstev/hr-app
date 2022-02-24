@@ -1,4 +1,3 @@
-import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../../helpers/axiosInstance';
 
 export function requestRegisterUser(name, email, password) {
