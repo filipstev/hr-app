@@ -19,6 +19,7 @@ export default (state = initialState, action) => {
                 userRole: action.userRole,
                 file: action.file,
                 isError: false,
+                navigate: action.navigate,
             };
         case REGISTER_ERROR:
             return {

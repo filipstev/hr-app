@@ -17,7 +17,6 @@ const UploadButton = ({ onUpload, id }) => {
                     id={`button-${id}`}
                     type="file"
                     onInput={(e) => {
-                        console.log('123');
                         onUpload(e);
                     }}
                 />

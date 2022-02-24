@@ -21,18 +21,19 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 
 import UploadButton from '../Buttons/UploadButton';
 import SelectCompany from './SelectCompanyInput';
-// dodati user role, i kompaniju
+
 const Register = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const { slug } = useParams();
+    const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
 
     const [companies, setCompanies] = useState([]);
     const [company, setCompany] = useState('');
     const [companyId, setCompanyId] = useState('');
     const [userRole, setUserRole] = useState('company_user');
     const registerError = useSelector((state) => state.register.isError);
-
+    console.log(isLoggedIn);
     const [image, setImage] = useState('');
 
     const nameRegEx = /^[a-zA-Z]+(?:[\s.]+[a-zA-Z]+)*$/g;
@@ -81,6 +82,23 @@ const Register = () => {
         setImage(e.target.files);
     };
 
+    const handleRegistration = (img) => {
+        if (enteredPassword !== '') {
+            dispatch(
+                registerUser.registerUser(
+                    enteredName,
+                    enteredEmail,
+                    enteredPassword,
+                    userRole,
+                    companyId,
+                    img,
+                    navigate
+                )
+            );
+        }
+
+        // navigate(`/`);
+    };
     const onSubmit = async () => {
         if (enteredPassword === '') {
             // setIsError(true);
@@ -90,20 +108,11 @@ const Register = () => {
         if (image) {
             img.append('files', image[0]);
         }
-        if (enteredPassword !== '') {
-            dispatch(
-                registerUser.registerUser(
-                    enteredName,
-                    enteredEmail,
-                    enteredPassword,
-                    userRole,
-                    companyId,
-                    img
-                )
-            );
-        }
+        handleRegistration(img);
     };
-
+    useEffect(() => {
+        isLoggedIn && navigate(`/`);
+    }, [isLoggedIn, navigate]);
     return (
         <Container
             maxWidth="sm"

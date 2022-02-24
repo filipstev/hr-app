@@ -43,6 +43,7 @@ export function* handleRegisterUser(action) {
                             id: user.user.id,
                             companyId: action.companyId,
                             userRole: action.userRole,
+                            navigate: action.navigate,
                         });
                     }
                     if (action.file.entries('files').next().value) {
@@ -53,6 +54,7 @@ export function* handleRegisterUser(action) {
                                 companyId: action.companyId,
                                 photoId: res.data[0].id,
                                 userRole: action.userRole,
+                                navigate: action.navigate,
                             });
                         });
                     }
