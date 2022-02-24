@@ -24,7 +24,8 @@ const fetchQuestions = async (
     setAnswerId,
     setIsImage,
     setTotal,
-    userStorage
+    userStorage,
+    profileId
 ) => {
     //TODO: DINAMICKI ID ZA KOMPANIJE
 
@@ -56,9 +57,7 @@ const fetchQuestions = async (
             setIsImage(false);
         }
         const foundAnswer = await axiosInstance.get(
-            `/answers?filters[question][id][$eq]=${
-                sortedQuestions[0].id
-            }&filters[profile][id][$eq]=${41}&populate=*`
+            `/answers?filters[question][id][$eq]=${sortedQuestions[0].id}&filters[profile][id][$eq]=${resUser.data.data[0].id}&populate=*`
         );
         if (foundAnswer.data.data) {
             if (foundAnswer.data.data[0]) {
