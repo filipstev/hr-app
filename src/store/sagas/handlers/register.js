@@ -9,9 +9,6 @@ import { requestGetUser } from '../requests/user';
 import { setUser } from '../../actions/user';
 
 export function* handleRegisterUser(action) {
-    console.log('handleRegisterUser: ');
-    console.log(action);
-
     try {
         const response = yield call(() =>
             requestRegisterUser(action.name, action.email, action.password)
@@ -34,9 +31,7 @@ export function* handleRegisterUser(action) {
                 };
 
                 localStorage.setItem('user', JSON.stringify(user));
-                console.log(action.file);
-                console.log('UserID: ', user.user.id);
-                action.navigate(`/`);
+
                 yield call(() => {
                     if (!action.file.entries('files').next().value) {
                         createNewProfile({
@@ -60,6 +55,7 @@ export function* handleRegisterUser(action) {
                         });
                     }
                 });
+                action.navigate(`/`);
                 yield put(setUser(user));
             }
         }
