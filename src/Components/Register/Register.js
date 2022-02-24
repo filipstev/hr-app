@@ -79,7 +79,6 @@ const Register = () => {
 
     const handleRegisterImageUpload = (e) => {
         setImage(e.target.files);
-        // image.append('files', e.target.files[0]);
     };
 
     const onSubmit = async () => {
@@ -87,10 +86,10 @@ const Register = () => {
             // setIsError(true);
             return;
         }
-
         const img = new FormData();
-        img.append('files', image[0]);
-
+        if (image) {
+            img.append('files', image[0]);
+        }
         if (enteredPassword !== '') {
             dispatch(
                 registerUser.registerUser(
@@ -208,11 +207,13 @@ const Register = () => {
                         onUpload={handleRegisterImageUpload}
                         id={'register'}
                     />
-                    <img
-                        style={{ height: '150px', width: '150px' }}
-                        src={image ? URL.createObjectURL(image[0]) : null}
-                        alt="profile"
-                    />
+                    {image && (
+                        <img
+                            style={{ height: '150px', width: '150px' }}
+                            src={URL.createObjectURL(image[0])}
+                            alt="profile"
+                        />
+                    )}
                 </Grid>
                 <div>
                     {registerError && (
