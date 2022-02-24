@@ -12,7 +12,6 @@ import Header from '../Header/Header';
 import { useSelector } from 'react-redux';
 import axiosInstance from '../../helpers/axiosInstance';
 import { useMutation, useQuery } from 'react-query';
-
 import { styled } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';

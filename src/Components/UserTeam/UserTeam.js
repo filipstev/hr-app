@@ -91,14 +91,15 @@ const UserTeam = () => {
             res = await axiosInstance.get(
                 '/profiles?filters[company][id][$eq]=' +
                     resCompany.data.data[0].id +
-                    '&populate=*&sort=name:ASC'
+                    '&populate=*&sort=name:ASC&filters[status][$eq]=published'
             );
         } else {
             res = await axiosInstance.get(
                 '/profiles?filters[company][id][$eq]=' +
                     resCompany.data.data[0].id +
                     '&populate=*&sort=createdAt:' +
-                    order
+                    order +
+                    '&filters[status]=published'
             );
         }
         console.log(res);
