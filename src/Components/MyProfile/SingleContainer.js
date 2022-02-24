@@ -9,6 +9,7 @@ import Spinner from '../Spinner.js/Spinner';
 import { styled } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
+import SaveButton from '../Buttons/SaveButton';
 const Input = styled('input')({
     display: 'none',
 });
@@ -182,17 +183,14 @@ const SingleContainer = (props) => {
 
                 <div
                     style={{
-                        border: '1px solid black',
-                        borderRadius: '4px',
                         width: 'fit-content',
-                        padding: '3px 20px',
                         marginTop: '30px',
                         alignSelf: 'flex-end',
                         cursor: 'pointer',
                     }}
                     onClick={() => updateUser()}
                 >
-                    Save
+                    <SaveButton />
                 </div>
             </div>
         </div>
@@ -242,16 +240,13 @@ const SingleContainer = (props) => {
 
                 <div
                     style={{
-                        border: '1px solid black',
-                        borderRadius: '4px',
                         width: 'fit-content',
-                        padding: '3px 20px',
                         marginTop: '20px',
                         alignSelf: 'flex-end',
                         cursor: 'pointer',
                     }}
                 >
-                    Save
+                    <SaveButton />
                 </div>
             </div>
         </div>

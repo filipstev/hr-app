@@ -5,6 +5,7 @@ import classes from './UserQuestion.module.css';
 import Default from '../../../assets/defaulty.jpg';
 import { Button, Stack, TextField } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import SaveButton from '../../Buttons/SaveButton';
 
 const Input = styled('input')({
     display: 'none',
@@ -28,7 +29,7 @@ const UserQuestion = (props) => {
     }, [files]);
 
     const saveAnswer = () => {
-        console.log(currentAnswer, props.question.id, props.userId);
+        console.log(currentAnswer, props.question.id, props.profileId);
         if (props.isImage) {
             uploadImage();
             return;
@@ -206,8 +207,11 @@ const UserQuestion = (props) => {
                 </div>
             </div>
             <div className={classes.Right} onClick={saveAnswer}>
-                Save
+                <SaveButton />
             </div>
+            {/* <div >
+                Save
+            </div> */}
         </div>
     );
 };

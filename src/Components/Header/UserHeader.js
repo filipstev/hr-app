@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -14,6 +14,8 @@ import MenuItem from '@mui/material/MenuItem';
 import { Link } from 'react-router-dom';
 import axiosInstance from '../../helpers/axiosInstance';
 import { useQuery } from 'react-query';
+import { ThemeContext } from '../../context/theme-context';
+
 const pages = ['Tesla', 'Ghetto', 'Page Three'];
 
 const fetchLogo = async (userStorage) => {
@@ -36,6 +38,8 @@ const fetchLogo = async (userStorage) => {
 };
 
 const ResponsiveAppBar = (props) => {
+    const { themeTogglerHandler } = useContext(ThemeContext);
+
     const [width, setWidth] = useState(window.innerWidth);
     const userStorage = JSON.parse(localStorage.getItem('user'));
 
@@ -133,6 +137,7 @@ const ResponsiveAppBar = (props) => {
                             />
                         ) : null}
                     </Typography>
+                    <Button onClick={themeTogglerHandler}>Change Theme</Button>
 
                     <Box
                         sx={{
