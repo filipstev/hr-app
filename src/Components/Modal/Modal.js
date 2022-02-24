@@ -119,6 +119,7 @@ const Modal = (props) => {
                         opacity: props.show ? '1' : '0',
                         fontFamily: 'Comic Neue',
                         maxWidth: '91vw',
+                        color: 'black',
                     }}
                 >
                     <div
@@ -203,6 +204,7 @@ const Modal = (props) => {
                                             fontSize: '20px',
                                             display: 'flex',
                                             alignItems: 'center',
+                                            marginTop: '5px',
                                         }}
                                     >
                                         <i

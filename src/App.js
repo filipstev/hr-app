@@ -47,6 +47,19 @@ function App() {
         <>
             <ThemeProvider theme={theme === 'light' ? LightTheme : DarkTheme}>
                 {/* <ThemeProvider theme={DarkTheme}> */}
+                {/* <ReactHelmet
+                    link={[
+                        {
+                            rel: 'stylesheet',
+                            type: 'text/css',
+                            href:
+                                theme === 'dark'
+                                    ? '/.MuiOverride.css'
+                                    : './MuiInitial.css',
+                        },
+                    ]}
+                /> */}
+                )
                 <div className="App">
                     {!isLoggedIn ? (
                         <JoinRoutes />
@@ -59,6 +72,37 @@ function App() {
                     )}
                     <ReactQueryDevtools />
                 </div>
+                <style
+                    dangerouslySetInnerHTML={{
+                        __html:
+                            theme === 'dark'
+                                ? `
+                                .MuiInputBase-input {
+                                    color: white !important;
+                                }
+                                
+                                .MuiInputLabel-root {
+                                    color: white !important;
+                                }
+                                
+                                .MuiOutlinedInput-notchedOutline {
+                                    border-color: white !important;
+                                }
+                                `
+                                : `.MuiInputBase-input {
+                                    color: black !important;
+                                }
+                                
+                                .MuiInputLabel-root {
+                                    color: black !important;
+                                }
+                                
+                                .MuiOutlinedInput-notchedOutline {
+                                    border-color: black !important;
+                                }
+                                `,
+                    }}
+                />
             </ThemeProvider>
         </>
     );
