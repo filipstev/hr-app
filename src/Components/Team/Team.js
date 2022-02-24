@@ -14,7 +14,7 @@ import ShowProfiles from './ShowProfiles';
 
 import { useProfiles } from '../../queryFunctions/fetchProfiles';
 import { useCompany } from '../../queryFunctions/fetchCompany';
-import { FormControl, TextField } from '@mui/material';
+import { FormControl, TextField, ThemeProvider } from '@mui/material';
 
 const Team = ({ status }) => {
     const userId = useSelector((state) => state.user.user.user.id);
@@ -57,7 +57,10 @@ const Team = ({ status }) => {
         <Container maxWidth="false">
             <Grid
                 container
-                sx={{ marginTop: '100px', justifyContent: 'space-between' }}
+                sx={{
+                    marginTop: '100px',
+                    justifyContent: 'space-between',
+                }}
             >
                 <Typography>
                     {status === 'published' ? 'Team' : 'Pending for approval'}
@@ -65,6 +68,7 @@ const Team = ({ status }) => {
 
                 {status === 'published' && (
                     <Button
+                        color="primary"
                         onClick={() => {
                             setLink(!link);
                         }}
