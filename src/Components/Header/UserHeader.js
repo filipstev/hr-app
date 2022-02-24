@@ -13,20 +13,42 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import { Link } from 'react-router-dom';
 import axiosInstance from '../../helpers/axiosInstance';
-
+import { useQuery } from 'react-query';
 const pages = ['Tesla', 'Ghetto', 'Page Three'];
+
+const fetchLogo = async (userStorage) => {
+    const resUser = await axiosInstance.get(
+        '/profiles?filters[user][id][$eq]=' +
+            userStorage.user.id +
+            '&populate=*'
+    );
+
+    console.log(resUser);
+
+    // return resUser.data.data[0].id;
+    const res = await axiosInstance.get(
+        '/companies?filters[profiles][id][$eq]=' +
+            resUser.data.data[0].id +
+            '&populate=*'
+    );
+
+    return res.data.data[0].attributes.logo.data.attributes.url;
+};
 
 const ResponsiveAppBar = (props) => {
     const [width, setWidth] = useState(window.innerWidth);
+    const userStorage = JSON.parse(localStorage.getItem('user'));
 
     function handleWindowSizeChange() {
         setWidth(window.innerWidth);
     }
 
+    const { data, status } = useQuery(['company-logo', userStorage], () =>
+        fetchLogo(userStorage)
+    );
     const isMobile = width <= 900;
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
-    const [logo, setLogo] = React.useState(null);
 
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
@@ -70,22 +92,22 @@ const ResponsiveAppBar = (props) => {
     ];
 
     useEffect(() => {
-        axiosInstance
-            .get('/companies/2?populate=*')
-            .then((data) => {
-                // console.log(
-                //     'https://internship-hr-app.herokuapp.com' +
-                //         data.data.data.attributes.logo.data.attributes.formats
-                //             .small.url
-                // );
-                setLogo(
-                    data.data.data.attributes.logo.data.attributes.formats
-                        .thumbnail.url
-                );
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+        // axiosInstance
+        //     .get('/companies/2?populate=*')
+        //     .then((data) => {
+        //         // console.log(
+        //         //     'https://internship-hr-app.herokuapp.com' +
+        //         //         data.data.data.attributes.logo.data.attributes.formats
+        //         //             .small.url
+        //         // );
+        //         setLogo(
+        //             data.data.data.attributes.logo.data.attributes.formats
+        //                 .thumbnail.url
+        //         );
+        //     })
+        //     .catch((err) => {
+        //         console.log(err);
+        //     });
     }, []);
 
     return (
@@ -100,14 +122,16 @@ const ResponsiveAppBar = (props) => {
                         component="div"
                         sx={{ mr: 2, flexGrow: 1, color: 'black' }}
                     >
-                        <img
-                            style={{
-                                height: '45px',
-                                width: '45px',
-                            }}
-                            src={logo}
-                            alt="Logo"
-                        />
+                        {data ? (
+                            <img
+                                style={{
+                                    height: '45px',
+                                    width: '45px',
+                                }}
+                                src={data}
+                                alt="Logo"
+                            />
+                        ) : null}
                     </Typography>
 
                     <Box

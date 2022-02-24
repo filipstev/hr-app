@@ -23,11 +23,25 @@ const fetchQuestions = async (
     setCurrentAnswer,
     setAnswerId,
     setIsImage,
-    setTotal
+    setTotal,
+    userStorage
 ) => {
     //TODO: DINAMICKI ID ZA KOMPANIJE
+
+    const resUser = await axiosInstance.get(
+        '/profiles?filters[user][id][$eq]=' +
+            userStorage.user.id +
+            '&populate=*'
+    );
+
+    const resCompany = await axiosInstance.get(
+        '/companies?filters[profiles][id][$eq]=' +
+            resUser.data.data[0].id +
+            '&populate=*'
+    );
+
     const res = await axiosInstance.get(
-        `/questions?filters[company][id][$eq]=2&populate=*`
+        `/questions?filters[company][id][$eq]=${resCompany.data.data[0].id}&populate=*`
     );
 
     const sortedQuestions = res.data.data.sort(compare);
@@ -110,6 +124,7 @@ const UserQuestions = () => {
             setAnswerId,
             setIsImage,
             setTotal,
+            user,
         ],
         () =>
             fetchQuestions(
@@ -120,7 +135,8 @@ const UserQuestions = () => {
                 setCurrentAnswer,
                 setAnswerId,
                 setIsImage,
-                setTotal
+                setTotal,
+                user
             ),
         { keepPreviousData: true }
     );
