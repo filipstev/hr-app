@@ -111,7 +111,7 @@ const BasicInfo = () => {
                 <label>Profile Img</label>
                 <div style={{ display: 'flex', flexDirection: 'row' }}>
                     <UploadButton onUpload={handleProfileImageUpload} id={id} />
-                    <img
+                    {/* <img
                         style={{ height: '150px', width: '150px' }}
                         src={
                             !newImage
@@ -119,7 +119,7 @@ const BasicInfo = () => {
                                 : URL.createObjectURL(newImage[0])
                         }
                         alt="123"
-                    />
+                    /> */}
                 </div>
                 <SaveButton />
             </FormControl>
