@@ -24,8 +24,9 @@ const fetchQuestions = async (
     setAnswerId,
     setIsImage,
     setTotal,
-    userStorage,
-    profileId
+
+    userStorage
+
 ) => {
     //TODO: DINAMICKI ID ZA KOMPANIJE
 
