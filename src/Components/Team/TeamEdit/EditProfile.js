@@ -21,6 +21,7 @@ const EditProfile = ({ edit }) => {
         data: profileData,
         refetch,
         isSuccess: profileIsSuccess,
+        isLoading: profileIsLoading,
     } = useGetProfile(id);
     const { data: company } = useCompany(userId);
     // Get answers
@@ -50,6 +51,7 @@ const EditProfile = ({ edit }) => {
                         id={id}
                         data={profileData}
                         refetch={refetch}
+                        isLoading={profileIsLoading}
                     />
                     <Grid
                         container
