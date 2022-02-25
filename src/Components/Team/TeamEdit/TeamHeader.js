@@ -16,7 +16,7 @@ import Select from '@mui/material/Select';
 import Typography from '@mui/material/Typography';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-const TeamHeader = ({ edit, id, data, refetch }) => {
+const TeamHeader = ({ edit, id, data, refetch, isLoading }) => {
     const navigate = useNavigate();
 
     const editProfile = useMutateProfile((data) => {
@@ -62,7 +62,7 @@ const TeamHeader = ({ edit, id, data, refetch }) => {
                                 labelId="selectStatus"
                                 id="selectStatus"
                                 label="Status"
-                                value={data.attributes.status}
+                                value={data?.attributes.status}
                                 onChange={(e) => {
                                     editProfile.mutate(
                                         {
