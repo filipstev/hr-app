@@ -57,9 +57,16 @@ const CompanyInfo = (props) => {
     const updateInfo = async () => {
         setShouldSpin(true);
         if (companyName !== '' && companyName !== ' ') {
-            const res = await axiosInstance.put('/companies/' + data.id, {
-                data: { name: companyName },
-            });
+            const res = await axiosInstance
+                .put('/companies/' + data.id, {
+                    data: { name: companyName },
+                })
+                .then(() => {
+                    setShouldSpin(false);
+                })
+                .catch((e) => {
+                    setShouldSpin(false);
+                });
             console.log(res);
         }
 
