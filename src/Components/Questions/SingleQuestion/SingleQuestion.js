@@ -7,7 +7,9 @@ import { ThemeContext } from '../../../context/theme-context';
 const SingleQuestion = (props) => {
     const navigate = useNavigate();
     const onEdit = () => {
-        navigate('/edit-question', { state: { id: props.id } });
+        navigate('/edit-question', {
+            state: { id: props.id },
+        });
     };
     const { theme } = useContext(ThemeContext);
 

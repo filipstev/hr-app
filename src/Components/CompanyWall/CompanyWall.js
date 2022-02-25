@@ -451,6 +451,7 @@ const CompanyWall = () => {
                 show={modalOpen}
                 modalClosed={closeModal}
                 modalInfo={modalInfo}
+                slug={location.pathname.split('/')[2]}
             />
         </Container>
     );

@@ -16,6 +16,8 @@ import axiosInstance from '../../helpers/axiosInstance';
 import { useQuery } from 'react-query';
 import { ThemeContext } from '../../context/theme-context';
 import LogoutIcon from '@mui/icons-material/Logout';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import LightModeIcon from '@mui/icons-material/LightMode';
 const pages = ['Tesla'];
 
 const fetchLogo = async (userStorage) => {
@@ -147,7 +149,24 @@ const ResponsiveAppBar = (props) => {
                             />
                         ) : null}
                     </Typography>
-                    <Button onClick={themeTogglerHandler}>Change Theme</Button>
+                    <Button onClick={themeTogglerHandler}>
+                        {' '}
+                        {theme === 'dark' ? (
+                            <LightModeIcon
+                                sx={{
+                                    color:
+                                        theme === 'light' ? 'black' : 'white',
+                                }}
+                            />
+                        ) : (
+                            <DarkModeIcon
+                                sx={{
+                                    color:
+                                        theme === 'light' ? 'black' : 'white',
+                                }}
+                            />
+                        )}
+                    </Button>
                     <Button onClick={Logout}>
                         <LogoutIcon
                             sx={{
@@ -259,6 +278,7 @@ const ResponsiveAppBar = (props) => {
                         {!isMobile
                             ? pages.map((page) => (
                                   <Link
+                                      key={page}
                                       to={`/team/${page
                                           .toLowerCase()
                                           .replace(' ', '')}`}
@@ -276,6 +296,7 @@ const ResponsiveAppBar = (props) => {
                               ))
                             : drawerList.map((item) => (
                                   <Link
+                                      key={item}
                                       to={`/team/${item.navigateTo
                                           .toLowerCase()
                                           .replace(' ', '')}`}

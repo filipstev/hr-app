@@ -1,10 +1,11 @@
 import jwtDecode from 'jwt-decode';
 import { call, put } from 'redux-saga/effects';
-import { loginError, setUser, signIn } from '../../actions/user';
+import { loginError, loginStart, setUser, signIn } from '../../actions/user';
 import { checkUserProfile, requestGetUser } from '../requests/user';
 
 export function* handleLoginUser(action) {
     try {
+        yield put(loginStart());
         const response = yield call(() =>
             requestGetUser(action.email, action.password)
         );

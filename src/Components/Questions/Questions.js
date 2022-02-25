@@ -48,6 +48,7 @@ const Questions = () => {
     const [questions, setQuestions] = useState([]);
     const [meta, setMeta] = useState({});
     const [blocked, setBlocked] = useState(false);
+    const [shouldSpin, setShouldSpin] = useState(false);
     const userStorage = JSON.parse(localStorage.getItem('user'));
     const { theme } = useContext(ThemeContext);
 
@@ -220,6 +221,10 @@ const Questions = () => {
     useEffect(() => {
         refetch();
     }, []);
+
+    if (status === 'loading') {
+        return <Spinner />;
+    }
 
     return (
         <>

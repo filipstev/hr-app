@@ -51,9 +51,11 @@ const fetchCompany = async (userStorage) => {
 const CompanyInfo = (props) => {
     const [companyName, setCompanyName] = useState(' ');
     const [files, setFiles] = useState([]);
+    const [shouldSpin, setShouldSpin] = useState(false);
     const userStorage = JSON.parse(localStorage.getItem('user'));
 
     const updateInfo = async () => {
+        setShouldSpin(true);
         if (companyName !== '' && companyName !== ' ') {
             const res = await axiosInstance.put('/companies/' + data.id, {
                 data: { name: companyName },
@@ -69,13 +71,19 @@ const CompanyInfo = (props) => {
             axiosInstance
                 .post('/upload', formData)
                 .then((response) => {
-                    axiosInstance.put('/companies/' + data.id, {
-                        data: {
-                            logo: response.data,
-                        },
-                    });
+                    axiosInstance
+                        .put('/companies/' + data.id, {
+                            data: {
+                                logo: response.data,
+                            },
+                        })
+                        .then(() => {
+                            setShouldSpin(false);
+                        })
+                        .catch((e) => setShouldSpin(false));
                 })
                 .catch((error) => {
+                    setShouldSpin(false);
                     console.log(error);
                 });
         }
@@ -115,6 +123,10 @@ const CompanyInfo = (props) => {
         return <Spinner />;
     }
 
+    if (shouldSpin) {
+        return <Spinner />;
+    }
+
     return (
         <>
             <Container
@@ -130,7 +142,7 @@ const CompanyInfo = (props) => {
                     direction="column"
                     justifyContent="center"
                     alignItems="flex-end"
-                    textAlign="left"
+                    textalign="left"
                 >
                     <Grid
                         item

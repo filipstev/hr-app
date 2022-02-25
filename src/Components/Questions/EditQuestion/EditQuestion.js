@@ -33,8 +33,6 @@ const EditQuestion = (props) => {
     const [id, setId] = useState(null);
 
     const submitQuestion = async () => {
-        console.log(data?.attributes.answers.data);
-
         if (
             type === 'image' &&
             (data.attributes.type === 'text' ||

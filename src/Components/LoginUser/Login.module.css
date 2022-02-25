@@ -1,11 +1,35 @@
+.Spin {
+    position: absolute;
+    top: 30%;
+    left: 50%;
+}
+
 @media screen and (max-width: 1000px) {
     .Login {
         width: 60% !important;
+    }
+    .Spin {
+        left: 50%;
+    }
+}
+
+@media screen and (max-width: 850px) {
+    .Spin {
+        left: 45%;
     }
 }
 
 @media screen and (max-width: 600px) {
     .Login {
         width: 90% !important;
+    }
+    .Spin {
+        left: 43%;
+    }
+}
+
+@media screen and (max-width: 450px) {
+    .Spin {
+        left: 36%;
     }
 }
