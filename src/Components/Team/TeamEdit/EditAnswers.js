@@ -58,6 +58,26 @@ const EditAnswers = ({
 
         const img = new FormData();
         img.append('files', image.image[0]);
+        if (image === '') {
+            a.forEach((answer, i) => {
+                if (answer.id) {
+                    editAnswer.mutate({
+                        answerID: answer.id,
+                        data: { answer: answer.attributes.answer },
+                    });
+                }
+                if (!answer.id) {
+                    newAnswer.mutate({
+                        data: {
+                            answer: answer.attributes.answer,
+                            question: questions[i].id,
+                            profile: id,
+                        },
+                    });
+                }
+            });
+            return;
+        }
         uploadImage.mutate(img, {
             onSuccess: (data) => {
                 setA([...a], (a[image.i].attributes.answer = data.data[0].url));
