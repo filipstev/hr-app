@@ -13,11 +13,6 @@ const DeleteProfile = async ({
     const img = profile.attributes.profilePhoto.data;
     const user = profile.attributes.user.data;
     const answers = profile.attributes.answers.data;
-    // Console Logs, because console.log is fun;
-    console.log('Profile ID: ', profile);
-    console.log('Img ID: ', img);
-    console.log('User ID: ', user);
-    console.log('Answers: ', answers);
     // Check if we have imgId, so we don't get error;
     if (img) {
         deleteImage.mutate(img.id, {

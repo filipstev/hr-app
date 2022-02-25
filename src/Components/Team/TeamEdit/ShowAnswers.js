@@ -2,7 +2,13 @@ import { Grid, Typography } from '@mui/material';
 
 import EditAnswers from './EditAnswers';
 
-const EditAnswersSection = () => {
+const EditAnswersSection = ({
+    id,
+    answers,
+    answersIsLoading,
+    questions,
+    questionsIsLoading,
+}) => {
     return (
         <>
             <Grid
@@ -22,7 +28,13 @@ const EditAnswersSection = () => {
                     Answers
                 </Typography>
                 <br></br>
-                <EditAnswers />
+                <EditAnswers
+                    id={id}
+                    answers={answers}
+                    answersIsLoading={answersIsLoading}
+                    questions={questions}
+                    questionsIsLoading={questionsIsLoading}
+                />
             </Grid>
         </>
     );
