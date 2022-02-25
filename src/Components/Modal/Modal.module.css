@@ -26,6 +26,29 @@
     align-items: center;
 }
 
+::-webkit-scrollbar {
+    width: 0.3rem;
+}
+/* #f9711d */
+/* Track */
+::-webkit-scrollbar-track {
+    background: #00233f;
+    /* box-shadow: inset 0 0 5px grey; */
+    border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    /* background: $dugme_tamna; */
+    background-color: #121212;
+    border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    filter: brightness(85%);
+}
+
 @media (min-width: 500px) {
     .Modal {
         width: 85%;

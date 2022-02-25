@@ -6,6 +6,7 @@ import Default from '../../../assets/defaulty.jpg';
 import { Button, Stack, TextField } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import SaveButton from '../../Buttons/SaveButton';
+import Spinner from '../../Spinner.js/Spinner';
 
 const Input = styled('input')({
     display: 'none',
@@ -14,6 +15,7 @@ const Input = styled('input')({
 const UserQuestion = (props) => {
     const [currentAnswer, setCurrentAnswer] = useState('');
     const [files, setFiles] = useState([]);
+    const [shouldSpin, setShouldSpin] = useState(false);
     const changeAnswer = (e) => {
         console.log(e.target.value);
         setCurrentAnswer(e.target.value);
@@ -66,6 +68,7 @@ const UserQuestion = (props) => {
     };
 
     const uploadImage = async () => {
+        setShouldSpin(true);
         const formData = new FormData();
         let imageData;
 
@@ -74,7 +77,14 @@ const UserQuestion = (props) => {
             imageData = await axiosInstance.get(
                 `/upload/files?filters[url][$eq]=${props.answer}`
             );
-            axiosInstance.delete('/upload/files/' + imageData.data[0].id);
+            axiosInstance
+                .delete('/upload/files/' + imageData.data[0].id)
+                .then(() => {
+                    console.log('');
+                })
+                .catch((e) => {
+                    setShouldSpin(false);
+                });
         }
 
         axiosInstance
@@ -94,9 +104,11 @@ const UserQuestion = (props) => {
                               setCurrentAnswer(
                                   data.data.data.attributes.answer
                               );
+                              setShouldSpin(false);
                           })
                           .catch((err) => {
                               console.log(err);
+                              setShouldSpin(false);
                           })
                     : axiosInstance
                           .post(`/answers/`, {
@@ -111,15 +123,22 @@ const UserQuestion = (props) => {
                               setCurrentAnswer(
                                   data.data.data.attributes.answer
                               );
+                              setShouldSpin(false);
                           })
                           .catch((err) => {
                               console.log(err);
+                              setShouldSpin(false);
                           });
             })
             .catch((error) => {
                 console.log(error);
+                setShouldSpin(false);
             });
     };
+
+    if (shouldSpin) {
+        return <Spinner />;
+    }
 
     return (
         <div className={classes.Wrapper}>
@@ -144,7 +163,7 @@ const UserQuestion = (props) => {
                     <div className={classes.Text}>
                         {props.question ? props.question.attributes.text : null}
                     </div>
-                    {!props.isImage ? (
+                    {!props.isImage && !props.shouldSpin ? (
                         <TextField
                             id="user-question"
                             label="Type your answer"
@@ -153,7 +172,7 @@ const UserQuestion = (props) => {
                             sx={{ marginTop: '6px' }}
                             onChange={(e) => setCurrentAnswer(e.target.value)}
                         />
-                    ) : (
+                    ) : props.isImage && !props.shouldSpin ? (
                         // <input
                         //     className={classes.Input}
                         //     value={currentAnswer}
@@ -165,7 +184,7 @@ const UserQuestion = (props) => {
                                 flexDirection: 'column',
                             }}
                         >
-                            {currentAnswer ? (
+                            {currentAnswer && !props.shouldSpin ? (
                                 <img
                                     style={{
                                         width: '100px',
@@ -178,7 +197,7 @@ const UserQuestion = (props) => {
                                             : currentAnswer
                                     }
                                 />
-                            ) : (
+                            ) : !currentAnswer && !props.shouldSpin ? (
                                 <img
                                     style={{
                                         width: '100px',
@@ -191,7 +210,9 @@ const UserQuestion = (props) => {
                                             : Default
                                     }
                                 />
-                            )}
+                            ) : props.shouldSpin ? (
+                                <Spinner small />
+                            ) : null}
                             <label htmlFor="contained-button-file">
                                 <Input
                                     id="contained-button-file"
@@ -203,6 +224,8 @@ const UserQuestion = (props) => {
                                 </Button>
                             </label>
                         </div>
+                    ) : (
+                        <Spinner small />
                     )}
                 </div>
             </div>

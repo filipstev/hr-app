@@ -21,13 +21,22 @@ const SingleContainer = (props) => {
     const [files, setFiles] = useState([]);
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
+    const [shouldSpin, setShouldSpin] = useState(false);
 
     const { theme } = useContext(ThemeContext);
 
     const updateInfo = async () => {
-        await axiosInstance.put('/profiles/' + props.user.id, {
-            data: { name: name },
-        });
+        setShouldSpin(true);
+        await axiosInstance
+            .put('/profiles/' + props.user.id, {
+                data: { name: name },
+            })
+            .then(() => {
+                setShouldSpin(false);
+            })
+            .catch((e) => {
+                setShouldSpin(false);
+            });
 
         if (files.length > 0) {
             const formData = new FormData();
@@ -38,13 +47,22 @@ const SingleContainer = (props) => {
                 .post('/upload', formData)
                 .then((response) => {
                     console.log(response);
-                    axiosInstance.put('/profiles/' + props.user.id, {
-                        data: {
-                            profilePhoto: response.data,
-                        },
-                    });
+                    axiosInstance
+                        .put('/profiles/' + props.user.id, {
+                            data: {
+                                profilePhoto: response.data,
+                            },
+                        })
+                        .then(() => {
+                            setShouldSpin(false);
+                        })
+                        .catch((e) => {
+                            setShouldSpin(false);
+                        });
                 })
                 .catch((error) => {
+                    setShouldSpin(false);
+
                     console.log(error);
                 });
         }
@@ -125,83 +143,95 @@ const SingleContainer = (props) => {
             className={classes.SingleContainer}
         >
             <div style={{ padding: '10px 20px' }}>Basic Info</div>
-            <div
-                style={{
-                    borderTop:
-                        theme === 'light'
-                            ? '1px solid black'
-                            : '1px solid white',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    padding: '20px',
-                }}
-            >
-                <TextField
-                    variant="outlined"
-                    label="Name"
-                    style={{ marginBottom: '15px', marginTop: '12px' }}
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                />
-                {props.user?.attributes.profilePhoto?.data?.attributes.url ? (
-                    <img
-                        src={
-                            files.length > 0
-                                ? URL.createObjectURL(files[0])
-                                : props.user?.attributes.profilePhoto.data
-                                      .attributes.url
-                        }
-                        style={{
-                            height: '200px',
-                            width: '200px',
-                            objectFit: 'cover',
-                            marginBottom: '16px',
-                        }}
-                    />
-                ) : (
-                    <img
-                        src={Avatar}
-                        style={{
-                            height: '200px',
-                            width: '200px',
-                            objectFit: 'cover',
-                            marginBottom: '16px',
-                        }}
-                    />
-                )}
-                <label
-                    htmlFor="icon-button-file"
-                    style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        width: 'fit-content',
-                        cursor: 'pointer',
-                    }}
-                >
-                    <Input accept="image/*" id="icon-button-file" type="file" />
-                    <IconButton
-                        color="primary"
-                        aria-label="upload picture"
-                        component="span"
-                    >
-                        <PhotoCamera />
-                    </IconButton>
-                    <span style={{ marginLeft: '2px' }}>Upload</span>
-                </label>
-                {/* <input type="file" onChange={(e) => setFiles(e.target.files)} /> */}
-
+            {!shouldSpin ? (
                 <div
                     style={{
-                        width: 'fit-content',
-                        marginTop: '30px',
-                        alignSelf: 'flex-end',
-                        cursor: 'pointer',
+                        borderTop:
+                            theme === 'light'
+                                ? '1px solid black'
+                                : '1px solid white',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        padding: '20px',
                     }}
-                    onClick={() => updateUser()}
                 >
-                    <SaveButton />
+                    <TextField
+                        variant="outlined"
+                        label="Name"
+                        style={{ marginBottom: '15px', marginTop: '12px' }}
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                    />
+                    {props.user?.attributes.profilePhoto?.data?.attributes
+                        .url ? (
+                        <img
+                            src={
+                                files.length > 0
+                                    ? URL.createObjectURL(files[0])
+                                    : props.user?.attributes.profilePhoto.data
+                                          .attributes.url
+                            }
+                            style={{
+                                height: '200px',
+                                width: '200px',
+                                objectFit: 'cover',
+                                marginBottom: '16px',
+                            }}
+                        />
+                    ) : (
+                        <img
+                            src={Avatar}
+                            style={{
+                                height: '200px',
+                                width: '200px',
+                                objectFit: 'cover',
+                                marginBottom: '16px',
+                            }}
+                        />
+                    )}
+                    <label
+                        htmlFor="icon-button-file"
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            width: 'fit-content',
+                            cursor: 'pointer',
+                        }}
+                    >
+                        <Input
+                            accept="image/*"
+                            id="icon-button-file"
+                            type="file"
+                            onChange={(e) => setFiles(e.target.files)}
+                        />
+                        <IconButton
+                            color="primary"
+                            aria-label="upload picture"
+                            component="span"
+                        >
+                            <PhotoCamera />
+                        </IconButton>
+                        <span style={{ marginLeft: '2px' }}>Upload</span>
+                    </label>
+                    {/* <input type="file" onChange={(e) => setFiles(e.target.files)} /> */}
+
+                    <div
+                        style={{
+                            width: 'fit-content',
+                            marginTop: '30px',
+                            alignSelf: 'flex-end',
+                            cursor: 'pointer',
+                        }}
+                        onClick={() => updateUser()}
+                    >
+                        <SaveButton />
+                    </div>
                 </div>
-            </div>
+            ) : (
+                <div style={{ marginBottom: '60px' }}>
+                    <Spinner />
+                </div>
+            )}
         </div>
     ) : (
         <div

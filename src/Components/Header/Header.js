@@ -285,6 +285,7 @@ const ResponsiveAppBar = (props) => {
                         {!isMobile
                             ? pages.map((page) => (
                                   <Link
+                                      key={page}
                                       to={`/team/${page
                                           .toLowerCase()
                                           .replace(' ', '')}`}
@@ -302,6 +303,7 @@ const ResponsiveAppBar = (props) => {
                               ))
                             : drawerList.map((item) => (
                                   <Link
+                                      key={item}
                                       to={`/team/${item.navigateTo
                                           .toLowerCase()
                                           .replace(' ', '')}`}
