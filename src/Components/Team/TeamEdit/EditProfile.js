@@ -37,10 +37,10 @@ const EditProfile = ({ edit }) => {
         isLoading: questionsIsLoading,
         isSuccess: questionsIsSuccess,
     } = useGetQuestions(company.name);
-
     if (!answersIsSuccess || !profileIsSuccess || !questionsIsSuccess) {
         return <Spinner />;
     }
+    console.log('EditProfile: ', profileData);
     return (
         <>
             <Container sx={{ marginTop: '150px', padding: '0 40px 0 40px' }}>
@@ -57,7 +57,11 @@ const EditProfile = ({ edit }) => {
                         justifyContent="space-around"
                         rowGap={2}
                     >
-                        <BasicInfo profile={profileData} />
+                        <BasicInfo
+                            profile={profileData}
+                            id={id}
+                            refetch={refetch}
+                        />
                         <ShowAnswers
                             id={id}
                             answers={answers}

@@ -13,7 +13,6 @@ const Answers = ({
     return (
         answers &&
         questions.map((question, i) => {
-            console.log(question);
             if (!answers[i]) {
                 answers[i] = {
                     attributes: {

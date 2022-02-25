@@ -93,8 +93,7 @@ const ShowProfiles = ({ status, profiles }) => {
                                           }}
                                           src={
                                               attributes.profilePhoto.data
-                                                  .attributes.formats.thumbnail
-                                                  .url
+                                                  .attributes.url
                                           }
                                           alt="profiles"
                                       />

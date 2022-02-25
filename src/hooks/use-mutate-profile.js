@@ -5,22 +5,25 @@ export const useMutateProfile = (mutation) => {
 
     return useMutation(mutation, {
         onMutate: async (data) => {
+            console.log(data);
             await queryClient.cancelQueries(['profile', data.id]);
             const previousValue = queryClient.getQueryData([
                 'profile',
                 data.id,
             ]);
+
             queryClient.setQueryData(['profile', data.id], (old) => {
-                return {
-                    ...old,
-                    data: {
-                        ...old.data,
-                        attributes: {
-                            ...old.data.attributes,
-                            name: data.data.name,
-                        },
-                    },
-                };
+                console.log(old);
+                //     return {
+                //         ...old,
+                //         data: {
+                //             ...old.data,
+                //             attributes: {
+                //                 ...old.data.attributes,
+                //                 name: data.data.name,
+                //             },
+                //         },
+                //     };
             });
 
             return previousValue;
