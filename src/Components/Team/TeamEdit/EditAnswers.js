@@ -7,13 +7,7 @@ import Answers from './Answers';
 import { useFetchImage } from '../../../queryFunctions/fetchImage';
 import SaveButton from '../../Buttons/SaveButton';
 
-const EditAnswers = ({
-    id,
-    answers,
-    answersIsLoading,
-    questions,
-    questionsIsLoading,
-}) => {
+const EditAnswers = ({ id, answers, questions }) => {
     const queryClient = useQueryClient();
     const [a, setA] = useState([]);
     const [image, setImage] = useState('');
@@ -108,12 +102,12 @@ const EditAnswers = ({
         const conectQA = [];
         if (answers.length > 0) {
             questions.forEach((question, i) => {
-                const answer = answers.find(
+                const answer = answers?.find(
                     (answer) =>
-                        answer.attributes.question.data.id === question.id
+                        answer?.attributes?.question?.data?.id === question?.id
                 );
                 if (question.attributes.type === 'image') {
-                    setUrl(answer.attributes.answer);
+                    setUrl(answer?.attributes.answer);
                 }
                 conectQA.push(answer);
             });
