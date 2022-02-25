@@ -37,7 +37,7 @@ const EditProfile = ({ edit }) => {
         isLoading: questionsIsLoading,
         isSuccess: questionsIsSuccess,
     } = useGetQuestions(company.name);
-    console.log(answersIsSuccess, profileIsSuccess, questionsIsSuccess);
+
     if (!answersIsSuccess || !profileIsSuccess || !questionsIsSuccess) {
         return <Spinner />;
     }

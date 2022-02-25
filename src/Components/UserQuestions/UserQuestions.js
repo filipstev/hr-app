@@ -26,7 +26,6 @@ const fetchQuestions = async (
     setTotal,
 
     userStorage
-
 ) => {
     //TODO: DINAMICKI ID ZA KOMPANIJE
 
@@ -193,16 +192,21 @@ const UserQuestions = () => {
             `/answers?filters[question][id][$eq]=${questionFor.id}&filters[profile][id][$eq]=${profileId}&populate=*`
         );
         console.log(foundAnswer);
-        if (foundAnswer.data.data) {
+        if (foundAnswer.data.data.length > 0) {
             if (foundAnswer.data.data[0]) {
-                setCurrentAnswer(foundAnswer.data.data[0].attributes.answer);
+                setCurrentAnswer(
+                    foundAnswer.data.data[foundAnswer.data.data.length - 1]
+                        .attributes.answer
+                );
                 if (
                     foundAnswer.data.data[0].attributes.question.data.attributes
                         .type === 'image'
                 ) {
                     setIsImage(true);
                 }
-                setAnswerId(foundAnswer.data.data[0].id);
+                setAnswerId(
+                    foundAnswer.data.data[foundAnswer.data.data.length - 1].id
+                );
             } else {
                 setCurrentAnswer('');
             }

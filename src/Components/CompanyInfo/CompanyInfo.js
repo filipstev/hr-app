@@ -12,11 +12,12 @@ import Header from '../Header/Header';
 import { useSelector } from 'react-redux';
 import axiosInstance from '../../helpers/axiosInstance';
 import { useMutation, useQuery } from 'react-query';
-
 import { styled } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import Spinner from '../Spinner.js/Spinner';
+import SaveButton from '../Buttons/SaveButton';
+
 const Input = styled('input')({
     display: 'none',
 });
@@ -47,7 +48,7 @@ const fetchCompany = async (userStorage) => {
     return res.data.data[0];
 };
 
-const CompanyInfo = () => {
+const CompanyInfo = (props) => {
     const [companyName, setCompanyName] = useState(' ');
     const [files, setFiles] = useState([]);
     const userStorage = JSON.parse(localStorage.getItem('user'));
@@ -159,9 +160,10 @@ const CompanyInfo = () => {
                         }}
                     >
                         <TextField
+                            id="company-name"
                             label="Company Name"
                             variant="outlined"
-                            fullWidth="true"
+                            fullWidth
                             value={companyName}
                             onChange={(e) => setCompanyName(e.target.value)}
                         />
@@ -223,17 +225,14 @@ const CompanyInfo = () => {
                     </Button> */}
                     <div
                         style={{
-                            border: '1px solid black',
-                            borderRadius: '4px',
                             width: 'fit-content',
-                            padding: '3px 20px',
                             marginTop: '30px',
                             alignSelf: 'flex-end',
                             cursor: 'pointer',
                         }}
                         onClick={() => updateCompany()}
                     >
-                        Save
+                        <SaveButton>Save</SaveButton>
                     </div>
                 </Grid>
             </Container>

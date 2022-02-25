@@ -87,7 +87,7 @@ const AddQuestion = (props) => {
             <div
                 style={{
                     width: '50%',
-                    margin: 'auto',
+                    margin: '40px auto',
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'flex-start',

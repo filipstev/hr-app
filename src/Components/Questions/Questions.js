@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../helpers/axiosInstance';
@@ -7,6 +7,7 @@ import classes from './Questions.module.css';
 import SingleQuestion from './SingleQuestion/SingleQuestion';
 import { useMutation, useQuery } from 'react-query';
 import Spinner from '../Spinner.js/Spinner';
+import { ThemeContext } from '../../context/theme-context';
 
 function compare(a, b) {
     if (a.attributes.order < b.attributes.order) {
@@ -48,6 +49,7 @@ const Questions = () => {
     const [meta, setMeta] = useState({});
     const [blocked, setBlocked] = useState(false);
     const userStorage = JSON.parse(localStorage.getItem('user'));
+    const { theme } = useContext(ThemeContext);
 
     const changeUp = async ({ newOrder, prev, element }) => {
         console.log(newOrder, prev, element);
@@ -250,6 +252,13 @@ const Questions = () => {
                     <div
                         className={classes.Button}
                         onClick={() => navigate('/new-question')}
+                        style={{
+                            fontWeight: '700',
+                            border:
+                                theme === 'light'
+                                    ? '2px solid #000000'
+                                    : '2px solid #fff',
+                        }}
                     >
                         <div>
                             <i
@@ -260,9 +269,7 @@ const Questions = () => {
                             ></i>
                         </div>
 
-                        <span style={{ fontWeight: '700' }}>
-                            Add new question
-                        </span>
+                        <span>Add new question</span>
                     </div>
                 </div>
                 {data ? (

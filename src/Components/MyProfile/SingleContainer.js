@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Button, TextField } from '@material-ui/core';
 import axios from 'axios';
 import axiosInstance from '../../helpers/axiosInstance';
@@ -9,6 +9,10 @@ import Spinner from '../Spinner.js/Spinner';
 import { styled } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
+import SaveButton from '../Buttons/SaveButton';
+import { ThemeContextProvider } from '../../context/theme-context';
+import { ThemeContext } from '../../context/theme-context';
+
 const Input = styled('input')({
     display: 'none',
 });
@@ -17,6 +21,8 @@ const SingleContainer = (props) => {
     const [files, setFiles] = useState([]);
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
+
+    const { theme } = useContext(ThemeContext);
 
     const updateInfo = async () => {
         await axiosInstance.put('/profiles/' + props.user.id, {
@@ -108,7 +114,8 @@ const SingleContainer = (props) => {
                 display: 'flex',
                 flexDirection: 'column',
                 // padding: '20px 0px 20px 0px',
-                border: '1px solid black',
+                border:
+                    theme === 'light' ? '1px solid black' : '1px solid white',
                 fontFamily: 'Comic Neue',
                 fontWeight: '600',
                 marginRight: '40px',
@@ -120,7 +127,10 @@ const SingleContainer = (props) => {
             <div style={{ padding: '10px 20px' }}>Basic Info</div>
             <div
                 style={{
-                    borderTop: '1px solid black',
+                    borderTop:
+                        theme === 'light'
+                            ? '1px solid black'
+                            : '1px solid white',
                     display: 'flex',
                     flexDirection: 'column',
                     padding: '20px',
@@ -182,17 +192,14 @@ const SingleContainer = (props) => {
 
                 <div
                     style={{
-                        border: '1px solid black',
-                        borderRadius: '4px',
                         width: 'fit-content',
-                        padding: '3px 20px',
                         marginTop: '30px',
                         alignSelf: 'flex-end',
                         cursor: 'pointer',
                     }}
                     onClick={() => updateUser()}
                 >
-                    Save
+                    <SaveButton />
                 </div>
             </div>
         </div>
@@ -202,7 +209,8 @@ const SingleContainer = (props) => {
                 display: 'flex',
                 flexDirection: 'column',
                 // padding: '20px 0px 20px 0px',
-                border: '1px solid black',
+                border:
+                    theme === 'light' ? '1px solid black' : '1px solid white',
                 fontFamily: 'Comic Neue',
                 fontWeight: '600',
                 marginRight: '40px',
@@ -213,7 +221,10 @@ const SingleContainer = (props) => {
             <div style={{ padding: '10px 20px' }}>Security</div>
             <div
                 style={{
-                    borderTop: '1px solid black',
+                    borderTop:
+                        theme === 'light'
+                            ? '1px solid black'
+                            : '1px solid white',
                     display: 'flex',
                     flexDirection: 'column',
                     padding: '20px',
@@ -233,7 +244,10 @@ const SingleContainer = (props) => {
                 <TextField
                     variant="outlined"
                     label="New Password"
-                    style={{ marginBottom: '15px', marginTop: '12px' }}
+                    style={{
+                        marginBottom: '15px',
+                        marginTop: '12px',
+                    }}
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
                 />
@@ -242,16 +256,13 @@ const SingleContainer = (props) => {
 
                 <div
                     style={{
-                        border: '1px solid black',
-                        borderRadius: '4px',
                         width: 'fit-content',
-                        padding: '3px 20px',
                         marginTop: '20px',
                         alignSelf: 'flex-end',
                         cursor: 'pointer',
                     }}
                 >
-                    Save
+                    <SaveButton />
                 </div>
             </div>
         </div>
