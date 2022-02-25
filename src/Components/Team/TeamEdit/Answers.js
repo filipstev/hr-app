@@ -7,9 +7,13 @@ const Answers = ({
     handleAimgChange,
     image,
 }) => {
+    if (!answers) {
+        answers = [];
+    }
     return (
         answers &&
         questions.map((question, i) => {
+            console.log(question);
             if (!answers[i]) {
                 answers[i] = {
                     attributes: {
@@ -60,7 +64,7 @@ const Answers = ({
                     ) : (
                         <TextField
                             type={question.attributes.type}
-                            sx={{ margin: '0 0 10px 0' }}
+                            sx={{ margin: '0 0 10px 0', color: 'primary' }}
                             label={question.attributes.text}
                             name={`answer${i}`}
                             value={answers[i].attributes.answer}

@@ -14,7 +14,9 @@ import ShowProfiles from './ShowProfiles';
 
 import { useProfiles } from '../../queryFunctions/fetchProfiles';
 import { useCompany } from '../../queryFunctions/fetchCompany';
-import { FormControl, TextField, ThemeProvider } from '@mui/material';
+import { FormControl, TextField } from '@mui/material';
+
+import Spinner from '../Spinner.js/Spinner';
 
 const Team = ({ status }) => {
     const userId = useSelector((state) => state.user.user.user.id);
@@ -50,7 +52,7 @@ const Team = ({ status }) => {
     }
 
     if (profileStatus !== 'success') {
-        return <p style={{ marginTop: '150px' }}>Is Loading...</p>;
+        return <Spinner />;
     }
 
     return (

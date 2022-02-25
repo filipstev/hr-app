@@ -10,6 +10,7 @@ const getCompany = async (userId) => {
 
 export const useCompany = (userId) => {
     return useQuery(['Company', userId], () => getCompany(userId), {
+        enabled: !!userId,
         select: (data) => {
             const company = {
                 name: data.data.data[0].attributes.name,

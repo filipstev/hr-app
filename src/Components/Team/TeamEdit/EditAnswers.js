@@ -1,34 +1,24 @@
-import { useParams } from 'react-router-dom';
 import axiosInstance from '../../../helpers/axiosInstance';
 import { FormControl } from '@mui/material';
 
-import { useGetQuestions } from '../../../queryFunctions/fetchQuestions';
-import { useGetAnswersOfProfile } from '../../../queryFunctions/fetchAnswers';
 import { useEffect, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import Answers from './Answers';
 import { useFetchImage } from '../../../queryFunctions/fetchImage';
 import SaveButton from '../../Buttons/SaveButton';
-import { useSelector } from 'react-redux';
 
-const EditAnswers = () => {
-    const userId = useSelector((state) => state.user.user.user.id);
-
-    const { id } = useParams();
+const EditAnswers = ({
+    id,
+    answers,
+    answersIsLoading,
+    questions,
+    questionsIsLoading,
+}) => {
     const queryClient = useQueryClient();
     const [a, setA] = useState(null);
     const [image, setImage] = useState('');
     const [url, setUrl] = useState('');
-    const companyName = queryClient.getQueryData(['Company', userId]).data
-        .data[0].attributes.name;
-    // Get answers
-    const { data: answers, isLoading: answersIsLoading } =
-        useGetAnswersOfProfile(id);
-
-    // Get questions
-    const { data: questions, isLoading: questionsIsLoading } =
-        useGetQuestions(companyName);
-
+    console.log(answers);
     // Get id of image if it exists, to delete later if new image is uploaded
     const { data: imageId } = useFetchImage(url);
 
@@ -42,7 +32,6 @@ const EditAnswers = () => {
     });
 
     const uploadImage = useMutation((data) => {
-        console.log(data);
         return axiosInstance.post(`/upload`, data);
     });
 
@@ -52,7 +41,6 @@ const EditAnswers = () => {
 
     // Handlers
     const handleAChange = (value, i) => {
-        console.log(image);
         setA([...a], (a[i].attributes.answer = value));
     };
 
@@ -68,10 +56,10 @@ const EditAnswers = () => {
                 },
             });
         }
-        console.log(image);
+
         const img = new FormData();
-        img.append('files', image[0]);
-        uploadImage.mutate(img.image, {
+        img.append('files', image.image[0]);
+        uploadImage.mutate(img, {
             onSuccess: (data) => {
                 setA([...a], (a[image.i].attributes.answer = data.data[0].url));
                 setUrl(data.data[0].url);
@@ -99,30 +87,24 @@ const EditAnswers = () => {
 
     useEffect(() => {
         const conectQA = [];
-
-        if (!questionsIsLoading && !answersIsLoading) {
-            if (answers.length > 0) {
-                questions.forEach((question, i) => {
-                    const answer = answers.find(
-                        (answer) =>
-                            answer.attributes.question.data.id === question.id
-                    );
-
-                    if (question.attributes.type === 'image') {
-                        setUrl(answer.attributes.answer);
-                    }
-                    conectQA.push(answer);
-                });
-            }
+        if (answers.length > 0) {
+            questions.forEach((question, i) => {
+                const answer = answers.find(
+                    (answer) =>
+                        answer.attributes.question.data.id === question.id
+                );
+                if (question.attributes.type === 'image') {
+                    setUrl(answer.attributes.answer);
+                }
+                conectQA.push(answer);
+            });
+            setA([...conectQA]);
         }
-        setA([...conectQA]);
-    }, [answersIsLoading, answers, questions, questionsIsLoading, image]);
+    }, [answers, questions, image]);
 
-    if (questionsIsLoading || answersIsLoading) {
-        return <p>Q&A is loading</p>;
-    }
     return (
         <>
+            {}
             <FormControl
                 component="form"
                 onSubmit={(e) => {

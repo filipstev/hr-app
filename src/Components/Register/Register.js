@@ -21,6 +21,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 
 import UploadButton from '../Buttons/UploadButton';
 import SelectCompany from './SelectCompanyInput';
+import Spinner from '../Spinner.js/Spinner';
 
 const Register = () => {
     const navigate = useNavigate();
@@ -33,7 +34,7 @@ const Register = () => {
     const [userRole, setUserRole] = useState('company_user');
     const registerError = useSelector((state) => state.register.isError);
     const [image, setImage] = useState('');
-
+    const [spin, setSpin] = useState(false);
     const nameRegEx = /^[a-zA-Z]+(?:[\s.]+[a-zA-Z]+)*$/g;
     const emailRegEx =
         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -90,12 +91,14 @@ const Register = () => {
                     userRole,
                     companyId,
                     img,
-                    navigate
+                    navigate,
+                    setSpin
                 )
             );
         }
     };
     const onSubmit = async () => {
+        setSpin(true);
         if (enteredPassword === '') {
             // setIsError(true);
             return;
@@ -107,7 +110,9 @@ const Register = () => {
         handleRegistration(img);
     };
 
-    return (
+    return spin ? (
+        <Spinner />
+    ) : (
         <Container
             maxWidth="sm"
             style={{ marginTop: '82px' }}

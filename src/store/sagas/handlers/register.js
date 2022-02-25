@@ -55,6 +55,7 @@ export function* handleRegisterUser(action) {
                         });
                     }
                 });
+                action.setSpin(false);
                 action.navigate(`/`);
                 yield put(setUser(user));
             }

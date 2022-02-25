@@ -2,20 +2,15 @@ import axiosInstance from '../../../helpers/axiosInstance';
 
 import { useState, useEffect } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
-import { useParams } from 'react-router-dom';
 // Custom React Query
-import { useGetProfile } from '../../../queryFunctions/fetchSingleProfile';
 import { useMutateProfile } from '../../../hooks/use-mutate-profile';
 
 import { FormControl, Grid, TextField, Typography } from '@mui/material';
 import UploadButton from '../../Buttons/UploadButton';
 import SaveButton from '../../Buttons/SaveButton';
 
-const BasicInfo = () => {
+const BasicInfo = ({ id, profile }) => {
     const queryClient = useQueryClient();
-
-    const { id } = useParams();
-    const { data: profile, isLoading } = useGetProfile(id);
 
     const [username, setUsername] = useState('');
 
@@ -62,7 +57,7 @@ const BasicInfo = () => {
             deleteImageMutation.mutate({});
             editProfile.mutate({
                 data: {
-                    profilePhoto: `${upload.data[0].id}`,
+                    profilePhoto: `${upload.data[0]?.id}`,
                 },
                 id,
             });
@@ -70,12 +65,9 @@ const BasicInfo = () => {
     };
 
     useEffect(() => {
-        !isLoading && setUsername(profile.attributes.name);
-    }, [isLoading, profile]);
+        setUsername(profile.attributes.name);
+    }, [profile]);
 
-    if (isLoading) {
-        return <p>Profile is Loading</p>;
-    }
     return (
         <Grid
             item
