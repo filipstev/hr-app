@@ -9,9 +9,8 @@ import { FormControl, Grid, TextField, Typography } from '@mui/material';
 import UploadButton from '../../Buttons/UploadButton';
 import SaveButton from '../../Buttons/SaveButton';
 
-const BasicInfo = ({ id, profile }) => {
+const BasicInfo = ({ id, profile, refetch }) => {
     const queryClient = useQueryClient();
-
     const [username, setUsername] = useState('');
 
     const image = profile?.attributes.profilePhoto.data;
@@ -62,12 +61,13 @@ const BasicInfo = ({ id, profile }) => {
                 id,
             });
         }
+        refetch();
     };
 
     useEffect(() => {
-        setUsername(profile.attributes.name);
+        setUsername(profile?.attributes.name);
     }, [profile]);
-
+    console.log('EditBasicInfo: ', profile);
     return (
         <Grid
             item

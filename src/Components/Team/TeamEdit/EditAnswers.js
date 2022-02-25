@@ -15,10 +15,9 @@ const EditAnswers = ({
     questionsIsLoading,
 }) => {
     const queryClient = useQueryClient();
-    const [a, setA] = useState(null);
+    const [a, setA] = useState([]);
     const [image, setImage] = useState('');
     const [url, setUrl] = useState('');
-    console.log(answers);
     // Get id of image if it exists, to delete later if new image is uploaded
     const { data: imageId } = useFetchImage(url);
 
