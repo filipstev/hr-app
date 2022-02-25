@@ -1,7 +1,8 @@
 import { Grid, Typography } from '@mui/material';
 
 import EditAnswers from './EditAnswers';
-
+import { useContext } from 'react';
+import { ThemeContext } from '../../../context/theme-context';
 const EditAnswersSection = ({
     id,
     answers,
@@ -9,12 +10,14 @@ const EditAnswersSection = ({
     questions,
     questionsIsLoading,
 }) => {
+    const { theme } = useContext(ThemeContext);
+    const border = theme === 'light' ? '1px solid black ' : '1px solid white';
     return (
         <>
             <Grid
                 item
                 sx={{
-                    border: '1px solid black',
+                    border: border,
                     padding: '10px',
                 }}
             >
@@ -22,7 +25,7 @@ const EditAnswersSection = ({
                     variant="body2"
                     sx={{
                         fontWeight: 'bold',
-                        borderBottom: '1px solid black',
+                        borderBottom: border,
                     }}
                 >
                     Answers

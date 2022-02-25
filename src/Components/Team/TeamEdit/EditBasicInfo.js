@@ -8,8 +8,14 @@ import { useMutateProfile } from '../../../hooks/use-mutate-profile';
 import { FormControl, Grid, TextField, Typography } from '@mui/material';
 import UploadButton from '../../Buttons/UploadButton';
 import SaveButton from '../../Buttons/SaveButton';
+import { useContext } from 'react';
+
+import { ThemeContext } from '../../../context/theme-context';
 
 const BasicInfo = ({ id, profile, refetch }) => {
+    const { theme } = useContext(ThemeContext);
+    const border = theme === 'light' ? '1px solid black ' : '1px solid white';
+
     const queryClient = useQueryClient();
     const [username, setUsername] = useState('');
 
@@ -69,12 +75,7 @@ const BasicInfo = ({ id, profile, refetch }) => {
     }, [profile]);
     console.log('EditBasicInfo: ', profile);
     return (
-        <Grid
-            item
-            justifyContent="start"
-            border="1px solid black"
-            padding="10px"
-        >
+        <Grid item justifyContent="start" border={border} padding="10px">
             <FormControl
                 component="form"
                 onSubmit={(e) => {
@@ -86,7 +87,7 @@ const BasicInfo = ({ id, profile, refetch }) => {
                     variant="body2"
                     sx={{
                         fontWeight: 'bold',
-                        borderBottom: '1px solid black',
+                        borderBottom: border,
                     }}
                 >
                     Basic Info
@@ -103,15 +104,15 @@ const BasicInfo = ({ id, profile, refetch }) => {
                 <label>Profile Img</label>
                 <div style={{ display: 'flex', flexDirection: 'row' }}>
                     <UploadButton onUpload={handleProfileImageUpload} id={id} />
-                    {/* <img
+                    <img
                         style={{ height: '150px', width: '150px' }}
                         src={
                             !newImage
-                                ? image.attributes.formats.thumbnail.url
+                                ? image?.attributes?.formats.url
                                 : URL.createObjectURL(newImage[0])
                         }
                         alt="123"
-                    /> */}
+                    />
                 </div>
                 <SaveButton />
             </FormControl>
