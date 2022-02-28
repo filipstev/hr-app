@@ -36,7 +36,7 @@ const fetchLogo = async (userStorage) => {
             '&populate=*'
     );
 
-    return res.data.data[0].attributes.logo.data.attributes.url;
+    return res.data.data[0].attributes?.logo?.data?.attributes?.url;
 };
 
 const ResponsiveAppBar = (props) => {

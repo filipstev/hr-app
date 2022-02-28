@@ -50,27 +50,30 @@ const fetchQuestions = async (
     setQuestions(sortedQuestions);
     setTotal(sortedQuestions.length);
 
-    if (currentQuestion === null) {
-        setCurrentQuestion(sortedQuestions[0]);
-        if (sortedQuestions[0].attributes.type === 'image') {
-            setIsImage(true);
-        } else {
-            setIsImage(false);
-        }
-        const foundAnswer = await axiosInstance.get(
-            `/answers?filters[question][id][$eq]=${sortedQuestions[0].id}&filters[profile][id][$eq]=${resUser.data.data[0].id}&populate=*`
-        );
-        if (foundAnswer.data.data) {
-            if (foundAnswer.data.data.length > 0) {
-                setCurrentAnswer(
-                    foundAnswer.data.data[foundAnswer.data.data.length - 1]
-                        .attributes.answer
-                );
-                setAnswerId(
-                    foundAnswer.data.data[foundAnswer.data.data.length - 1].id
-                );
+    if (sortedQuestions.length > 0) {
+        if (currentQuestion === null) {
+            setCurrentQuestion(sortedQuestions[0]);
+            if (sortedQuestions[0]?.attributes?.type === 'image') {
+                setIsImage(true);
             } else {
-                setCurrentAnswer('');
+                setIsImage(false);
+            }
+            const foundAnswer = await axiosInstance.get(
+                `/answers?filters[question][id][$eq]=${sortedQuestions[0].id}&filters[profile][id][$eq]=${resUser.data.data[0].id}&populate=*`
+            );
+            if (foundAnswer.data.data) {
+                if (foundAnswer.data.data.length > 0) {
+                    setCurrentAnswer(
+                        foundAnswer.data.data[foundAnswer.data.data.length - 1]
+                            .attributes.answer
+                    );
+                    setAnswerId(
+                        foundAnswer.data.data[foundAnswer.data.data.length - 1]
+                            .id
+                    );
+                } else {
+                    setCurrentAnswer('');
+                }
             }
         }
     }
@@ -260,6 +263,10 @@ const UserQuestions = () => {
         }
     }, []);
 
+    if (data?.length === 0) {
+        return <div style={{ marginTop: '80px' }}>No questions yet</div>;
+    }
+
     if (status === 'loading') {
         return <Spinner />;
     }
@@ -278,35 +285,8 @@ const UserQuestions = () => {
                     blocked={blocked}
                     isImage={isImage}
                     shouldSpin={shouldSpin}
-                    // userId={profileId}
                     onChange={(e) => setCurrentAnswer(e.target.value)}
-                    // changeAnswer={changeAnswer}
                 />
-
-                {/* {data
-                    ? data.map((question, i) => {
-                          let foundAnswer;
-                          if (question) {
-                              question.attributes.answers.data.map(
-                                  (answerQ) => {
-                                      foundAnswer = answers.find((answer) => {
-                                          return answer.id === answerQ.id;
-                                      });
-                                  }
-                              );
-                              return (
-                                  <UserQuestion
-                                      question={currentQuestion}
-                                      max={data.length}
-                                      answer={foundAnswer}
-                                      nextQuestion={nextQuestion}
-                                      prevQuestion={prevQuestion}
-                                      userId={profileId}
-                                  />
-                              );
-                          }
-                      })
-                    : null} */}
             </div>
         </div>
     );

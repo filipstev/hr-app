@@ -350,7 +350,10 @@ const UserTeam = () => {
                 >
                     {/* {location.pathname.split('/')[2].charAt(0).toUpperCase() +
                         location.pathname.split('/')[2].slice(1)} */}
-                    Tesla's team
+                    {data[0]?.attributes.company?.data?.attributes.name
+                        ? data[0]?.attributes.company?.data?.attributes.name +
+                          's team'
+                        : 'Team'}
                 </div>
                 <div
                     style={{ display: 'flex', alignItems: 'center' }}
