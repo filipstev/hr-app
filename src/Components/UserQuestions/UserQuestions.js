@@ -274,19 +274,23 @@ const UserQuestions = () => {
     return (
         <div style={{ marginTop: '80px' }}>
             <div>
-                <UserQuestion
-                    question={currentQuestion}
-                    max={data ? data.length : total}
-                    profileId={profileId}
-                    answerId={currentAnswer ? answerId : null}
-                    answer={currentAnswer ? currentAnswer : ''}
-                    nextQuestion={nextQuestion}
-                    prevQuestion={prevQuestion}
-                    blocked={blocked}
-                    isImage={isImage}
-                    shouldSpin={shouldSpin}
-                    onChange={(e) => setCurrentAnswer(e.target.value)}
-                />
+                {data?.length > 0 ? (
+                    <UserQuestion
+                        question={currentQuestion}
+                        max={data ? data.length : total}
+                        profileId={profileId}
+                        answerId={currentAnswer ? answerId : null}
+                        answer={currentAnswer ? currentAnswer : ''}
+                        nextQuestion={nextQuestion}
+                        prevQuestion={prevQuestion}
+                        blocked={blocked}
+                        isImage={isImage}
+                        shouldSpin={shouldSpin}
+                        onChange={(e) => setCurrentAnswer(e.target.value)}
+                    />
+                ) : (
+                    'No questions yet'
+                )}
             </div>
         </div>
     );

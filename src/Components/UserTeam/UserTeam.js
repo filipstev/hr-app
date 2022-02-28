@@ -90,13 +90,13 @@ const UserTeam = () => {
         if (order === 'name') {
             res = await axiosInstance.get(
                 '/profiles?filters[company][id][$eq]=' +
-                    resCompany.data.data[0].id +
+                    resCompany.data.data[0]?.id +
                     '&populate=*&sort=name:ASC&filters[status][$eq]=published'
             );
         } else {
             res = await axiosInstance.get(
                 '/profiles?filters[company][id][$eq]=' +
-                    resCompany.data.data[0].id +
+                    resCompany.data.data[0]?.id +
                     '&populate=*&sort=createdAt:' +
                     order +
                     '&filters[status]=published'
@@ -350,7 +350,7 @@ const UserTeam = () => {
                 >
                     {/* {location.pathname.split('/')[2].charAt(0).toUpperCase() +
                         location.pathname.split('/')[2].slice(1)} */}
-                    {data[0]?.attributes.company?.data?.attributes.name
+                    {data && data[0]?.attributes.company?.data?.attributes.name
                         ? data[0]?.attributes.company?.data?.attributes.name +
                           's team'
                         : 'Team'}
