@@ -62,6 +62,7 @@ export function* handleRegisterUser(action) {
         }
     } catch (err) {
         console.log(err);
+        action.setSpin(false);
         yield put(registerError());
     }
 }
