@@ -2,21 +2,21 @@ import axiosInstance from '../../../helpers/axiosInstance';
 
 import { useState, useEffect } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
-import { useParams } from 'react-router-dom';
 // Custom React Query
-import { useGetProfile } from '../../../queryFunctions/fetchSingleProfile';
 import { useMutateProfile } from '../../../hooks/use-mutate-profile';
 
 import { FormControl, Grid, TextField, Typography } from '@mui/material';
 import UploadButton from '../../Buttons/UploadButton';
 import SaveButton from '../../Buttons/SaveButton';
+import { useContext } from 'react';
 
-const BasicInfo = () => {
+import { ThemeContext } from '../../../context/theme-context';
+
+const BasicInfo = ({ id, profile, refetch }) => {
+    const { theme } = useContext(ThemeContext);
+    const border = theme === 'light' ? '1px solid black ' : '1px solid white';
+
     const queryClient = useQueryClient();
-
-    const { id } = useParams();
-    const { data: profile, isLoading } = useGetProfile(id);
-
     const [username, setUsername] = useState('');
 
     const image = profile?.attributes.profilePhoto.data;
@@ -62,27 +62,20 @@ const BasicInfo = () => {
             deleteImageMutation.mutate({});
             editProfile.mutate({
                 data: {
-                    profilePhoto: `${upload.data[0].id}`,
+                    profilePhoto: `${upload.data[0]?.id}`,
                 },
                 id,
             });
         }
+        refetch();
     };
 
     useEffect(() => {
-        !isLoading && setUsername(profile.attributes.name);
-    }, [isLoading, profile]);
-
-    if (isLoading) {
-        return <p>Profile is Loading</p>;
-    }
+        setUsername(profile?.attributes.name);
+    }, [profile]);
+    console.log('EditBasicInfo: ', profile);
     return (
-        <Grid
-            item
-            justifyContent="start"
-            border="1px solid black"
-            padding="10px"
-        >
+        <Grid item justifyContent="start" border={border} padding="10px">
             <FormControl
                 component="form"
                 onSubmit={(e) => {
@@ -94,7 +87,7 @@ const BasicInfo = () => {
                     variant="body2"
                     sx={{
                         fontWeight: 'bold',
-                        borderBottom: '1px solid black',
+                        borderBottom: border,
                     }}
                 >
                     Basic Info
@@ -115,7 +108,7 @@ const BasicInfo = () => {
                         style={{ height: '150px', width: '150px' }}
                         src={
                             !newImage
-                                ? image.attributes.formats.thumbnail.url
+                                ? image?.attributes?.formats.url
                                 : URL.createObjectURL(newImage[0])
                         }
                         alt="123"

@@ -72,19 +72,34 @@ const UserTeam = () => {
     };
 
     const fetchProfiles = async (order) => {
+        const userStorage = JSON.parse(localStorage.getItem('user'));
+
+        const resUser = await axiosInstance.get(
+            '/profiles?filters[user][id][$eq]=' +
+                userStorage.user.id +
+                '&populate=*'
+        );
+
+        const resCompany = await axiosInstance.get(
+            '/companies?filters[profiles][id][$eq]=' +
+                resUser.data.data[0].id +
+                '&populate=*'
+        );
+
         let res;
         if (order === 'name') {
             res = await axiosInstance.get(
-                '/profiles?filters[company][slug][$eq]=' +
-                    'tesla' +
-                    '&populate=*&sort=name:ASC'
+                '/profiles?filters[company][id][$eq]=' +
+                    resCompany.data.data[0].id +
+                    '&populate=*&sort=name:ASC&filters[status][$eq]=published'
             );
         } else {
             res = await axiosInstance.get(
-                '/profiles?filters[company][slug][$eq]=' +
-                    'tesla' +
+                '/profiles?filters[company][id][$eq]=' +
+                    resCompany.data.data[0].id +
                     '&populate=*&sort=createdAt:' +
-                    order
+                    order +
+                    '&filters[status]=published'
             );
         }
         console.log(res);
@@ -154,7 +169,7 @@ const UserTeam = () => {
     };
 
     if (status === 'loading') {
-        return <Spinner/>
+        return <Spinner />;
     }
 
     //TODO: PROVERITI ZA STATUS, DA LI SVE ILI SAMO PUBLISHED
@@ -383,7 +398,7 @@ const UserTeam = () => {
                 ) : searching ? (
                     showProfiles(true)
                 ) : (
-                    <Spinner/>
+                    <Spinner />
                 )}
                 {/* {showProfiles()} */}
             </Grid>

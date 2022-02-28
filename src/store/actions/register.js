@@ -8,7 +8,9 @@ export const registerUser = (
     password,
     userRole,
     companyId,
-    file
+    file,
+    navigate,
+    setSpin
 ) => ({
     type: REGISTER_USER,
     name,
@@ -17,6 +19,8 @@ export const registerUser = (
     companyId,
     userRole,
     file,
+    navigate,
+    setSpin,
 });
 
 // Maybe reuse this component

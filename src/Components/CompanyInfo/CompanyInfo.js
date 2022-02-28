@@ -12,7 +12,15 @@ import Header from '../Header/Header';
 import { useSelector } from 'react-redux';
 import axiosInstance from '../../helpers/axiosInstance';
 import { useMutation, useQuery } from 'react-query';
+import { styled } from '@mui/material/styles';
+import IconButton from '@mui/material/IconButton';
+import PhotoCamera from '@mui/icons-material/PhotoCamera';
+import Spinner from '../Spinner.js/Spinner';
+import SaveButton from '../Buttons/SaveButton';
 
+const Input = styled('input')({
+    display: 'none',
+});
 const fetchCompanyName = async () => {
     const res = await axiosInstance.get('/companies/2?populate=*');
 
@@ -40,16 +48,25 @@ const fetchCompany = async (userStorage) => {
     return res.data.data[0];
 };
 
-const CompanyInfo = () => {
+const CompanyInfo = (props) => {
     const [companyName, setCompanyName] = useState(' ');
     const [files, setFiles] = useState([]);
+    const [shouldSpin, setShouldSpin] = useState(false);
     const userStorage = JSON.parse(localStorage.getItem('user'));
 
     const updateInfo = async () => {
+        setShouldSpin(true);
         if (companyName !== '' && companyName !== ' ') {
-            const res = await axiosInstance.put('/companies/' + data.id, {
-                data: { name: companyName },
-            });
+            const res = await axiosInstance
+                .put('/companies/' + data.id, {
+                    data: { name: companyName },
+                })
+                .then(() => {
+                    setShouldSpin(false);
+                })
+                .catch((e) => {
+                    setShouldSpin(false);
+                });
             console.log(res);
         }
 
@@ -61,13 +78,19 @@ const CompanyInfo = () => {
             axiosInstance
                 .post('/upload', formData)
                 .then((response) => {
-                    axiosInstance.put('/companies/' + data.id, {
-                        data: {
-                            logo: response.data,
-                        },
-                    });
+                    axiosInstance
+                        .put('/companies/' + data.id, {
+                            data: {
+                                logo: response.data,
+                            },
+                        })
+                        .then(() => {
+                            setShouldSpin(false);
+                        })
+                        .catch((e) => setShouldSpin(false));
                 })
                 .catch((error) => {
+                    setShouldSpin(false);
                     console.log(error);
                 });
         }
@@ -104,7 +127,11 @@ const CompanyInfo = () => {
     }, [data]);
 
     if (status === 'loading') {
-        return <div>Loading...</div>;
+        return <Spinner />;
+    }
+
+    if (shouldSpin) {
+        return <Spinner />;
     }
 
     return (
@@ -122,7 +149,7 @@ const CompanyInfo = () => {
                     direction="column"
                     justifyContent="center"
                     alignItems="flex-end"
-                    textAlign="left"
+                    textalign="left"
                 >
                     <Grid
                         item
@@ -152,9 +179,10 @@ const CompanyInfo = () => {
                         }}
                     >
                         <TextField
+                            id="company-name"
                             label="Company Name"
                             variant="outlined"
-                            fullWidth="true"
+                            fullWidth
                             value={companyName}
                             onChange={(e) => setCompanyName(e.target.value)}
                         />
@@ -173,10 +201,36 @@ const CompanyInfo = () => {
                     </Grid>
                     {/* TODO: DODATI UPLOAD INPUT UMESTO OVOG */}
                     <Grid item style={{ width: '100%', padding: 0 }}>
-                        <input
+                        <label
+                            htmlFor="icon-button-file"
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                width: 'fit-content',
+                                cursor: 'pointer',
+                                fontFamily: 'Comic Neue',
+                                fontWeight: 'bold',
+                            }}
+                        >
+                            <Input
+                                accept="image/*"
+                                id="icon-button-file"
+                                type="file"
+                                onChange={(e) => setFiles(e.target.files)}
+                            />
+                            <IconButton
+                                color="primary"
+                                aria-label="upload picture"
+                                component="span"
+                            >
+                                <PhotoCamera />
+                            </IconButton>
+                            <span style={{ marginLeft: '2px' }}>Upload</span>
+                        </label>
+                        {/* <input
                             type="file"
                             onChange={(e) => setFiles(e.target.files)}
-                        />
+                        /> */}
                     </Grid>
 
                     {/* Ovo dugme je bilo problem :o */}
@@ -190,17 +244,14 @@ const CompanyInfo = () => {
                     </Button> */}
                     <div
                         style={{
-                            border: '1px solid black',
-                            borderRadius: '4px',
                             width: 'fit-content',
-                            padding: '3px 20px',
                             marginTop: '30px',
                             alignSelf: 'flex-end',
                             cursor: 'pointer',
                         }}
                         onClick={() => updateCompany()}
                     >
-                        Save
+                        <SaveButton>Save</SaveButton>
                     </div>
                 </Grid>
             </Container>

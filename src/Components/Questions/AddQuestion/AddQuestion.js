@@ -20,26 +20,48 @@ const AddQuestion = (props) => {
     const [company, setCompany] = useState('');
     const [meta, setMeta] = useState();
 
+    const userStorage = JSON.parse(localStorage.getItem('user'));
+
     const navigate = useNavigate();
 
-    useEffect(() => {
-        axiosInstance
-            .get('/questions')
-            .then((data) => {
-                setQuestionsLength(data.data.data.length);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-        axiosInstance
-            .get('/profiles?filters[user][id][$eq]=80&populate=*')
-            .then((data) => {
-                setCompany(data.data.data[0].attributes.company.data.id);
-            });
+    useEffect(async () => {
+        // axiosInstance
+        //     .get('/questions')
+        //     .then((data) => {
+        //         setQuestionsLength(data.data.data.length);
+        //     })
+        //     .catch((err) => {
+        //         console.log(err);
+        //     });
+        const resUser = await axiosInstance.get(
+            '/profiles?filters[user][id][$eq]=' +
+                userStorage.user.id +
+                '&populate=*'
+        );
+
+        const resCompany = await axiosInstance.get(
+            '/companies?filters[profiles][id][$eq]=' +
+                resUser.data.data[0].id +
+                '&populate=*'
+        );
+
+        setCompany(resCompany.data.data[0].id);
+
+        const res = await axiosInstance.get(`/questions`);
+
+        console.log(res.data.data.length);
+
+        setQuestionsLength(res.data.data.length);
+        // axiosInstance
+        //     .get('/profiles?filters[user][id][$eq]=80&populate=*')
+        //     .then((data) => {
+        //         setCompany(data.data.data[0].attributes.company.data.id);
+        //     });
     }, []);
 
     const submitQuestion = async () => {
         if (text !== '' && type && questionsLength >= 0) {
+            console.log(company, questionsLength);
             await axiosInstance
                 .post('/questions', {
                     data: {
@@ -65,7 +87,7 @@ const AddQuestion = (props) => {
             <div
                 style={{
                     width: '50%',
-                    margin: 'auto',
+                    margin: '40px auto',
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'flex-start',

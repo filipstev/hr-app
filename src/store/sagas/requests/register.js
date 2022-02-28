@@ -7,13 +7,7 @@ export function requestRegisterUser(name, email, password) {
         password,
     });
 }
-
 export function createNewProfile({ name, id, companyId, photoId, userRole }) {
-    console.log('Name:', name);
-    console.log('ID:', id);
-    console.log('Company ID:', companyId);
-    console.log('Image ID:', photoId);
-    console.log('User Role:', userRole);
     return axiosInstance.post('/profiles', {
         data: {
             name: name,

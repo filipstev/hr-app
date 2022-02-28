@@ -9,9 +9,6 @@ import { requestGetUser } from '../requests/user';
 import { setUser } from '../../actions/user';
 
 export function* handleRegisterUser(action) {
-    console.log('handleRegisterUser: ');
-    console.log(action);
-
     try {
         const response = yield call(() =>
             requestRegisterUser(action.name, action.email, action.password)
@@ -34,8 +31,17 @@ export function* handleRegisterUser(action) {
                 };
 
                 localStorage.setItem('user', JSON.stringify(user));
-                console.log('UserID: ', user.user.id);
+
                 yield call(() => {
+                    if (!action.file.entries('files').next().value) {
+                        createNewProfile({
+                            name: action.name,
+                            id: user.user.id,
+                            companyId: action.companyId,
+                            userRole: action.userRole,
+                            navigate: action.navigate,
+                        });
+                    }
                     if (action.file.entries('files').next().value) {
                         uploadAndConnectImage(action.file).then((res) => {
                             createNewProfile({
@@ -44,18 +50,13 @@ export function* handleRegisterUser(action) {
                                 companyId: action.companyId,
                                 photoId: res.data[0].id,
                                 userRole: action.userRole,
+                                navigate: action.navigate,
                             });
                         });
                     }
-                    if (!action.file.entries('files').next().value) {
-                        createNewProfile({
-                            name: action.name,
-                            id: user.user.id,
-                            companyId: action.companyId,
-                            userRole: action.userRole,
-                        });
-                    }
                 });
+                action.setSpin(false);
+                action.navigate(`/`);
                 yield put(setUser(user));
             }
         }

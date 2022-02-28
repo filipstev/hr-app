@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from 'react';
+import React, { Component, useContext, useEffect, useState } from 'react';
 
 import classes from './Modal.module.css';
 import Backdrop from '../Backdrop/Backdrop';
@@ -6,30 +6,37 @@ import axiosInstance from '../../helpers/axiosInstance';
 import Avatar from '../../assets/avatar.png';
 import { useQuery } from 'react-query';
 import Spinner from '../Spinner.js/Spinner';
+import { ThemeContext } from '../../context/theme-context';
 
 const fetchAnwers = async (id) => {
     const answersRes = await axiosInstance.get(`/profiles/${id}?populate=*`);
     return answersRes.data.data.attributes.answers.data;
 };
 
-const fetchQuestions = async () => {
+const fetchQuestions = async (slug) => {
     const userStorage = JSON.parse(localStorage.getItem('user'));
+    let res;
+    if (slug) {
+        res = await axiosInstance.get(
+            `/questions?filters[company][slug][$eq]=${slug}&populate=*`
+        );
+    } else {
+        const resUser = await axiosInstance.get(
+            '/profiles?filters[user][id][$eq]=' +
+                userStorage.user.id +
+                '&populate=*'
+        );
 
-    const resUser = await axiosInstance.get(
-        '/profiles?filters[user][id][$eq]=' +
-            userStorage.user.id +
-            '&populate=*'
-    );
+        const resCompany = await axiosInstance.get(
+            '/companies?filters[profiles][id][$eq]=' +
+                resUser.data.data[0].id +
+                '&populate=*'
+        );
 
-    const resCompany = await axiosInstance.get(
-        '/companies?filters[profiles][id][$eq]=' +
-            resUser.data.data[0].id +
-            '&populate=*'
-    );
-
-    const res = await axiosInstance.get(
-        `/questions?filters[company][id][$eq]=${resCompany.data.data[0].id}&populate=*`
-    );
+        res = await axiosInstance.get(
+            `/questions?filters[company][id][$eq]=${resCompany.data.data[0].id}&populate=*`
+        );
+    }
 
     return res.data.data;
 };
@@ -37,7 +44,7 @@ const fetchQuestions = async () => {
 const Modal = (props) => {
     const [questions, setQuestions] = useState([]);
     const [answers, setAnswers] = useState([]);
-
+    const { theme } = useContext(ThemeContext);
     const {
         data: answersQuery,
         refetch,
@@ -51,8 +58,8 @@ const Modal = (props) => {
     );
 
     const { data: questionsQuery, status: qStatus } = useQuery(
-        'modal-questions',
-        fetchQuestions
+        ['modal-questions', props.slug],
+        () => fetchQuestions(props.slug)
     );
 
     useEffect(() => {
@@ -119,6 +126,8 @@ const Modal = (props) => {
                         opacity: props.show ? '1' : '0',
                         fontFamily: 'Comic Neue',
                         maxWidth: '91vw',
+                        color: theme === 'dark' ? 'white' : 'black',
+                        backgroundColor: theme === 'dark' ? '#121212' : 'white',
                     }}
                 >
                     <div
@@ -130,8 +139,8 @@ const Modal = (props) => {
                         {props.modalInfo[1].profilePhoto.data ? (
                             <img
                                 src={
-                                    props.modalInfo[1].profilePhoto.data
-                                        .attributes.formats.thumbnail.url
+                                    props.modalInfo[1].profilePhoto?.data
+                                        .attributes.url
                                 }
                                 style={{
                                     width: '200px',
@@ -203,6 +212,7 @@ const Modal = (props) => {
                                             fontSize: '20px',
                                             display: 'flex',
                                             alignItems: 'center',
+                                            marginTop: '5px',
                                         }}
                                     >
                                         <i
@@ -232,6 +242,7 @@ const Modal = (props) => {
                                                     ) {
                                                         return (
                                                             <img
+                                                                key={Math.random()}
                                                                 src={
                                                                     foundAnswer
                                                                         .attributes

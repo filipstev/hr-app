@@ -82,14 +82,15 @@ const CompanyWall = () => {
             res = await axiosInstance.get(
                 '/profiles?filters[company][slug][$eq]=' +
                     slug +
-                    '&populate=*&sort=name:ASC'
+                    '&populate=*&sort=name:ASC&pagination[pageSize]=50&filters[status][$eq]=published'
             );
         } else {
             res = await axiosInstance.get(
                 '/profiles?filters[company][slug][$eq]=' +
                     slug +
                     '&populate=*&sort=createdAt:' +
-                    order
+                    order +
+                    '&pagination[pageSize]=50&filters[status][$eq]=published'
             );
         }
 
@@ -450,6 +451,7 @@ const CompanyWall = () => {
                 show={modalOpen}
                 modalClosed={closeModal}
                 modalInfo={modalInfo}
+                slug={location.pathname.split('/')[2]}
             />
         </Container>
     );

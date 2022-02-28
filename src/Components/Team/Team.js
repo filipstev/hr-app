@@ -16,6 +16,8 @@ import { useProfiles } from '../../queryFunctions/fetchProfiles';
 import { useCompany } from '../../queryFunctions/fetchCompany';
 import { FormControl, TextField } from '@mui/material';
 
+import Spinner from '../Spinner.js/Spinner';
+
 const Team = ({ status }) => {
     const userId = useSelector((state) => state.user.user.user.id);
     const [page, setPage] = useState(1);
@@ -50,14 +52,17 @@ const Team = ({ status }) => {
     }
 
     if (profileStatus !== 'success') {
-        return <p style={{ marginTop: '150px' }}>Is Loading...</p>;
+        return <Spinner />;
     }
 
     return (
         <Container maxWidth="false">
             <Grid
                 container
-                sx={{ marginTop: '100px', justifyContent: 'space-between' }}
+                sx={{
+                    marginTop: '100px',
+                    justifyContent: 'space-between',
+                }}
             >
                 <Typography>
                     {status === 'published' ? 'Team' : 'Pending for approval'}
@@ -65,6 +70,7 @@ const Team = ({ status }) => {
 
                 {status === 'published' && (
                     <Button
+                        color="primary"
                         onClick={() => {
                             setLink(!link);
                         }}

@@ -1,9 +1,8 @@
 import axiosInstance from '../../../helpers/axiosInstance';
 
-import { useGetProfile } from '../../../queryFunctions/fetchSingleProfile';
 import { useMutateProfile } from '../../../hooks/use-mutate-profile';
 
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import DeleteProfile from '../DeleteProfile';
 
@@ -17,19 +16,12 @@ import Select from '@mui/material/Select';
 import Typography from '@mui/material/Typography';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-const TeamHeader = ({ edit }) => {
+const TeamHeader = ({ edit, id, data, refetch, isLoading }) => {
     const navigate = useNavigate();
-
-    const { id } = useParams();
-    const { data, isLoading, refetch } = useGetProfile(id);
 
     const editProfile = useMutateProfile((data) => {
         return axiosInstance.put(`/profiles/${id}`, data);
     });
-
-    if (isLoading) {
-        return <p>Loading</p>;
-    }
 
     return (
         <Grid
@@ -70,7 +62,7 @@ const TeamHeader = ({ edit }) => {
                                 labelId="selectStatus"
                                 id="selectStatus"
                                 label="Status"
-                                value={data.attributes.status}
+                                value={data?.attributes.status}
                                 onChange={(e) => {
                                     editProfile.mutate(
                                         {

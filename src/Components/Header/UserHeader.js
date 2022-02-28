@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -14,7 +14,11 @@ import MenuItem from '@mui/material/MenuItem';
 import { Link } from 'react-router-dom';
 import axiosInstance from '../../helpers/axiosInstance';
 import { useQuery } from 'react-query';
-const pages = ['Tesla', 'Ghetto', 'Page Three'];
+import { ThemeContext } from '../../context/theme-context';
+import LogoutIcon from '@mui/icons-material/Logout';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import LightModeIcon from '@mui/icons-material/LightMode';
+const pages = ['Tesla'];
 
 const fetchLogo = async (userStorage) => {
     const resUser = await axiosInstance.get(
@@ -36,6 +40,8 @@ const fetchLogo = async (userStorage) => {
 };
 
 const ResponsiveAppBar = (props) => {
+    const { themeTogglerHandler, theme } = useContext(ThemeContext);
+
     const [width, setWidth] = useState(window.innerWidth);
     const userStorage = JSON.parse(localStorage.getItem('user'));
 
@@ -63,6 +69,11 @@ const ResponsiveAppBar = (props) => {
 
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
+    };
+
+    const Logout = () => {
+        localStorage.removeItem('user');
+        return (window.location.href = '/');
     };
 
     useEffect(() => {
@@ -112,7 +123,12 @@ const ResponsiveAppBar = (props) => {
 
     return (
         <AppBar
-            sx={{ bgcolor: '#E5E5E5', position: 'absolute', top: 0, left: 0 }}
+            sx={{
+                bgcolor: theme === 'light' ? '#E5E5E5' : '#000',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+            }}
         >
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
@@ -133,6 +149,31 @@ const ResponsiveAppBar = (props) => {
                             />
                         ) : null}
                     </Typography>
+                    <Button onClick={themeTogglerHandler}>
+                        {' '}
+                        {theme === 'dark' ? (
+                            <LightModeIcon
+                                sx={{
+                                    color:
+                                        theme === 'light' ? 'black' : 'white',
+                                }}
+                            />
+                        ) : (
+                            <DarkModeIcon
+                                sx={{
+                                    color:
+                                        theme === 'light' ? 'black' : 'white',
+                                }}
+                            />
+                        )}
+                    </Button>
+                    <Button onClick={Logout}>
+                        <LogoutIcon
+                            sx={{
+                                color: theme === 'light' ? 'black' : 'white',
+                            }}
+                        />
+                    </Button>
 
                     <Box
                         sx={{
@@ -150,7 +191,12 @@ const ResponsiveAppBar = (props) => {
                             aria-haspopup="true"
                             onClick={handleOpenNavMenu}
                         >
-                            <MenuIcon style={{ color: 'black' }} />
+                            <MenuIcon
+                                style={{
+                                    color:
+                                        theme === 'light' ? 'black' : 'white',
+                                }}
+                            />
                         </IconButton>
                         <Menu
                             id="menu-appbar"
@@ -183,7 +229,10 @@ const ResponsiveAppBar = (props) => {
                                                   .replace(' ', '')}`}
                                               onClick={handleCloseNavMenu}
                                               style={{
-                                                  color: 'black',
+                                                  color:
+                                                      theme === 'light'
+                                                          ? 'black'
+                                                          : 'white',
                                                   textDecoration: 'none',
                                                   padding: '5px 12px',
                                               }}
@@ -205,7 +254,10 @@ const ResponsiveAppBar = (props) => {
                                                   .replace(' ', '')}`}
                                               onClick={handleCloseNavMenu}
                                               style={{
-                                                  color: 'black',
+                                                  color:
+                                                      theme === 'light'
+                                                          ? 'black'
+                                                          : 'white',
                                                   textDecoration: 'none',
                                                   padding: '5px 12px',
                                               }}
@@ -226,12 +278,16 @@ const ResponsiveAppBar = (props) => {
                         {!isMobile
                             ? pages.map((page) => (
                                   <Link
+                                      key={page}
                                       to={`/team/${page
                                           .toLowerCase()
                                           .replace(' ', '')}`}
                                       style={{
                                           textDecoration: 'none',
-                                          color: 'black',
+                                          color:
+                                              theme === 'light'
+                                                  ? 'black'
+                                                  : 'white',
                                           marginRight: '32px',
                                       }}
                                   >
@@ -240,12 +296,16 @@ const ResponsiveAppBar = (props) => {
                               ))
                             : drawerList.map((item) => (
                                   <Link
+                                      key={item}
                                       to={`/team/${item.navigateTo
                                           .toLowerCase()
                                           .replace(' ', '')}`}
                                       style={{
                                           textDecoration: 'none',
-                                          color: 'black',
+                                          color:
+                                              theme === 'light'
+                                                  ? 'black'
+                                                  : 'white',
                                           marginRight: '32px',
                                       }}
                                   >

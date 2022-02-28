@@ -14,6 +14,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import classes from '../AddQuestion/AddQuestion.module.css';
 
 import { useMutation, useQuery } from 'react-query';
+import Spinner from '../../Spinner.js/Spinner';
 const fetchQuestion = async (setText, setType, setId, id) => {
     const res = await axiosInstance.get(`/questions/${id}?populate=*`);
 
@@ -32,8 +33,6 @@ const EditQuestion = (props) => {
     const [id, setId] = useState(null);
 
     const submitQuestion = async () => {
-        console.log(data?.attributes.answers.data);
-
         if (
             type === 'image' &&
             (data.attributes.type === 'text' ||
@@ -97,14 +96,14 @@ const EditQuestion = (props) => {
     const { mutate: editQuestion } = useMutation(submitQuestion);
 
     if (status === 'loading') {
-        return <div>Loading...</div>;
+        return <Spinner />;
     }
     return (
         <>
             <div
                 style={{
                     width: '50%',
-                    margin: 'auto',
+                    margin: '40px auto',
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'flex-start',

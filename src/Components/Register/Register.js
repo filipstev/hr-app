@@ -21,7 +21,8 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 
 import UploadButton from '../Buttons/UploadButton';
 import SelectCompany from './SelectCompanyInput';
-// dodati user role, i kompaniju
+import Spinner from '../Spinner.js/Spinner';
+
 const Register = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -32,9 +33,8 @@ const Register = () => {
     const [companyId, setCompanyId] = useState('');
     const [userRole, setUserRole] = useState('company_user');
     const registerError = useSelector((state) => state.register.isError);
-
     const [image, setImage] = useState('');
-
+    const [spin, setSpin] = useState(false);
     const nameRegEx = /^[a-zA-Z]+(?:[\s.]+[a-zA-Z]+)*$/g;
     const emailRegEx =
         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -79,18 +79,9 @@ const Register = () => {
 
     const handleRegisterImageUpload = (e) => {
         setImage(e.target.files);
-        // image.append('files', e.target.files[0]);
     };
 
-    const onSubmit = async () => {
-        if (enteredPassword === '') {
-            // setIsError(true);
-            return;
-        }
-
-        const img = new FormData();
-        img.append('files', image[0]);
-
+    const handleRegistration = (img) => {
         if (enteredPassword !== '') {
             dispatch(
                 registerUser.registerUser(
@@ -99,13 +90,29 @@ const Register = () => {
                     enteredPassword,
                     userRole,
                     companyId,
-                    img
+                    img,
+                    navigate,
+                    setSpin
                 )
             );
         }
     };
+    const onSubmit = async () => {
+        setSpin(true);
+        if (enteredPassword === '') {
+            // setIsError(true);
+            return;
+        }
+        const img = new FormData();
+        if (image) {
+            img.append('files', image[0]);
+        }
+        handleRegistration(img);
+    };
 
-    return (
+    return spin ? (
+        <Spinner />
+    ) : (
         <Container
             maxWidth="sm"
             style={{ marginTop: '82px' }}
@@ -208,11 +215,13 @@ const Register = () => {
                         onUpload={handleRegisterImageUpload}
                         id={'register'}
                     />
-                    <img
-                        style={{ height: '150px', width: '150px' }}
-                        src={image ? URL.createObjectURL(image[0]) : null}
-                        alt="profile"
-                    />
+                    {image && (
+                        <img
+                            style={{ height: '150px', width: '150px' }}
+                            src={URL.createObjectURL(image[0])}
+                            alt="profile"
+                        />
+                    )}
                 </Grid>
                 <div>
                     {registerError && (

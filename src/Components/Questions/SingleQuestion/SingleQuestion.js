@@ -1,13 +1,17 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../../helpers/axiosInstance';
 import classes from './SingleQuestion.module.css';
+import { ThemeContext } from '../../../context/theme-context';
 
 const SingleQuestion = (props) => {
     const navigate = useNavigate();
     const onEdit = () => {
-        navigate('/edit-question', { state: { id: props.id } });
+        navigate('/edit-question', {
+            state: { id: props.id },
+        });
     };
+    const { theme } = useContext(ThemeContext);
 
     return (
         <div
@@ -69,11 +73,26 @@ const SingleQuestion = (props) => {
                 </div>
             </div>
             <div className={classes.Right}>
-                <div className={classes.ButtonEdit} onClick={onEdit}>
+                <div
+                    className={classes.ButtonEdit}
+                    style={{
+                        border:
+                            theme === 'light'
+                                ? '2px solid #000000'
+                                : '2px solid #fff',
+                    }}
+                    onClick={onEdit}
+                >
                     Edit
                 </div>
                 <div
                     className={classes.ButtonDelete}
+                    style={{
+                        border:
+                            theme === 'light'
+                                ? '2px solid #000000'
+                                : '2px solid #fff',
+                    }}
                     onClick={() => props.deleteQuestion(props.id)}
                 >
                     Delete

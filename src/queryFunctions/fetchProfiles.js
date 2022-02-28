@@ -3,7 +3,7 @@ import axiosInstance from '../helpers/axiosInstance';
 
 const getProfilesByStatus = async (status, page, company) => {
     const profiles = await axiosInstance.get(
-        `/profiles?filters[status][$eq]=${status}&filters[company][name][$eq]=${company}&sort=createdAt&populate=*&pagination[page]=${page}&pagination[pageSize]=5`
+        `/profiles?filters[status][$eq]=${status}&filters[company][name][$eq]=${company}&sort=createdAt&populate=*&pagination[page]=${page}&pagination[pageSize]=10`
     );
     return profiles;
 };

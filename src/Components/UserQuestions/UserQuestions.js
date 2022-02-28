@@ -24,7 +24,8 @@ const fetchQuestions = async (
     setAnswerId,
     setIsImage,
     setTotal,
-    userStorage
+    userStorage,
+    setProfileId
 ) => {
     //TODO: DINAMICKI ID ZA KOMPANIJE
 
@@ -33,6 +34,7 @@ const fetchQuestions = async (
             userStorage.user.id +
             '&populate=*'
     );
+    setProfileId(resUser.data.data[0].id);
 
     const resCompany = await axiosInstance.get(
         '/companies?filters[profiles][id][$eq]=' +
@@ -56,14 +58,17 @@ const fetchQuestions = async (
             setIsImage(false);
         }
         const foundAnswer = await axiosInstance.get(
-            `/answers?filters[question][id][$eq]=${
-                sortedQuestions[0].id
-            }&filters[profile][id][$eq]=${41}&populate=*`
+            `/answers?filters[question][id][$eq]=${sortedQuestions[0].id}&filters[profile][id][$eq]=${resUser.data.data[0].id}&populate=*`
         );
         if (foundAnswer.data.data) {
-            if (foundAnswer.data.data[0]) {
-                setCurrentAnswer(foundAnswer.data.data[0].attributes.answer);
-                setAnswerId(foundAnswer.data.data[0].id);
+            if (foundAnswer.data.data.length > 0) {
+                setCurrentAnswer(
+                    foundAnswer.data.data[foundAnswer.data.data.length - 1]
+                        .attributes.answer
+                );
+                setAnswerId(
+                    foundAnswer.data.data[foundAnswer.data.data.length - 1].id
+                );
             } else {
                 setCurrentAnswer('');
             }
@@ -86,6 +91,7 @@ const fetchQuestions = async (
 // };
 
 const UserQuestions = () => {
+    const [shouldSpin, setShouldSpin] = useState(false);
     const [questions, setQuestions] = useState([]);
     const [currentQuestion, setCurrentQuestion] = useState(null);
     const [answers, setAnswers] = useState([]);
@@ -105,13 +111,13 @@ const UserQuestions = () => {
         return profileId;
     };
 
-    useEffect(async () => {
-        const profile = await axiosInstance.get(
-            `/profiles?filters[user][id][$eq]=${user.user.id}&populate=*`
-        );
-        console.log(profile.data.data[0].id);
-        setProfileId(profile.data.data[0].id);
-    }, []);
+    // useEffect(async () => {
+    //     const profile = await axiosInstance.get(
+    //         `/profiles?filters[user][id][$eq]=${user.user.id}&populate=*`
+    //     );
+    //     console.log(profile.data.data[0].id);
+    //     setProfileId(profile.data.data[0].id);
+    // }, []);
 
     const { data, status, refetch } = useQuery(
         [
@@ -125,6 +131,7 @@ const UserQuestions = () => {
             setIsImage,
             setTotal,
             user,
+            setProfileId,
         ],
         () =>
             fetchQuestions(
@@ -136,7 +143,8 @@ const UserQuestions = () => {
                 setAnswerId,
                 setIsImage,
                 setTotal,
-                user
+                user,
+                setProfileId
             ),
         { keepPreviousData: true }
     );
@@ -189,26 +197,33 @@ const UserQuestions = () => {
     };
 
     const getAnswer = async (questionFor) => {
-        const foundAnswer = await axiosInstance.get(
-            `/answers?filters[question][id][$eq]=${
-                questionFor.id
-            }&filters[profile][id][$eq]=${41}&populate=*`
-        );
-        console.log(foundAnswer);
-        if (foundAnswer.data.data) {
+        setShouldSpin(true);
+        let foundAnswer;
+        if (profileId) {
+            foundAnswer = await axiosInstance.get(
+                `/answers?filters[question][id][$eq]=${questionFor.id}&filters[profile][id][$eq]=${profileId}&populate=*`
+            );
+        }
+        if (foundAnswer.data.data.length > 0) {
             if (foundAnswer.data.data[0]) {
-                setCurrentAnswer(foundAnswer.data.data[0].attributes.answer);
+                setCurrentAnswer(
+                    foundAnswer.data.data[foundAnswer.data.data.length - 1]
+                        .attributes.answer
+                );
                 if (
                     foundAnswer.data.data[0].attributes.question.data.attributes
                         .type === 'image'
                 ) {
                     setIsImage(true);
                 }
-                setAnswerId(foundAnswer.data.data[0].id);
+                setAnswerId(
+                    foundAnswer.data.data[foundAnswer.data.data.length - 1].id
+                );
             } else {
                 setCurrentAnswer('');
             }
         }
+        setShouldSpin(false);
         // if (questionFor) {
         //     questionFor.attributes.answers.data.map((answerQ) => {
         //         let foundAnswer;
@@ -262,6 +277,7 @@ const UserQuestions = () => {
                     prevQuestion={prevQuestion}
                     blocked={blocked}
                     isImage={isImage}
+                    shouldSpin={shouldSpin}
                     // userId={profileId}
                     onChange={(e) => setCurrentAnswer(e.target.value)}
                     // changeAnswer={changeAnswer}
