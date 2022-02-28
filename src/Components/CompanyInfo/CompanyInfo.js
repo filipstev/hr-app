@@ -17,6 +17,7 @@ import IconButton from '@mui/material/IconButton';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import Spinner from '../Spinner.js/Spinner';
 import SaveButton from '../Buttons/SaveButton';
+import Avatar from '../../assets/avatar.png';
 
 const Input = styled('input')({
     display: 'none',
@@ -190,7 +191,11 @@ const CompanyInfo = (props) => {
                             src={
                                 files.length > 0
                                     ? URL.createObjectURL(files[0])
-                                    : data?.attributes.logo.data.attributes.url
+                                    : data?.attributes?.logo?.data?.attributes
+                                          .url
+                                    ? data?.attributes?.logo?.data?.attributes
+                                          .url
+                                    : Avatar
                             }
                             style={{
                                 margin: '10px 0',
