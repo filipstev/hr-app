@@ -1,0 +1,15 @@
+.App {
+    margin-left: 240px;
+}
+.JoinRoutes {
+    margin-left: -240px;
+}
+
+@media screen and (max-width: 900px) {
+    .App {
+        margin-left: 0px;
+    }
+    .JoinRoutes {
+        margin-left: 0;
+    }
+}

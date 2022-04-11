@@ -1,0 +1,73 @@
+.Wrapper {
+    display: flex;
+    border: 1px solid black;
+    width: 80%;
+    margin: 10px auto;
+    padding: 20px;
+    justify-content: space-between;
+    font-family: 'Comic Neue', sans-serif;
+}
+
+.Right {
+    align-self: flex-end;
+    text-align: center;
+}
+
+.Left {
+    display: flex;
+    padding-top: 30px;
+    margin-bottom: 50px;
+}
+
+.UpDown {
+    margin-right: 15px;
+    align-self: flex-start;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.Text {
+    font-weight: bold;
+    font-size: 1.15rem;
+    word-wrap: break-word;
+}
+
+.Input {
+    margin-top: 10px;
+}
+
+.UpDown i {
+    font-size: 20px;
+    cursor: pointer;
+}
+
+@media screen and (max-width: 450px) {
+    .Right {
+        transform: translateX(-20px);
+    }
+    .Text {
+        font-size: 1rem;
+        margin-bottom: 10px;
+    }
+}
+
+@media screen and (max-width: 400px) {
+    .Right {
+        transform: none;
+    }
+
+    .Wrapper {
+        flex-direction: column;
+    }
+}
+
+@media screen and (max-width: 355px) {
+    .Right {
+        transform: none;
+    }
+    .Input {
+        width: 150%;
+    }
+}

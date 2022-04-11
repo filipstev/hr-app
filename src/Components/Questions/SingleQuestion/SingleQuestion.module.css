@@ -1,0 +1,93 @@
+.Left {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.Text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    margin-left: 16px;
+}
+
+.Arrows {
+    display: flex;
+    flex-direction: column;
+    font-size: 1.2rem;
+    justify-content: space-between;
+}
+
+.Right {
+    display: flex;
+}
+
+.ButtonEdit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 6px 24px;
+
+    border-radius: 4px;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 18px;
+}
+
+.ButtonDelete {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 6px 24px;
+
+    border-radius: 4px;
+    margin: 0 15px;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 18px;
+}
+
+.ButtonEdit {
+    cursor: pointer;
+}
+
+.ButtonDelete:hover {
+    cursor: pointer;
+}
+
+.Arrows i:hover {
+    cursor: pointer;
+}
+
+@media screen and (max-width: 900px) {
+    .QuestionWrap {
+        margin-top: 15px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .Left {
+        margin-bottom: 12px;
+    }
+
+    .Left div {
+        font-size: 1.15rem !important;
+    }
+
+    .ButtonDelete {
+        margin-right: 0;
+    }
+
+    .Text {
+        justify-content: center;
+        align-items: center;
+    }
+
+    .Text div {
+        text-align: center;
+    }
+}
